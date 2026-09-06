@@ -10,6 +10,7 @@ import { TooltipProvider, TooltipSurface } from "./ui-kit/Tooltip";
 import { getTimeline } from "@/lib/timeline";
 import { Footer } from "./Footer";
 import { MotionProvider } from "./ui-kit/motion/MotionProvider";
+import { siteUrl } from "@/lib/site";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -30,34 +31,39 @@ const geistPixel = localFont({
 	display: "swap",
 });
 
-// Pinned to the production domain, a preview's OG paths resolve against
-// whatever production serves — so a card that only exists on the branch 404s.
-const siteUrl =
-	process.env.VERCEL_ENV !== "production" && process.env.VERCEL_URL
-		? `https://${process.env.VERCEL_URL}`
-		: "https://www.sekei.xyz";
-
 export const metadata: Metadata = {
 	title: {
 		default: "PG Gonni | Building software in Montréal",
 		template: "%s | PG Gonni",
 	},
-	description: "Design Engineer making beautiful software",
+	description:
+		"PG Gonni is a design engineer in Montréal building interface experiments, apps and case studies. A running timeline of what he ships, reads and writes.",
 	// react-doctor-disable-next-line no-unguarded-throwing-parse-call -- siteUrl is either a literal or "https://" plus a non-empty host, so both branches parse
 	metadataBase: new URL(siteUrl),
 	openGraph: {
 		title: "PG Gonni | Building software in Montréal",
 		description: "Design Engineer making beautiful software",
 		images: "/og-image.jpg",
+		type: "website",
+		siteName: "PG Gonni",
 	},
 	icons: {
+		// app/favicon.ico is emitted ahead of these by the file convention, and it
+		// is what crawlers and feed readers pick up — most ignore `media` and take
+		// the first icon they see.
 		icon: [
 			{
 				url: "/icons/favicon-light.svg",
+				type: "image/svg+xml",
 				media: "(prefers-color-scheme: light)",
 			},
-			{ url: "/icons/favicon-dark.svg", media: "(prefers-color-scheme: dark)" },
+			{
+				url: "/icons/favicon-dark.svg",
+				type: "image/svg+xml",
+				media: "(prefers-color-scheme: dark)",
+			},
 		],
+		apple: "/apple-icon.png",
 	},
 };
 

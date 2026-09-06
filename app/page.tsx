@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { getTimeline } from "@/lib/timeline";
 import { TimelineFeed } from "./TimelineFeed";
+
+// Without a canonical the apex and www hosts index as two separate pages.
+export const metadata: Metadata = {
+	alternates: { canonical: "/" },
+};
 
 export default async function HomePage() {
 	const timeline = getTimeline();

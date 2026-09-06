@@ -35,6 +35,7 @@ export async function generateMetadata({
 		// title and keeps the full string for OG, which isn't templated.
 		title: entry.title,
 		description,
+		alternates: { canonical: `/p/${slug}` },
 		openGraph: {
 			title,
 			description,
