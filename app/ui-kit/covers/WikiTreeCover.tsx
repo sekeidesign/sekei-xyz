@@ -4,7 +4,7 @@ import { m, useInView } from "motion/react";
 import { type CSSProperties, useEffect, useRef, useState } from "react";
 import { cn } from "../cn";
 import { usePrefersReducedMotion } from "../use-prefers-reduced-motion";
-import { ACCENT, MARK_PATH, PROMPT, TREE, type WikiNode } from "./wiki-tree";
+import { ACCENT, MARK_PATH, PROMPT, TREE } from "./wiki-tree";
 
 /** Both variants draw at the design's own sizes and crop, never scale. */
 
