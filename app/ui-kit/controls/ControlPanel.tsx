@@ -1,4 +1,6 @@
-import type { ReactNode } from "react";
+"use client";
+
+import { useId, type ReactNode } from "react";
 import { cn } from "../cn";
 
 export function ControlPanel({
@@ -10,8 +12,14 @@ export function ControlPanel({
 	children: ReactNode;
 	className?: string;
 }) {
+	const titleId = useId();
+
 	return (
 		<div
+			// A named group rather than a heading: these are controls, not a
+			// section of the document.
+			role={title ? "group" : undefined}
+			aria-labelledby={title ? titleId : undefined}
 			className={cn(
 				"bg-white overflow-hidden rounded-xl ring ring-gray-500/10 shadow-skew",
 				className,
@@ -19,7 +27,10 @@ export function ControlPanel({
 		>
 			{title && (
 				<div className="px-3 py-2 border-b border-gray-200 bg-gray-50">
-					<span className="text-[13px] leading-[1.43] font-[550] text-gray-900">
+					<span
+						id={titleId}
+						className="text-[13px] leading-[1.43] font-[550] text-gray-900"
+					>
 						{title}
 					</span>
 				</div>
@@ -44,16 +55,23 @@ export function ControlSection({ label }: { label: string }) {
 /** One row: label on the left, control in the middle, readout on the right. */
 export function ControlRow({
 	label,
+	labelId,
 	children,
 	value,
 }: {
 	label: string;
+	/** From the control inside, which points its `aria-labelledby` back here —
+	 * so the row's own text names it instead of a repeated `aria-label`. */
+	labelId?: string;
 	children: ReactNode;
 	value?: ReactNode;
 }) {
 	return (
 		<div className="flex items-center gap-3 px-3 py-2">
-			<span className="w-20 shrink-0 text-[13px] leading-[1.43] font-[420] text-gray-500">
+			<span
+				id={labelId}
+				className="w-20 shrink-0 text-[13px] leading-[1.43] font-[420] text-gray-500"
+			>
 				{label}
 			</span>
 			<div className="flex-1 min-w-0 flex items-center">{children}</div>

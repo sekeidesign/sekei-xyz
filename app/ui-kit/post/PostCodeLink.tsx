@@ -13,7 +13,13 @@ export function CodeLink({ href }: { href: string }) {
 			// render, so the trigger IS the anchor rather than a button
 			// wrapping one — nested interactive elements would break both.
 			render={(props) => (
-				<Link {...props} href={href} target="_blank" aria-label="View code" />
+				<Link
+					{...props}
+					href={href}
+					target="_blank"
+					rel="noopener noreferrer"
+					aria-label="View code"
+				/>
 			)}
 			className={cn(
 				"group flex items-center justify-center size-[26px] rounded-full shrink-0 text-gray-500 hover:bg-gray-50",

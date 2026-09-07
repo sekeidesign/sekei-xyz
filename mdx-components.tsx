@@ -108,7 +108,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
 			) : (
 				<Link
 					href={href ?? "#"}
-					className="text-gray-900 font-[500] underline decoration-gray-300 hover:decoration-gray-900 underline-offset-2 transition-colors"
+					className="text-gray-900 font-[500] underline decoration-gray-300 hover:decoration-gray-900 underline-offset-2"
 					{...props}
 				>
 					{children}

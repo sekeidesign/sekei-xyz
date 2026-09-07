@@ -9,6 +9,7 @@ export function Footer({className}: {className?: string}) {
         <Link
           href="https://github.com/sekeidesign/"
           target="_blank"
+          rel="noopener noreferrer"
           className="panel p-4 text-xs font-[500] w-full flex flex-col items-center justify-center gap-1.5 text-gray-600 hover:text-gray-950"
         >
           <GithubIcon />
@@ -17,6 +18,7 @@ export function Footer({className}: {className?: string}) {
         <Link
           href="https://www.threads.com/@sekeidesign"
           target="_blank"
+          rel="noopener noreferrer"
           className="panel p-4 text-xs font-[500] w-full flex flex-col items-center justify-center gap-1.5 text-gray-600 hover:text-gray-950"
         >
           <ThreadsIcon />

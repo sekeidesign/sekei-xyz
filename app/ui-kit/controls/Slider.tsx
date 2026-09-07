@@ -1,6 +1,6 @@
 "use client";
 
-import type { CSSProperties } from "react";
+import { useId, type CSSProperties } from "react";
 import { ControlRow } from "./ControlPanel";
 
 export function Slider({
@@ -23,16 +23,17 @@ export function Slider({
 	// --fill drives the track's played portion in CSS, so the styled track needs
 	// no per-frame work of its own.
 	const fill = ((value - min) / (max - min)) * 100;
+	const labelId = useId();
 
 	return (
-		<ControlRow label={label} value={`${value}${unit}`}>
+		<ControlRow label={label} labelId={labelId} value={`${value}${unit}`}>
 			<input
 				type="range"
 				min={min}
 				max={max}
 				step={step}
 				value={value}
-				aria-label={label}
+				aria-labelledby={labelId}
 				onChange={(event) => onChange(Number(event.target.value))}
 				style={{ "--fill": `${fill}%` } as CSSProperties}
 				className="control-slider w-full"

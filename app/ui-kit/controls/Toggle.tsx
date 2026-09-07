@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import { cn } from "../cn";
 import { ControlRow } from "./ControlPanel";
 
@@ -14,13 +15,15 @@ export function Toggle({
 	hint?: string;
 	onChange: (checked: boolean) => void;
 }) {
+	const labelId = useId();
+
 	return (
-		<ControlRow label={label} value={checked ? "on" : "off"}>
+		<ControlRow label={label} labelId={labelId} value={checked ? "on" : "off"}>
 			<button
 				type="button"
 				role="switch"
 				aria-checked={checked}
-				aria-label={label}
+				aria-labelledby={labelId}
 				onClick={() => onChange(!checked)}
 				className={cn(
 					"relative h-5 w-9 shrink-0 rounded-full ring-1 ring-gray-500/10 shadow-skew cursor-pointer",
