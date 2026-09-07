@@ -7,13 +7,20 @@ import { cn } from "../cn";
 import { FramedIcon } from "./FramedIcon";
 import { KIND_META } from "./kind-meta";
 import { CodeLink } from "./PostCodeLink";
-import { AppIcon, BookCover, Media, PhoneMedia } from "./PostMedia";
+import {
+	AppIcon,
+	BookCover,
+	Media,
+	PhoneMedia,
+	SquareMedia,
+} from "./PostMedia";
 import { PostRow } from "./PostRow";
 
 /**
  * How a card arranges its copy and its artwork.
  *
- * `aside` — artwork beside the copy at every width, for a book cover or phone.
+ * `aside` — artwork beside the copy at every width, for a book cover, a phone,
+ *   or a case study's square cover in the feed.
  * `column` — one column at every width; a screenshot runs full width inside
  *   it, in the slot a live demo occupies on an experiment.
  */
@@ -218,6 +225,7 @@ Post.Meta = Meta;
 Post.Title = Title;
 Post.Description = Description;
 Post.Media = Media;
+Post.SquareMedia = SquareMedia;
 Post.PhoneMedia = PhoneMedia;
 Post.AppIcon = AppIcon;
 Post.BookCover = BookCover;

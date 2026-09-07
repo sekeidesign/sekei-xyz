@@ -2,6 +2,7 @@
 
 import { m } from "motion/react";
 import Image from "next/image";
+import type { ReactNode } from "react";
 import { Book3D } from "../book-shelf/Book3D";
 import type { Book } from "../book-shelf/types";
 import { cn } from "../cn";
@@ -23,9 +24,9 @@ import {
 } from "./surface";
 
 /**
- * The artwork slots a post card can fill: a flat image, a phone mockup, an app
- * icon, or a book off the shelf. One per card — they are alternatives, not
- * layers, which is why they live together.
+ * The artwork slots a post card can fill: a full-width image, a square one, a
+ * phone mockup, an app icon, or a book off the shelf. One per card — they are
+ * alternatives, not layers, which is why they live together.
  */
 
 /** A cover or screenshot at its own ratio, full width — the slot an experiment fills with its live demo. */
@@ -37,6 +38,8 @@ export function Media({
 	priority,
 	/** The image's own ratio as CSS aspect-ratio, e.g. "2000 / 1374". */
 	aspect,
+	/** A cover drawn in code, in place of an image. */
+	children,
 }: {
 	src?: string;
 	alt: string;
@@ -44,14 +47,16 @@ export function Media({
 	badgeAlt?: string;
 	priority?: boolean;
 	aspect?: string;
+	children?: ReactNode;
 }) {
 	return (
-		<div className={cn("self-stretch w-full rounded-xl", SURFACE_OUTER)}>
+		<div className={cn("self-stretch w-full rounded-xl my-2", SURFACE_OUTER)}>
 			<div
 				style={{ aspectRatio: aspect }}
 				className={cn("relative w-full rounded-lg", SURFACE_INNER)}
 			>
-				{src && (
+				{children}
+				{!children && src && (
 					<Image
 						src={src}
 						alt={alt}
@@ -59,6 +64,53 @@ export function Media({
 						// The column caps at screen-md and the card spends 64px of it on
 						// padding, so a cover never needs more than what is left.
 						sizes={`(min-width: 768px) ${COLUMN_INNER}px, 100vw`}
+						priority={priority}
+						className="object-cover"
+					/>
+				)}
+				{badge && (
+					<div className="absolute top-[5px] right-[5px]">
+						<FramedIcon src={badge} alt={badgeAlt ?? ""} size={24} />
+					</div>
+				)}
+			</div>
+		</div>
+	);
+}
+
+/** Inner width after the frame's p-1, for sizing the image inside it. */
+const MEDIA_INNER = MEDIA_SIZE - 8;
+
+/** A cover cropped square, beside the copy — the artwork column a book and a phone also stand in. */
+export function SquareMedia({
+	src,
+	alt,
+	badge,
+	badgeAlt,
+	priority,
+	/** A cover drawn in code, in place of an image. */
+	children,
+}: {
+	src?: string;
+	alt: string;
+	badge?: string;
+	badgeAlt?: string;
+	priority?: boolean;
+	children?: ReactNode;
+}) {
+	return (
+		<div
+			style={{ width: MEDIA_SIZE, height: MEDIA_SIZE }}
+			className={cn("shrink-0 rounded-xl", SURFACE_OUTER)}
+		>
+			<div className={cn("relative size-full rounded-lg", SURFACE_INNER)}>
+				{children}
+				{!children && src && (
+					<Image
+						src={src}
+						alt={alt}
+						fill
+						sizes={`${MEDIA_INNER}px`}
 						priority={priority}
 						className="object-cover"
 					/>

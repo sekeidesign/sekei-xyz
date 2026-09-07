@@ -3,8 +3,8 @@ import path from "node:path";
 
 /**
  * Geist for Satori, which needs raw font bytes rather than the CSS next/font
- * hands back. Three static instances, since Satori renders a variable font at
- * its default weight only.
+ * hands back. Static instances, since Satori renders a variable font at its
+ * default weight only.
  *
  * Read off disk rather than through `new URL(..., import.meta.url)`, which is
  * what the Next docs pair with `fetch`: in the webpack server build that
@@ -25,15 +25,23 @@ export type OgFont = {
 
 let cached: Promise<OgFont[]> | undefined;
 
+/** Mono is one weight: the cards only set IDs and dates in it. */
+const FACES: { file: string; name: string; weight: OgFont["weight"] }[] = [
+	{ file: "geist-400", name: "Geist", weight: 400 },
+	{ file: "geist-500", name: "Geist", weight: 500 },
+	{ file: "geist-600", name: "Geist", weight: 600 },
+	{ file: "geist-mono-400", name: "Geist Mono", weight: 400 },
+];
+
 export function geistForOg(): Promise<OgFont[]> {
 	cached ??= Promise.all(
-		([400, 500, 600] as const).map(async (weight) => {
-			const file = await readFile(path.join(FONT_DIR, `geist-${weight}.ttf`));
+		FACES.map(async ({ file, name, weight }) => {
+			const bytes = await readFile(path.join(FONT_DIR, `${file}.ttf`));
 			return {
-				name: "Geist",
-				data: file.buffer.slice(
-					file.byteOffset,
-					file.byteOffset + file.byteLength,
+				name,
+				data: bytes.buffer.slice(
+					bytes.byteOffset,
+					bytes.byteOffset + bytes.byteLength,
 				) as ArrayBuffer,
 				weight,
 				style: "normal" as const,

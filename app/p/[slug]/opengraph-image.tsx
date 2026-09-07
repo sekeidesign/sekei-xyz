@@ -1,16 +1,21 @@
 import { ImageResponse } from "next/og";
-import { geistForOg } from "@/lib/og/fonts";
+import { geistForOg, type OgFont } from "@/lib/og/fonts";
 import {
 	BOOK_DEPTH,
 	BOOK_HEIGHT,
 	BOOK_WIDTH,
 } from "@ui-kit/book-shelf/constants";
 import { bookCardEntry } from "@/lib/og/book-card";
+import type { TimelineEntry } from "@/lib/timeline";
+import { DotField, RaidLogPlate } from "@/lib/og/raid-log-card";
+import { WikiTreePlate } from "@/lib/og/wiki-tree-card";
+import { type ShareCard, shareCard } from "@/lib/og/share-card";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 const GRAY = {
+	50: "#f9fafb",
 	100: "#f3f4f6",
 	300: "#d1d5dc",
 	400: "#99a1af",
@@ -31,17 +36,16 @@ export async function generateImageMetadata({
 	params: Promise<{ slug: string }>;
 }) {
 	const { slug } = await params;
-	const entry = bookCardEntry(slug);
-	if (!entry) return [];
+	const found = shareCard(slug);
+	if (!found) return [];
 
-	return [
-		{
-			id: "book",
-			alt: `${entry.title}${entry.author ? ` by ${entry.author}` : ""}`,
-			size,
-			contentType,
-		},
-	];
+	const { entry, card } = found;
+	const alt =
+		card === "book"
+			? `${entry.title}${entry.author ? ` by ${entry.author}` : ""}`
+			: entry.title;
+
+	return [{ id: card, alt, size, contentType }];
 }
 
 /**
@@ -175,10 +179,15 @@ export default async function Image({
 	params: Promise<{ slug: string }>;
 }) {
 	const { slug } = await params;
-	const entry = bookCardEntry(slug);
-	if (!entry || !entry.cover) return new Response("Not found", { status: 404 });
+	const found = shareCard(slug);
+	if (!found) return new Response("Not found", { status: 404 });
 
 	const fonts = await geistForOg();
+
+	if (found.card !== "book") return caseStudyCard(found, fonts);
+
+	const entry = bookCardEntry(slug);
+	if (!entry || !entry.cover) return new Response("Not found", { status: 404 });
 
 	return new ImageResponse(
 		<div
@@ -265,6 +274,97 @@ export default async function Image({
 						))}
 					</div>
 				)}
+			</div>
+		</div>,
+		{ ...size, fonts },
+	);
+}
+
+const PLATE = { width: 620, height: size.height };
+const COPY = 480;
+
+/**
+ * One composition for the drawn covers: copy up the left, the window overhanging
+ * the bottom-right, the byline on the baseline.
+ */
+function caseStudyCard(
+	{ entry, card }: { entry: TimelineEntry; card: ShareCard },
+	fonts: OgFont[],
+) {
+	const plate =
+		card === "wiki" ? (
+			<WikiTreePlate width={PLATE.width} height={PLATE.height} insetTop={PAD_Y} />
+		) : (
+			<RaidLogPlate width={PLATE.width} height={PLATE.height} insetTop={PAD_Y} />
+		);
+
+	return new ImageResponse(
+		<div
+			style={{
+				display: "flex",
+				position: "relative",
+				width: "100%",
+				height: "100%",
+				padding: `${PAD_Y}px ${PAD_X}px`,
+				backgroundColor: GRAY[50],
+				fontFamily: "Geist",
+			}}
+		>
+			<DotField width={size.width} height={size.height} />
+			{plate}
+
+			{/* Satori ignores z-index and paints in tree order, so the copy comes last. */}
+			<div
+				style={{
+					display: "flex",
+					flexDirection: "column",
+					justifyContent: "space-between",
+					width: COPY,
+					height: "100%",
+				}}
+			>
+				<div style={{ display: "flex", flexDirection: "column" }}>
+					<div
+						style={{
+							display: "flex",
+							alignItems: "center",
+							gap: 8,
+							color: GRAY[400],
+							fontSize: 26,
+							fontWeight: 500,
+						}}
+					>
+						<span>Writing</span>
+						<span style={{ padding: "0 8px" }}>•</span>
+						<span>
+							{DATE_FORMAT.format(new Date(`${entry.date}T00:00:00Z`))}
+						</span>
+					</div>
+
+					<div
+						style={{
+							marginTop: 20,
+							color: GRAY[900],
+							fontSize: titleSize(entry.title),
+							fontWeight: 600,
+							lineHeight: 1.15,
+							letterSpacing: "-0.02em",
+						}}
+					>
+						{entry.title}
+					</div>
+				</div>
+
+				<div
+					style={{
+						display: "flex",
+						color: GRAY[500],
+						fontSize: 26,
+						fontWeight: 500,
+					}}
+				>
+					PG Gonni
+				</div>
 			</div>
 		</div>,
 		{ ...size, fonts },
