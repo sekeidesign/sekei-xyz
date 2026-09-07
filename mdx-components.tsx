@@ -205,7 +205,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
 			// react-doctor-disable-next-line nextjs-no-img-element -- MDX authors pass arbitrary images without known dimensions
 			<img
 				alt={alt}
-				className="w-full h-auto rounded-md border border-gray-200 shadow-skew bg-white my-6"
+				className="block -mx-6 md:-mx-13 w-[calc(100%+3rem)] md:w-[calc(100%+6.5rem)] max-w-none h-auto my-6"
 				{...props}
 			/>
 		),
