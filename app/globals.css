@@ -317,6 +317,80 @@ body {
   background-position: center;
 }
 
+/* The RAID cover's extraction row: a 3x3 arrow marching rightwards, and a
+   sheen crossing the title. Both sit paused until an ancestor carries
+   .raid-live, so a card scrolled out of view animates nothing. The cells also
+   carry a static opacity, which is what shows if the animation is cut — the
+   reduced-motion block below runs animations out rather than removing them. */
+.raid-cell {
+  animation: raid-cell-bar 1.2s linear infinite;
+  animation-play-state: paused;
+}
+
+/* The middle row lights a step ahead of its column, which is the arrow's tip. */
+.raid-cell-tip {
+  animation-name: raid-cell-tip;
+}
+
+/* One 150ms step lit, then dark for the rest: three columns offset by a step
+   each carry the arrow across in 450ms and leave 600ms of empty grid before it
+   re-enters from the left. */
+@keyframes raid-cell-bar {
+  0%,
+  12.4% {
+    opacity: 1;
+  }
+  12.5%,
+  100% {
+    opacity: 0.2;
+  }
+}
+
+@keyframes raid-cell-tip {
+  0%,
+  12.4% {
+    opacity: 1;
+  }
+  12.5%,
+  87.4% {
+    opacity: 0.2;
+  }
+  87.5%,
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Twice the box wide, and travelled past both edges rather than between them:
+   at 100% the highlight already sits on the text's left edge, which starts the
+   sweep mid-stroke. Running 150% to -50% brings it in from outside and takes it
+   out the far side, so each pass fades up and away. */
+.raid-shimmer {
+  background-image: linear-gradient(
+    100deg,
+    var(--color-gray-400) 35%,
+    var(--color-gray-200) 50%,
+    var(--color-gray-400) 65%
+  );
+  background-size: 200% 100%;
+  animation: raid-shimmer 2s linear infinite;
+  animation-play-state: paused;
+}
+
+@keyframes raid-shimmer {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -50% 0;
+  }
+}
+
+.raid-live .raid-cell,
+.raid-live .raid-shimmer {
+  animation-play-state: running;
+}
+
 /* Registered so the ring radius can be interpolated by an animation; an
    unregistered custom property would jump rather than tween. */
 @property --ripple-r {

@@ -5,7 +5,7 @@ import { PanelRow } from "@ui-kit/PanelRow";
 import { PostCard } from "@ui-kit/post/PostCard";
 import { QuotedProse } from "@ui-kit/post/QuotedProse";
 import { TagRow } from "@ui-kit/TagRow";
-import { bookCardEntry } from "@/lib/og/book-card";
+import { shareCard } from "@/lib/og/share-card";
 import { getTimeline } from "@/lib/timeline";
 
 export function generateStaticParams() {
@@ -39,10 +39,11 @@ export async function generateMetadata({
 		openGraph: {
 			title,
 			description,
-			// Books draw their own card in opengraph-image.tsx; an image set here
-			// would win over that file. The rest get the site card rather than
-			// their own cover, half of which are WebP that LinkedIn won't render.
-			...(bookCardEntry(slug) ? {} : { images: "/og-image.jpg" }),
+			// Posts with a generated card draw it in opengraph-image.tsx; an image
+			// set here would win over that file. The rest get the site card rather
+			// than their own cover, half of which are WebP that LinkedIn won't
+			// render.
+			...(shareCard(slug) ? {} : { images: "/og-image.jpg" }),
 		},
 	};
 }
@@ -64,7 +65,7 @@ export default async function PostPage({
 
 	return (
 		<>
-			<PostCard entry={entry} eager linked={false} heading="h1" />
+			<PostCard entry={entry} eager lead linked={false} heading="h1" />
 
 			<ExperimentDivider inline />
 
