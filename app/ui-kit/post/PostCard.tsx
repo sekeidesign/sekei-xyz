@@ -14,6 +14,8 @@ interface PostCardProps {
 	eager?: boolean;
 	/** Links the card to its post. Off on the post's own page, where the same card is the header. */
 	linked?: boolean;
+	/** h1 on the post's own page, where this card is the page's leading title. */
+	heading?: "h1" | "h2";
 	/** Rendered MDX body, for entries that show in full in the feed. */
 	children?: ReactNode;
 }
@@ -22,6 +24,7 @@ export function PostCard({
 	entry,
 	eager,
 	linked = true,
+	heading = "h2",
 	children,
 }: PostCardProps) {
 	const href = linked && entry.hasPage ? `/p/${entry.slug}` : undefined;
@@ -71,6 +74,7 @@ export function PostCard({
 					<>
 						<Post.Meta kind={entry.kind} date={entry.date} draft={entry.draft} />
 						<Post.Title
+							as={heading}
 							subtitle={entry.subtitle}
 							icon={entry.kind === "note" ? entry.icon : undefined}
 							iconAlt={entry.subtitle ?? entry.title}
@@ -80,7 +84,7 @@ export function PostCard({
 						{children}
 					</>
 				) : (
-					<PostHeader entry={entry} href={href} />
+					<PostHeader entry={entry} heading={heading} href={href} />
 				)}
 
 				{hasDemo && (

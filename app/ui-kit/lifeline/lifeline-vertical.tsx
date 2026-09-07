@@ -51,6 +51,17 @@ function RailTick() {
 	);
 }
 
+function MediaIcon({ video }: { video?: string }) {
+	const Icon = video ? Film : ImageIcon;
+	return (
+		<Icon
+			className="ml-0.5 inline-block h-3 w-3 -translate-y-px text-zinc-400 transition-colors duration-300"
+			strokeWidth={1.75}
+			aria-hidden="true"
+		/>
+	);
+}
+
 /**
  * One event line. Touch layouts have no hover reveal, so an event with media
  * becomes tappable and expands into the lightbox from its text.
@@ -121,18 +132,10 @@ function LifelineVerticalEvent({
 					"max-w-full text-left text-sm leading-[1.55] tracking-[-0.01em]",
 					activate && "cursor-pointer",
 				)}
-				role={activate ? "button" : undefined}
-				tabIndex={activate ? 0 : undefined}
+				// The line can hold links, so it can't be a control itself. The media
+				// icon below is the real button; this is a redundant click area, and
+				// an entry whose only action is the fireworks has no keyboard path.
 				onClick={activate}
-				onKeyDown={
-					activate
-						? (event) => {
-								if (event.key !== "Enter" && event.key !== " ") return;
-								event.preventDefault();
-								activate();
-							}
-						: undefined
-				}
 			>
 				<LifelineEventText event={event} />
 				{image && (
@@ -140,18 +143,20 @@ function LifelineVerticalEvent({
 					// can never wrap onto a line of its own.
 					<span className="whitespace-nowrap">
 						{" "}
-						{image.video ? (
-							<Film
-								className="ml-0.5 inline-block h-3 w-3 -translate-y-px text-zinc-400 transition-colors duration-300"
-								strokeWidth={1.75}
-								aria-hidden="true"
-							/>
+						{interactive ? (
+							<button
+								type="button"
+								aria-label={image.video ? "Play clip" : "View photo"}
+								onClick={(event) => {
+									event.stopPropagation();
+									openMedia();
+								}}
+								className="inline-flex cursor-pointer appearance-none border-0 bg-transparent p-0 align-baseline leading-none"
+							>
+								<MediaIcon video={image.video} />
+							</button>
 						) : (
-							<ImageIcon
-								className="ml-0.5 inline-block h-3 w-3 -translate-y-px text-zinc-400 transition-colors duration-300"
-								strokeWidth={1.75}
-								aria-hidden="true"
-							/>
+							<MediaIcon video={image.video} />
 						)}
 					</span>
 				)}

@@ -19,7 +19,7 @@ export function AppsPanel() {
 			<div className="relative">
 				<Image
 					src="/iphone-bezels-silver.webp"
-					alt="iPhone bezels"
+					alt=""
 					width={1000}
 					height={1000}
 				/>
@@ -59,7 +59,7 @@ export function AppsPanel() {
 					>
 						<Image
 							src="/tomokanji-icon-light.jpg"
-							alt="iPhone bezels"
+							alt=""
 							width={56}
 							height={56}
 							className="rounded-[16px] group-hover:scale-103 transition-transform duration-150 group-hover:will-change-transform"

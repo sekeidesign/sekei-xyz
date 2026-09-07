@@ -11,7 +11,13 @@ export function StarRating({
 	className?: string;
 }) {
 	return (
-		<div className={cn("flex gap-0.5", className)} aria-label={`${rating} out of 5`}>
+		<div
+			// aria-label on a role-less div is dropped by most screen readers, so the
+			// row has to declare itself an image with the stars hidden behind it.
+			role="img"
+			aria-label={`Rated ${rating} out of 5`}
+			className={cn("flex gap-0.5", className)}
+		>
 			{Array.from({ length: 5 }, (_, i) => (
 				// biome-ignore lint/suspicious/noArrayIndexKey: fixed-length star row
 				<StarIcon

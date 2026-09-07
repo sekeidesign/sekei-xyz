@@ -7,9 +7,8 @@ import { SlotText } from "slot-text/react";
 import { Book3D } from "./ui-kit/book-shelf/Book3D";
 import { BOOK_OPEN_SHIFT } from "./ui-kit/book-shelf/constants";
 import type { Book } from "./ui-kit/book-shelf/types";
-import { cn } from "./ui-kit/cn";
 import { useHoverGroup } from "./ui-kit/HoverContext";
-import { StarIcon } from "./ui-kit/icons/StarIcon";
+import { StarRating } from "./ui-kit/StarRating";
 
 // Spine colors are picked per book, not taken from real covers. Ratings are placeholders.
 const BOOKS: Book[] = [
@@ -122,21 +121,6 @@ const BOOKS: Book[] = [
 		rating: 5,
 	},
 ];
-
-function StarRating({ rating }: { rating: number }) {
-	return (
-		<div className="flex gap-0.5">
-			{Array.from({ length: 5 }, (_, i) => (
-				// biome-ignore lint/suspicious/noArrayIndexKey: we need to use the index as the key
-				<StarIcon
-					key={i}
-					size={14}
-					className={cn(i < rating ? "text-gray-800" : "text-gray-300")}
-				/>
-			))}
-		</div>
-	);
-}
 
 export function LibraryPanel() {
 	const reading = useHoverGroup("reading");

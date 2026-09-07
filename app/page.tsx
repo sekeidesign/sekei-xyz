@@ -31,5 +31,12 @@ export default async function HomePage() {
 		compiling,
 	);
 
-	return <TimelineFeed entries={timeline} bodies={bodies} />;
+	return (
+		<>
+			{/* The feed's cards are the page's content and each carries its own h2,
+			    so the page's h1 is the site itself. */}
+			<h1 className="sr-only">PG Gonni — building software in Montréal</h1>
+			<TimelineFeed entries={timeline} bodies={bodies} />
+		</>
+	);
 }

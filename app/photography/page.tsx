@@ -12,9 +12,9 @@ export default function PhotographyPage() {
 		<Experiment className="p-0 md:p-0 gap-px bg-gray-200! flex flex-col xl:max-w-3xl">
 			<div className="panel p-4 md:p-6">
 				<h1 className="font-[550] text-gray-800 w-full">Photography</h1>
-				<h2 className="font-[450] text-gray-500 w-full">
+				<p className="font-[450] text-gray-500 w-full">
 					Concert &amp; festival photography, Montréal, QC — film &amp; digital
-				</h2>
+				</p>
 			</div>
 			<PhotographyGrid />
 		</Experiment>

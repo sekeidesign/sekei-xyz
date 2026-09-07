@@ -49,8 +49,11 @@ const FamilyStatusButton = () => {
 	}, []);
 
 	return (
-		<m.button
+		// Nothing to press — the status cycles on its own, so it announces itself
+		// instead of posing as a control.
+		<m.div
 			layout
+			role="status"
 			transition={{ duration: 0.2 }}
 			className={`rounded-full font-[550] cursor-pointer text-lg flex items-center justify-center pr-6 pl-4 gap-2 py-3 overflow-hidden relative ${statuses[status].color}`}
 		>
@@ -75,7 +78,7 @@ const FamilyStatusButton = () => {
 					{statuses[status].label}
 				</m.span>
 			</AnimatePresence>
-		</m.button>
+		</m.div>
 	);
 };
 
@@ -103,8 +106,7 @@ const Icon = ({ status }: { status: keyof typeof statuses }) => {
 							viewBox="0 0 24 24"
 							fill="currentColor"
 							className="size-6"
-							role="img"
-							aria-label="Success icon"
+							aria-hidden="true"
 						>
 							<path
 								fillRule="evenodd"
@@ -129,8 +131,7 @@ const Icon = ({ status }: { status: keyof typeof statuses }) => {
 								ease: "easeInOut",
 								repeatDelay: 0.5,
 							}}
-							role="img"
-							aria-label="Analyzing icon"
+							aria-hidden="true"
 						>
 							<m.path
 								initial={{ rotate: 0 }}
@@ -165,8 +166,7 @@ const Icon = ({ status }: { status: keyof typeof statuses }) => {
 									delay: 0.75,
 								},
 							}}
-							role="img"
-							aria-label="Warning icon"
+							aria-hidden="true"
 						>
 							<path
 								fillRule="evenodd"

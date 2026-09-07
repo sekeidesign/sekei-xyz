@@ -64,7 +64,7 @@ export default async function PostPage({
 
 	return (
 		<>
-			<PostCard entry={entry} eager linked={false} />
+			<PostCard entry={entry} eager linked={false} heading="h1" />
 
 			<ExperimentDivider inline />
 

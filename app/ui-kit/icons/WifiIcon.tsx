@@ -6,8 +6,9 @@ export const WifiIcon = ({ size = 24 }) => {
 			viewBox="0 0 24 24"
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
+			aria-hidden="true"
+			focusable="false"
 		>
-			<title>Wifi</title>
 			<path
 				d="M20.92 7.76C15.75 2.64 8.25 2.64 3.08 7.76C2.36 8.47 2.31 9.63 2.96 10.4L3.81 11.42C3.92 11.55 4.14 11.56 4.26 11.43C6.4 9.24 9.13 8.03 11.99 8.03H12C14.87 8.03 17.6 9.23 19.74 11.43C19.87 11.55 20.08 11.55 20.2 11.41L21.04 10.4C21.69 9.63 21.64 8.47 20.92 7.76Z"
 				fill="currentColor"

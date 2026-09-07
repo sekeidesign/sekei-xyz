@@ -151,7 +151,15 @@ function MediaContent({
 				<p className="font-semibold leading-4 opacity-50 text-xs text-white whitespace-nowrap tabular-nums">
 					{formatTime(duration)}
 				</p>
-				<div className="bg-zinc-800 grow h-1.5 relative rounded-full overflow-hidden">
+				<div
+					role="progressbar"
+					aria-label="Playback progress"
+					aria-valuemin={0}
+					aria-valuemax={VIDEO_DURATION}
+					aria-valuenow={duration}
+					aria-valuetext={formatTime(duration)}
+					className="bg-zinc-800 grow h-1.5 relative rounded-full overflow-hidden"
+				>
 					<div
 						className="absolute bg-zinc-400 h-1.5 left-0 top-1/2 -translate-y-1/2"
 						style={{ width: `${progress * 100}%` }}
@@ -165,6 +173,7 @@ function MediaContent({
 			<div className="flex gap-2 items-center w-full justify-center">
 				<button
 					type="button"
+					disabled
 					aria-label="Previous track"
 					className="flex items-center justify-center rounded-2xl w-12 h-12 hover:bg-zinc-800 transition-colors"
 				>
@@ -204,6 +213,7 @@ function MediaContent({
 
 				<button
 					type="button"
+					disabled
 					aria-label="Next track"
 					className="flex items-center justify-center rounded-2xl w-12 h-12 hover:bg-zinc-800 transition-colors"
 				>
@@ -301,8 +311,9 @@ export default function DynamicIsland({
 					viewBox="0 0 16 16"
 					fill="none"
 					xmlns="http://www.w3.org/2000/svg"
+					aria-hidden="true"
+					focusable="false"
 				>
-					<title>Left corner decoration</title>
 					<path
 						d="M16 16V0H0C5.33333 0 16 3.2 16 16Z"
 						fill="black"
@@ -375,8 +386,9 @@ export default function DynamicIsland({
 					viewBox="0 0 16 16"
 					fill="none"
 					xmlns="http://www.w3.org/2000/svg"
+					aria-hidden="true"
+					focusable="false"
 				>
-					<title>Right corner decoration</title>
 					<path
 						d="M0 16V0H16C10.6667 0 0 3.2 0 16Z"
 						fill="black"
