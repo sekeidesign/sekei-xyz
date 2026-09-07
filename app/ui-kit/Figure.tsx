@@ -40,11 +40,16 @@ export function Figure({ src, alt, caption }: FigureProps) {
 	};
 
 	return (
-		<figure className="my-6 p-1 rounded-xl bg-gray-50 shadow-skew ring ring-gray-500/10">
+		<figure
+			// The panel's own padding lives two levels up (main's p-2/md:p-5 plus
+			// the post row's p-4/md:p-8), so a full-bleed image has to walk back
+			// the sum of both.
+			className="my-6 -mx-6 md:-mx-13"
+		>
 			<button
 				type="button"
 				onClick={openLightbox}
-				className="block w-full cursor-zoom-in"
+				className="block w-full cursor-zoom-in bg-gray-200"
 				aria-label={`Expand image: ${alt}`}
 			>
 				{/* eslint-disable-next-line @next/next/no-img-element -- arbitrary
@@ -53,14 +58,11 @@ export function Figure({ src, alt, caption }: FigureProps) {
 					ref={imgRef}
 					src={src}
 					alt={alt}
-					className={cn(
-						"w-full h-auto rounded-lg border border-gray-200 shadow-skew bg-white",
-						open && "invisible",
-					)}
+					className={cn("w-full h-auto border-t border-b border-gray-200 rounded-sm", open && "invisible")}
 				/>
 			</button>
 			{caption && (
-				<figcaption className="p-1 pt-2 text-sm text-gray-400">
+				<figcaption className="px-6 md:px-13 pt-2 text-sm text-gray-400">
 					{caption}
 				</figcaption>
 			)}
