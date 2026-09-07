@@ -5,9 +5,8 @@ import { IssueIcon } from "../icons/IssueIcon";
 import { RiskIcon } from "../icons/RiskIcon";
 
 /**
- * The log's content and per-kind marks, shared by the drawn cover and the
- * Satori share card. Satori resolves no custom properties, so each kind carries
- * its tint twice: the utility for the DOM, the token's own value for the card.
+ * Shared by the drawn cover and the Satori card. Satori resolves no custom
+ * properties, so each tint is here twice: the utility, and the token's value.
  */
 
 interface Kind {

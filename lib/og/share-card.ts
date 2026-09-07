@@ -1,14 +1,11 @@
 import { getTimeline, type TimelineEntry } from "@/lib/timeline";
 
 /**
- * Which generated share card a post gets, if any. The page's metadata has to
- * leave `openGraph.images` unset for these — a config-set image wins over the
- * opengraph-image file and would suppress the generated card.
- *
- * Each card is drawn for its subject rather than filled from a template, so
- * this is a short list by design, not a lookup waiting to be generalised.
+ * The page's metadata has to leave `openGraph.images` unset for these — a
+ * config-set image wins over the opengraph-image file and suppresses the card.
+ * Each card is drawn for its subject, so the list stays short by design.
  */
-export type ShareCard = "book" | "raid";
+export type ShareCard = "book" | "raid" | "wiki";
 
 export function shareCard(
 	slug: string,
@@ -17,5 +14,6 @@ export function shareCard(
 	if (!entry?.hasPage) return undefined;
 	if (entry.kind === "book" && entry.cover) return { entry, card: "book" };
 	if (slug === "raid-2-0") return { entry, card: "raid" };
+	if (slug === "customer-knowledge-base") return { entry, card: "wiki" };
 	return undefined;
 }

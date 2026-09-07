@@ -5,14 +5,14 @@ import { cn } from "@ui-kit/cn";
 import { COLUMN_INNER, SURFACE_INNER, SURFACE_OUTER } from "@ui-kit/post/surface";
 import { VARIANTS } from "./variants";
 
-/** The boxes a cover actually ships in: a feed card's square, and a post page's column. */
+/** The boxes a cover ships in: a feed card's square, a post page's column. */
 const SIZES = [
 	{ label: "Card", px: 179 },
 	{ label: "Medium", px: 320 },
 	{ label: "Page", px: COLUMN_INNER },
 ];
 
-/** The shipped frame, so a cover is judged inside the chrome it renders in. */
+/** The shipped frame, so a cover is judged in the chrome it renders in. */
 function CoverFrame({ size, children }: { size: number; children: ReactNode }) {
 	return (
 		<div

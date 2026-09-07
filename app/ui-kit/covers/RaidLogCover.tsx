@@ -5,11 +5,7 @@ import { type CSSProperties, useRef } from "react";
 import { cn } from "../cn";
 import { KIND, type RaidRow, ROWS } from "./raid-log";
 
-/**
- * The RAID log window, drawn rather than screenshotted, for the case study's
- * cover slot. Both variants draw at the design's own sizes and crop: a wider
- * box shows more of the log, never a bigger version of it.
- */
+/** Both variants draw at the design's own sizes and crop, never scale. */
 
 const CARD = {
 	"--raid-inset": "0px",
@@ -91,9 +87,8 @@ export function RaidLogCover({
 }
 
 /**
- * Each bar is narrower than the column it heads, so it sits in a box of that
- * column's width. Laid out against each other instead, the lanes come up short
- * and every row below reads as misaligned.
+ * Each bar sits in a box of its column's width. Laid out against each other
+ * instead, the lanes come up short and the rows below read as misaligned.
  */
 function Chrome() {
 	return (
@@ -186,10 +181,7 @@ const CYCLE = 1000;
 /** raid-cell's keyframes hold one step per 12.5% of the cycle. */
 const STEP = CYCLE / 8;
 
-/**
- * Squares rather than the site's radial-gradient lattice, which can only draw
- * dots and clips them at this size.
- */
+/** Squares: the site's lattice only draws dots, and clips them at this size. */
 function ArrowLoader() {
 	return (
 		<div className="grid shrink-0 grid-cols-3 gap-[var(--raid-cell)]">
@@ -203,7 +195,7 @@ function ArrowLoader() {
 						key={index}
 						style={{
 							// A step later per column carries the arrow right; the offset
-							// cycle leaves a paused loop resting on the frame below.
+							// leaves a paused loop resting on the frame below.
 							animationDelay: `${STEP * column - CYCLE}ms`,
 							animationDuration: `${CYCLE}ms`,
 							opacity: lit ? 1 : 0.2,

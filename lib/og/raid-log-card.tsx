@@ -1,10 +1,9 @@
 import { KIND, ROWS } from "@ui-kit/covers/raid-log";
 
 /**
- * The drawn RAID cover, redone for Satori: no custom properties, no animation,
- * and the loader frozen on the frame the DOM version rests at. Content and
- * tints come from raid-log, so only the geometry lives twice — and it has to,
- * since a share card is read at a glance and takes the design at 2x.
+ * The cover redone for Satori: no custom properties, no animation. Geometry
+ * lives twice because a share card is read at a glance and takes the design at
+ * 2x; content and tints come from raid-log.
  */
 
 const GRAY = {
@@ -37,15 +36,14 @@ const M = {
 	cell: px(2),
 };
 
-/** Alpha over the field rather than flat gray, so the zebra reads on both. */
+/** Alpha, not flat gray, so the zebra reads over the field too. */
 const SHADE = "rgba(106, 114, 130, 0.05)";
 const LINE = "rgba(106, 114, 130, 0.1)";
 const BAR = "rgba(106, 114, 130, 0.15)";
 
 /**
- * Satori paints a gradient once rather than tiling it, so the cover's dot field
- * can't come from background-size here. Drawn as nodes instead — a thousand of
- * them, which is only affordable because the card is generated, not rendered.
+ * Satori paints a gradient once rather than tiling it, so the field is nodes —
+ * a thousand of them, affordable only because the card is generated.
  */
 export function DotField({ width, height }: { width: number; height: number }) {
 	const pitch = px(14);
@@ -97,7 +95,7 @@ export function DotField({ width, height }: { width: number; height: number }) {
 export function RaidLogPlate({
 	width,
 	height,
-	/** Overrides the design's inset, to line the window's top up with the copy. */
+	/** Lines the window's top up with the copy. */
 	insetTop = M.inset,
 }: {
 	width: number;
@@ -310,7 +308,7 @@ function Cell({
 	);
 }
 
-/** The DOM loader's resting frame: first column lit, plus the tip beside it. */
+/** The DOM loader's resting frame. */
 function ArrowLoader() {
 	return (
 		<div

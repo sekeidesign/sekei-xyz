@@ -8,7 +8,8 @@ import {
 import { bookCardEntry } from "@/lib/og/book-card";
 import type { TimelineEntry } from "@/lib/timeline";
 import { DotField, RaidLogPlate } from "@/lib/og/raid-log-card";
-import { shareCard } from "@/lib/og/share-card";
+import { WikiTreePlate } from "@/lib/og/wiki-tree-card";
+import { type ShareCard, shareCard } from "@/lib/og/share-card";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -183,7 +184,7 @@ export default async function Image({
 
 	const fonts = await geistForOg();
 
-	if (found.card === "raid") return raidCard(found.entry, fonts);
+	if (found.card !== "book") return caseStudyCard(found, fonts);
 
 	const entry = bookCardEntry(slug);
 	if (!entry || !entry.cover) return new Response("Not found", { status: 404 });
@@ -279,10 +280,24 @@ export default async function Image({
 	);
 }
 
-const RAID_PLATE = { width: 620, height: size.height };
-const RAID_COPY = 480;
+const PLATE = { width: 620, height: size.height };
+const COPY = 480;
 
-function raidCard(entry: TimelineEntry, fonts: OgFont[]) {
+/**
+ * One composition for the drawn covers: copy up the left, the window overhanging
+ * the bottom-right, the byline on the baseline.
+ */
+function caseStudyCard(
+	{ entry, card }: { entry: TimelineEntry; card: ShareCard },
+	fonts: OgFont[],
+) {
+	const plate =
+		card === "wiki" ? (
+			<WikiTreePlate width={PLATE.width} height={PLATE.height} insetTop={PAD_Y} />
+		) : (
+			<RaidLogPlate width={PLATE.width} height={PLATE.height} insetTop={PAD_Y} />
+		);
+
 	return new ImageResponse(
 		<div
 			style={{
@@ -296,11 +311,7 @@ function raidCard(entry: TimelineEntry, fonts: OgFont[]) {
 			}}
 		>
 			<DotField width={size.width} height={size.height} />
-			<RaidLogPlate
-				width={RAID_PLATE.width}
-				height={RAID_PLATE.height}
-				insetTop={PAD_Y}
-			/>
+			{plate}
 
 			{/* Satori ignores z-index and paints in tree order, so the copy comes last. */}
 			<div
@@ -308,7 +319,7 @@ function raidCard(entry: TimelineEntry, fonts: OgFont[]) {
 					display: "flex",
 					flexDirection: "column",
 					justifyContent: "space-between",
-					width: RAID_COPY,
+					width: COPY,
 					height: "100%",
 				}}
 			>
@@ -344,7 +355,14 @@ function raidCard(entry: TimelineEntry, fonts: OgFont[]) {
 					</div>
 				</div>
 
-				<div style={{ display: "flex", color: GRAY[500], fontSize: 26, fontWeight: 500 }}>
+				<div
+					style={{
+						display: "flex",
+						color: GRAY[500],
+						fontSize: 26,
+						fontWeight: 500,
+					}}
+				>
 					PG Gonni
 				</div>
 			</div>
