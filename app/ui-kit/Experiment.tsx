@@ -49,7 +49,10 @@ export function Experiment({
 				exit={{ opacity: 0 }}
 				transition={{ duration: 0.2, ease: "easeInOut" }}
 			>
-				<div className="panel flex-1 shrink xl:block hidden stripes" />
+				<div
+					aria-hidden="true"
+					className="panel flex-1 shrink xl:block hidden stripes"
+				/>
 				<div
 					className={cn(
 						"flex flex-col gap-4 w-full flex-4 grow-20 xl:max-w-screen-md shrink-0 panel md:p-6 p-4",
@@ -58,7 +61,10 @@ export function Experiment({
 				>
 					{children}
 				</div>
-				<div className="panel flex-1 shrink xl:block hidden stripes" />
+				<div
+					aria-hidden="true"
+					className="panel flex-1 shrink xl:block hidden stripes"
+				/>
 			</m.div>
 		</ExperimentContext.Provider>
 	);
@@ -116,7 +122,7 @@ interface ExperimentTagsProps {
 
 const ExperimentTags = ({ children }: ExperimentTagsProps) => {
 	return (
-		<div
+		<ul
 			className="flex items-center gap-2 w-full overflow-x-auto -ml-3 pl-3"
 			style={{
 				maskImage:
@@ -124,7 +130,7 @@ const ExperimentTags = ({ children }: ExperimentTagsProps) => {
 			}}
 		>
 			{children}
-		</div>
+		</ul>
 	);
 };
 
@@ -134,9 +140,9 @@ interface ExperimentTagProps {
 
 const ExperimentTag = ({ children }: ExperimentTagProps) => {
 	return (
-		<div className="text-xs font-[450] font-mono whitespace-nowrap text-gray-500 bg-gray-200/60 p-1 px-2 w-fit rounded-lg">
+		<li className="text-xs font-[450] font-mono whitespace-nowrap text-gray-500 bg-gray-200/60 p-1 px-2 w-fit rounded-lg">
 			{children}
-		</div>
+		</li>
 	);
 };
 
@@ -186,12 +192,11 @@ interface ExperimentDescriptionProps {
 	children: ReactNode;
 }
 
+/** Takes its own paragraphs, so prose isn't one <p> broken up by <br />s. */
 const ExperimentDescription = ({ children }: ExperimentDescriptionProps) => {
 	return (
-		<div className="space-y-2">
-			<p className="text-sm text-gray-500 font-[420] leading-relaxed">
-				{children}
-			</p>
+		<div className="space-y-6 text-sm text-gray-500 font-[420] leading-relaxed">
+			{children}
 		</div>
 	);
 };
@@ -199,6 +204,7 @@ const ExperimentDescription = ({ children }: ExperimentDescriptionProps) => {
 export function ExperimentDivider({ inline = false }: { inline?: boolean }) {
 	return (
 		<m.div
+			aria-hidden="true"
 			className="flex gap-px w-full"
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
@@ -217,7 +223,7 @@ export function ExperimentDivider({ inline = false }: { inline?: boolean }) {
 					inline ? "p-0" : "md:p-6 p-4",
 				)}
 			>
-				<hr className="w-full border-gray-200" />
+				<span className="block w-full border-t border-gray-200" />
 				<svg
 					viewBox="0 0 15 15"
 					fill="none"
@@ -229,7 +235,7 @@ export function ExperimentDivider({ inline = false }: { inline?: boolean }) {
 						fill="currentColor"
 					/>
 				</svg>
-				<hr className="w-full border-gray-200" />
+				<span className="block w-full border-t border-gray-200" />
 			</div>
 			<div
 				className={cn(

@@ -24,24 +24,25 @@ export function DynamicIslandExperiment() {
 				/>
 			</Experiment.Example>
 			<Experiment.Description>
-				<span className="font-[500] text-gray-600">
+				<p className="font-[500] text-gray-600">
 					Click the island or swipe down with two fingers to smoothly expand it.
-					You can interact with the media controls within there. Leave the
-					island to smoothly collapse it.
+					You can interact with the media controls within there. Leave the island
+					to smoothly collapse it.
 					<br />
 					<i className="font-[450] text-gray-500">
 						Note: This behaves awkwardly on the home page because the two finger
 						gesture is also a scroll.
 					</i>
-				</span>
-				<br />
-				<br />A media player interface inspired by{" "}
-				<TextLink href="https://tryalcove.com/" target="_blank" hasFavicon>
-					Alcove
-				</TextLink>
-				, a clean and beautiful little app to add Dynamic Island like
-				funcitonality to your Mac&apos;s notch. It also uses Motion+ Ticker to
-				animate the podcast title with a smoothly masked marquee.
+				</p>
+				<p>
+					A media player interface inspired by{" "}
+					<TextLink href="https://tryalcove.com/" target="_blank" hasFavicon>
+						Alcove
+					</TextLink>
+					, a clean and beautiful little app to add Dynamic Island like
+					funcitonality to your Mac&apos;s notch. It also uses Motion+ Ticker to
+					animate the podcast title with a smoothly masked marquee.
+				</p>
 			</Experiment.Description>
 		</Experiment>
 	);

@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { ExperimentDivider } from "@ui-kit/Experiment";
 import { useFilters } from "@ui-kit/filters/FilterContext";
 import { PostCard } from "@ui-kit/post/PostCard";
@@ -23,16 +23,16 @@ export function TimelineFeed({
 			: entries.filter((entry) => selected.has(KIND_FILTER[entry.kind]));
 
 	return (
-		<>
+		<ul className="flex flex-col">
 			{visible.map((entry, index) => (
-				<Fragment key={entry.slug}>
-					<PostCard entry={entry} eager={index === 0}>
+				<li key={entry.slug}>
+					<PostCard entry={entry} eager={index === 0} as="article">
 						{bodies[entry.slug]}
 					</PostCard>
 					{/* Dividers sit between posts, so the feed doesn't end on one. */}
 					{index < visible.length - 1 && <ExperimentDivider inline />}
-				</Fragment>
+				</li>
 			))}
-		</>
+		</ul>
 	);
 }

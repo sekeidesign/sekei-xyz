@@ -14,6 +14,7 @@ import { PanelRow } from "../PanelRow";
  * this adds a redundant click area that bows out for controls and selections.
  */
 export function PostRow({
+	as,
 	href,
 	id,
 	className,
@@ -21,18 +22,20 @@ export function PostRow({
 	onPointerEnter,
 	onPointerLeave,
 }: {
+	as?: "div" | "article";
 	href?: string;
 	id?: string;
 	className?: string;
 	children: ReactNode;
-	onPointerEnter?: PointerEventHandler<HTMLDivElement>;
-	onPointerLeave?: PointerEventHandler<HTMLDivElement>;
+	onPointerEnter?: PointerEventHandler<HTMLElement>;
+	onPointerLeave?: PointerEventHandler<HTMLElement>;
 }) {
 	const router = useRouter();
 
 	if (!href) {
 		return (
 			<PanelRow
+				as={as}
 				id={id}
 				className={className}
 				onPointerEnter={onPointerEnter}
@@ -43,7 +46,7 @@ export function PostRow({
 		);
 	}
 
-	const onClick = (event: MouseEvent<HTMLDivElement>) => {
+	const onClick = (event: MouseEvent<HTMLElement>) => {
 		if (event.defaultPrevented) return;
 
 		// Any real control wins: the reaction and copy-link buttons, the title
@@ -70,6 +73,7 @@ export function PostRow({
 
 	return (
 		<PanelRow
+			as={as}
 			id={id}
 			onClick={onClick}
 			onPointerEnter={onPointerEnter}

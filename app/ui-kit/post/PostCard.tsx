@@ -16,6 +16,8 @@ interface PostCardProps {
 	linked?: boolean;
 	/** h1 on the post's own page, where this card is the page's leading title. */
 	heading?: "h1" | "h2";
+	/** `article` for a card in the feed, which stands on its own. */
+	as?: "div" | "article";
 	/** Rendered MDX body, for entries that show in full in the feed. */
 	children?: ReactNode;
 }
@@ -25,6 +27,7 @@ export function PostCard({
 	eager,
 	linked = true,
 	heading = "h2",
+	as,
 	children,
 }: PostCardProps) {
 	const href = linked && entry.hasPage ? `/p/${entry.slug}` : undefined;
@@ -66,7 +69,7 @@ export function PostCard({
 	const layout = media && aside ? "aside" : "column";
 
 	return (
-		<Post id={entry.slug} href={href} layout={layout}>
+		<Post as={as} id={entry.slug} href={href} layout={layout}>
 			<Post.Body>
 				{/* Entries without a page of their own show their whole body in place
 				    of the excerpt, already styled by mdx-components. */}

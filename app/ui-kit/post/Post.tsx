@@ -20,6 +20,7 @@ import { PostRow } from "./PostRow";
 export type PostLayout = "aside" | "column";
 
 export function Post({
+	as,
 	children,
 	className,
 	id,
@@ -29,16 +30,18 @@ export function Post({
 	onPointerEnter,
 	onPointerLeave,
 }: {
+	as?: "div" | "article";
 	children: ReactNode;
 	className?: string;
 	id?: string;
 	href?: string;
 	layout?: PostLayout;
-	onPointerEnter?: PointerEventHandler<HTMLDivElement>;
-	onPointerLeave?: PointerEventHandler<HTMLDivElement>;
+	onPointerEnter?: PointerEventHandler<HTMLElement>;
+	onPointerLeave?: PointerEventHandler<HTMLElement>;
 }) {
 	return (
 		<PostRow
+			as={as}
 			id={id}
 			href={href}
 			onPointerEnter={onPointerEnter}

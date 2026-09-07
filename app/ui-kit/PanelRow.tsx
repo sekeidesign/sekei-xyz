@@ -9,6 +9,7 @@ import type {
 import { cn } from "./cn";
 
 export function PanelRow({
+	as = "div",
 	children,
 	className,
 	id,
@@ -16,22 +17,27 @@ export function PanelRow({
 	onPointerEnter,
 	onPointerLeave,
 }: {
+	/** `article` for a card that stands on its own, e.g. a post in the feed. */
+	as?: "div" | "article";
 	children: ReactNode;
 	className?: string;
 	/** Anchor target, so a post can be linked with /timeline#slug. */
 	id?: string;
-	onClick?: MouseEventHandler<HTMLDivElement>;
-	onPointerEnter?: PointerEventHandler<HTMLDivElement>;
-	onPointerLeave?: PointerEventHandler<HTMLDivElement>;
+	onClick?: MouseEventHandler<HTMLElement>;
+	onPointerEnter?: PointerEventHandler<HTMLElement>;
+	onPointerLeave?: PointerEventHandler<HTMLElement>;
 }) {
+	const Root = as === "article" ? m.article : m.div;
+
 	return (
 		// The click is a redundant target for the title link inside the card,
-		// which is the keyboard and screen-reader path — so this box carries no
-		// semantics of its own and needs no key handler of its own.
+		// which is the keyboard and screen-reader path — so a plain box carries no
+		// semantics of its own and needs no key handler of its own. An article's
+		// own role has to survive that, hence the `as` check.
 		// react-doctor-disable-next-line click-events-have-key-events
-		<m.div
+		<Root
 			id={id}
-			role={onClick ? "presentation" : undefined}
+			role={as === "div" && onClick ? "presentation" : undefined}
 			onClick={onClick}
 			onPointerEnter={onPointerEnter}
 			onPointerLeave={onPointerLeave}
@@ -42,6 +48,6 @@ export function PanelRow({
 			transition={{ duration: 0.2, ease: "easeInOut" }}
 		>
 			{children}
-		</m.div>
+		</Root>
 	);
 }
