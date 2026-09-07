@@ -23,8 +23,12 @@ export function RaidLogCover({
 	return (
 		<div
 			ref={ref}
+			// Absolute rather than size-full: the media box sizes from aspect-ratio
+			// under a min-height, and Safari resolves a percentage height inside it
+			// against the ratio alone, ignoring the min. An inset resolves against
+			// the box's used height in every engine.
 			className={cn(
-				"relative size-full overflow-hidden bg-gray-50",
+				"absolute inset-0 overflow-hidden bg-gray-50",
 				page ? "raid-page dot-matrix" : "raid-card",
 				inView && "raid-live",
 			)}
