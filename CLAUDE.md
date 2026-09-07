@@ -39,3 +39,9 @@ no restarting it to pick up a change. Turbopack already recompiled.
 
 If no server is listening, start one on a port of your own (`npx next dev -p
 3100`) so a later cleanup can't take theirs down, and stop only that process.
+
+Never run `next build` while a dev server is up: it writes to `.next`, the
+directory dev serves from, and leaves every route 500ing until dev restarts.
+Build into a dist dir of your own — `NEXT_DIST_DIR=.next-verify npx next
+build`. That build also rewrites `tsconfig.json` and `next-env.d.ts`; revert
+both when it finishes.

@@ -42,10 +42,19 @@ const FilterContext = createContext<FilterContextValue | null>(null);
  */
 export function FilterProvider({ children }: { children: ReactNode }) {
 	const [selected, setSelected] = useState<Set<FilterSlug>>(new Set());
+	const [routed, setRouted] = useState(false);
 	const router = useRouter();
 	// usePathname, not useSearchParams: the route stays static, and the param
 	// itself is read from window.location once the client is running.
-	const onFeed = usePathname() === FEED_PATH;
+	const pathname = usePathname();
+
+	// The build prerenders this layout without a pathname, so the first client
+	// render has to reach the same answer or React keeps the server's class — a
+	// hydration mismatch it warns about but never patches, and the re-render
+	// after it diffs clean. Assuming the feed puts the one route the tabs act on
+	// right at first paint; anywhere else corrects on mount.
+	useEffect(() => setRouted(true), []);
+	const onFeed = routed ? pathname === FEED_PATH : true;
 
 	useEffect(() => {
 		// Leaving the feed drops the selection rather than carrying it along —
