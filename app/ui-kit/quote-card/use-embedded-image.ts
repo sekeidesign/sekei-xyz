@@ -30,23 +30,31 @@ export function useEmbeddedImage(src: string | undefined) {
 		if (!src) return;
 
 		let cancelled = false;
+		const controller = new AbortController();
 		void (async () => {
+			let dataUrl: string | undefined;
 			for (const candidate of sources(src)) {
 				try {
-					const response = await fetch(candidate);
-					if (!response.ok) continue;
-					const dataUrl = await toDataUrl(await response.blob());
-					if (!cancelled) setEmbedded(dataUrl);
-					return;
+					const response = await fetch(candidate, {
+						signal: controller.signal,
+					});
+					if (response.ok) {
+						dataUrl = await toDataUrl(await response.blob());
+						break;
+					}
 				} catch {
-					// Try the next source.
+					// An aborted fetch rejects into here too, and every remaining
+					// candidate would reject the same way. Stop instead of cascading.
+					if (controller.signal.aborted) break;
 				}
 			}
-			if (!cancelled) setEmbedded(src);
+			if (cancelled) return;
+			setEmbedded(dataUrl ?? src);
 		})();
 
 		return () => {
 			cancelled = true;
+			controller.abort();
 		};
 	}, [src]);
 

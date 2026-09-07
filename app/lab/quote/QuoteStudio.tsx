@@ -1,7 +1,7 @@
 "use client";
 
 import type { HighlightOptions, PaletteName } from "@highlighters/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import {
 	ControlPanel,
 	ControlRow,
@@ -64,13 +64,40 @@ function fileSlug(title: string) {
 	);
 }
 
+interface Book {
+	slug: string;
+	title: string;
+	author: string;
+	rating: number;
+	cover: string;
+}
+
+type BookAction =
+	| { type: "picked"; option: BookOption }
+	| { type: "edited"; patch: Partial<Omit<Book, "slug">> };
+
+function toBook(option: BookOption | undefined): Book {
+	return {
+		slug: option?.slug ?? "",
+		title: option?.title ?? "",
+		author: option?.author ?? "",
+		rating: option?.rating ?? 0,
+		cover: option?.cover ?? "",
+	};
+}
+
+function bookReducer(state: Book, action: BookAction): Book {
+	switch (action.type) {
+		case "picked":
+			return toBook(action.option);
+		case "edited":
+			return { ...state, ...action.patch };
+	}
+}
+
 export function QuoteStudio({ books }: { books: BookOption[] }) {
-	const [book, setBook] = useState(books[0]?.slug ?? "");
+	const [book, dispatchBook] = useReducer(bookReducer, books[0], toBook);
 	const [quote, setQuote] = useState(SAMPLE);
-	const [title, setTitle] = useState(books[0]?.title ?? "");
-	const [author, setAuthor] = useState(books[0]?.author ?? "");
-	const [rating, setRating] = useState(books[0]?.rating ?? 0);
-	const [cover, setCover] = useState(books[0]?.cover ?? "");
 
 	const [quoteSize, setQuoteSize] = useState(26);
 	const [palette, setPalette] = useState<PaletteName>("mild");
@@ -112,13 +139,8 @@ export function QuoteStudio({ books }: { books: BookOption[] }) {
 	const height = aspect === "fit" ? undefined : Math.round(CARD_WIDTH / Number(aspect));
 
 	const selectBook = (slug: string) => {
-		setBook(slug);
-		const picked = books.find((entry) => entry.slug === slug);
-		if (!picked) return;
-		setTitle(picked.title);
-		setAuthor(picked.author ?? "");
-		setRating(picked.rating ?? 0);
-		setCover(picked.cover ?? "");
+		const option = books.find((entry) => entry.slug === slug);
+		if (option) dispatchBook({ type: "picked", option });
 	};
 
 	const markSelection = () => {
@@ -151,7 +173,7 @@ export function QuoteStudio({ books }: { books: BookOption[] }) {
 				);
 			} else {
 				const blob = await encode(canvas, format);
-				download(blob, `${fileSlug(title)}-quote.${format}`);
+				download(blob, `${fileSlug(book.title)}-quote.${format}`);
 				setStatus(`Saved ${Math.round(blob.size / 1024)} KB.`);
 			}
 		} catch (error) {
@@ -167,10 +189,10 @@ export function QuoteStudio({ books }: { books: BookOption[] }) {
 				<div ref={setNode} className="w-fit mx-auto shadow-skew">
 					<QuoteCard
 						quote={quote}
-						title={title}
-						author={author}
-						rating={rating}
-						cover={cover || undefined}
+						title={book.title}
+						author={book.author}
+						rating={book.rating}
+						cover={book.cover || undefined}
 						pen={pen}
 						quoteSize={quoteSize}
 						height={height}
@@ -183,7 +205,7 @@ export function QuoteStudio({ books }: { books: BookOption[] }) {
 				<ControlSection label="Content" />
 				<Select
 					label="Book"
-					value={book}
+					value={book.slug}
 					options={books.map((entry) => ({
 						value: entry.slug,
 						label: entry.title,
@@ -207,21 +229,29 @@ export function QuoteStudio({ books }: { books: BookOption[] }) {
 						Highlight selection
 					</button>
 				</ControlRow>
-				<TextField label="Title" value={title} onChange={setTitle} />
-				<TextField label="Author" value={author} onChange={setAuthor} />
+				<TextField
+					label="Title"
+					value={book.title}
+					onChange={(title) => dispatchBook({ type: "edited", patch: { title } })}
+				/>
+				<TextField
+					label="Author"
+					value={book.author}
+					onChange={(author) => dispatchBook({ type: "edited", patch: { author } })}
+				/>
 				<Slider
 					label="Rating"
-					value={rating}
+					value={book.rating}
 					min={0}
 					max={5}
 					step={1}
-					onChange={setRating}
+					onChange={(rating) => dispatchBook({ type: "edited", patch: { rating } })}
 				/>
 				<TextField
 					label="Cover"
-					value={cover}
+					value={book.cover}
 					placeholder="/covers/x.png or an absolute URL"
-					onChange={setCover}
+					onChange={(cover) => dispatchBook({ type: "edited", patch: { cover } })}
 				/>
 
 				<ControlSection label="Look" />
