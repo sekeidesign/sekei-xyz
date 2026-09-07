@@ -164,8 +164,6 @@ const ExperimentExample = ({ children, className }: ExperimentExampleProps) => {
 			{sourceUrl && (
 				<TooltipTrigger
 					payload="View source code"
-					// render, so the trigger IS the anchor rather than a button
-					// wrapping one — nested interactive elements would break both.
 					render={(props) => (
 						<Link
 							{...props}

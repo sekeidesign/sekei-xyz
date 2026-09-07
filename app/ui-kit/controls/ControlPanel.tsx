@@ -16,8 +16,6 @@ export function ControlPanel({
 
 	return (
 		<div
-			// A named group rather than a heading: these are controls, not a
-			// section of the document.
 			role={title ? "group" : undefined}
 			aria-labelledby={title ? titleId : undefined}
 			className={cn(
@@ -60,8 +58,6 @@ export function ControlRow({
 	value,
 }: {
 	label: string;
-	/** From the control inside, which points its `aria-labelledby` back here —
-	 * so the row's own text names it instead of a repeated `aria-label`. */
 	labelId?: string;
 	children: ReactNode;
 	value?: ReactNode;
