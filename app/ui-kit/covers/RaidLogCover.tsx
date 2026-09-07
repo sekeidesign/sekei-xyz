@@ -1,55 +1,14 @@
 "use client";
 
 import { useInView } from "motion/react";
-import { type CSSProperties, useRef } from "react";
+import { useRef } from "react";
 import { cn } from "../cn";
 import { KIND, type RaidRow, ROWS } from "./raid-log";
 
-/** Both variants draw at the design's own sizes and crop, never scale. */
-
-const CARD = {
-	"--raid-inset": "0px",
-	"--raid-width": "400px",
-	"--raid-height": "auto",
-	"--raid-radius": "0px",
-	"--raid-header": "32px",
-	"--raid-pad": "10px",
-	"--raid-gap": "8px",
-	"--raid-icon": "16px",
-	"--raid-id": "64px",
-	"--raid-title": "300px",
-	"--raid-date": "72px",
-	"--raid-impact": "72px",
-	"--raid-text": "12px",
-	"--raid-line": "16px",
-	"--raid-chip": "8px",
-	"--raid-pill": "56px",
-	"--raid-cell": "2px",
-} as CSSProperties;
-
-/** 100% sizing under an inset overhangs the box by that inset, at any width. */
-const PAGE = {
-	"--raid-inset": "40px",
-	"--raid-width": "100%",
-	"--raid-height": "100%",
-	"--raid-radius": "12px",
-	"--raid-header": "32px",
-	"--raid-pad": "12px",
-	"--raid-gap": "8px",
-	"--raid-icon": "20px",
-	"--raid-id": "64px",
-	"--raid-title": "300px",
-	"--raid-date": "72px",
-	"--raid-impact": "72px",
-	"--raid-text": "14px",
-	"--raid-line": "18px",
-	"--raid-chip": "8px",
-	"--raid-pill": "56px",
-	"--raid-cell": "2px",
-	"--dot-color": "var(--color-gray-200)",
-	"--dot-gap": "14px",
-	"--dot-size": "0.75px",
-} as CSSProperties;
+/**
+ * Sizes live in globals.css, as .raid-card and .raid-page, where a container
+ * query can step the page down for a narrow box.
+ */
 
 export function RaidLogCover({
 	variant = "card",
@@ -64,10 +23,9 @@ export function RaidLogCover({
 	return (
 		<div
 			ref={ref}
-			style={page ? PAGE : CARD}
 			className={cn(
 				"relative size-full overflow-hidden bg-gray-50",
-				page && "dot-matrix",
+				page ? "raid-page dot-matrix" : "raid-card",
 				inView && "raid-live",
 			)}
 		>

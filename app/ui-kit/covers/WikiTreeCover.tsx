@@ -6,7 +6,10 @@ import { cn } from "../cn";
 import { usePrefersReducedMotion } from "../use-prefers-reduced-motion";
 import { ACCENT, MARK_PATH, PROMPT, TREE } from "./wiki-tree";
 
-/** Both variants draw at the design's own sizes and crop, never scale. */
+/**
+ * Sizes live in globals.css, as .wiki-card and .wiki-page, where a container
+ * query can step the page down for a narrow box.
+ */
 
 const VISITED = TREE.reduce<number[]>(
 	(all, node, index) => (node.visited ? [...all, index] : all),
@@ -26,38 +29,6 @@ const SHEEN: CSSProperties = {
 	backgroundClip: "text",
 	color: "transparent",
 };
-
-const CARD = {
-	"--wiki-accent": ACCENT,
-	"--wiki-inset": "0px",
-	"--wiki-width": "400px",
-	"--wiki-height": "auto",
-	"--wiki-radius": "0px",
-	"--wiki-pad": "10px",
-	"--wiki-text": "12px",
-	"--wiki-line": "16px",
-	"--wiki-mark": "12px",
-	"--wiki-box": "14px",
-	"--wiki-corner": "4px",
-} as CSSProperties;
-
-const PAGE = {
-	"--wiki-accent": ACCENT,
-	"--wiki-inset": "40px",
-	"--wiki-width": "100%",
-	"--wiki-height": "100%",
-	"--wiki-radius": "12px",
-	"--wiki-pad": "16px",
-	"--wiki-term": "287px",
-	"--wiki-text": "14px",
-	"--wiki-line": "18px",
-	"--wiki-mark": "14px",
-	"--wiki-box": "16px",
-	"--wiki-corner": "5px",
-	"--dot-color": "var(--color-gray-200)",
-	"--dot-gap": "14px",
-	"--dot-size": "0.75px",
-} as CSSProperties;
 
 export function WikiTreeCover({
 	variant = "card",
@@ -84,10 +55,10 @@ export function WikiTreeCover({
 	return (
 		<div
 			ref={ref}
-			style={page ? PAGE : CARD}
+			style={{ "--wiki-accent": ACCENT } as CSSProperties}
 			className={cn(
 				"relative size-full overflow-hidden bg-gray-50",
-				page && "dot-matrix",
+				page ? "wiki-page dot-matrix" : "wiki-card",
 			)}
 		>
 			<div
@@ -131,7 +102,10 @@ const THINKING = ["·", "✢", "✳", "∗", "✻", "✽", "✻", "∗", "✳", 
 
 const TICK = 215;
 
-/** Page only: at the card's crop it would take the box and leave no tree. */
+/**
+ * Page only: at the card's crop it would take the box and leave no tree. A
+ * narrow page box has the same problem, and drops it — see .wiki-terminal.
+ */
 function Terminal({ running }: { running: boolean }) {
 	const [frame, setFrame] = useState(0);
 
@@ -142,7 +116,7 @@ function Terminal({ running }: { running: boolean }) {
 	}, [running]);
 
 	return (
-		<div className="flex w-[var(--wiki-term)] shrink-0 flex-col gap-[var(--wiki-pad)] self-stretch border-l border-white/20 bg-[#282c34] p-[var(--wiki-pad)]">
+		<div className="wiki-terminal flex w-[var(--wiki-term)] shrink-0 flex-col gap-[var(--wiki-pad)] self-stretch border-l border-white/20 bg-[#282c34] p-[var(--wiki-pad)]">
 			<p className="whitespace-pre-wrap text-gray-500">{PROMPT}</p>
 			<p className="flex items-center gap-[1ch] text-[var(--wiki-accent)]">
 				{/* Geist Mono has none of these glyphs, so each frame falls back to a

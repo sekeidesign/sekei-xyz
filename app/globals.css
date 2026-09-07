@@ -323,6 +323,122 @@ body {
   background-position: center;
 }
 
+/* Both drawn covers draw at the design's own sizes and crop, never scale, so
+   the size they draw at has to suit the box. The page sizes reach past the
+   title column under about 520px and the crop lands mid-word, so a narrow box
+   steps the design down instead. Queried against the media box rather than the
+   viewport: the sidebar leaves the column that narrow at md too.
+
+   In CSS rather than beside the component because an inline style outranks any
+   rule here, and the step-down has to win. */
+.raid-card {
+  --raid-inset: 0px;
+  --raid-width: 400px;
+  --raid-height: auto;
+  --raid-radius: 0px;
+  --raid-header: 32px;
+  --raid-pad: 10px;
+  --raid-gap: 8px;
+  --raid-icon: 16px;
+  --raid-id: 64px;
+  --raid-title: 300px;
+  --raid-date: 72px;
+  --raid-impact: 72px;
+  --raid-text: 12px;
+  --raid-line: 16px;
+  --raid-chip: 8px;
+  --raid-pill: 56px;
+  --raid-cell: 2px;
+}
+
+/* 100% sizing under an inset overhangs the box by that inset, at any width. */
+.raid-page {
+  --raid-inset: 40px;
+  --raid-width: 100%;
+  --raid-height: 100%;
+  --raid-radius: 12px;
+  --raid-header: 32px;
+  --raid-pad: 12px;
+  --raid-gap: 8px;
+  --raid-icon: 20px;
+  --raid-id: 64px;
+  --raid-title: 300px;
+  --raid-date: 72px;
+  --raid-impact: 72px;
+  --raid-text: 14px;
+  --raid-line: 18px;
+  --raid-chip: 8px;
+  --raid-pill: 56px;
+  --raid-cell: 2px;
+  --dot-color: var(--color-gray-200);
+  --dot-gap: 14px;
+  --dot-size: 0.75px;
+}
+
+.wiki-card {
+  --wiki-inset: 0px;
+  --wiki-width: 400px;
+  --wiki-height: auto;
+  --wiki-radius: 0px;
+  --wiki-pad: 10px;
+  --wiki-text: 12px;
+  --wiki-line: 16px;
+  --wiki-mark: 12px;
+  --wiki-box: 14px;
+  --wiki-corner: 4px;
+}
+
+.wiki-page {
+  --wiki-inset: 40px;
+  --wiki-width: 100%;
+  --wiki-height: 100%;
+  --wiki-radius: 12px;
+  --wiki-pad: 16px;
+  --wiki-term: 287px;
+  --wiki-text: 14px;
+  --wiki-line: 18px;
+  --wiki-mark: 14px;
+  --wiki-box: 16px;
+  --wiki-corner: 5px;
+  --dot-color: var(--color-gray-200);
+  --dot-gap: 14px;
+  --dot-size: 0.75px;
+}
+
+@container media (max-width: 520px) {
+  /* The title lane ends inside the box at the narrowest phone, so it truncates
+     rather than running under the frame; date and impact crop away past it. */
+  .raid-page {
+    --raid-inset: 20px;
+    --raid-pad: 10px;
+    --raid-icon: 16px;
+    --raid-id: 52px;
+    --raid-title: 180px;
+    --raid-date: 64px;
+    --raid-impact: 64px;
+    --raid-text: 12px;
+    --raid-line: 16px;
+    --dot-gap: 12px;
+  }
+
+  /* The tree takes the whole box at this size, leaving the terminal a sliver of
+     sliced letters at the edge. */
+  .wiki-terminal {
+    display: none;
+  }
+
+  .wiki-page {
+    --wiki-inset: 20px;
+    --wiki-pad: 12px;
+    --wiki-text: 12px;
+    --wiki-line: 16px;
+    --wiki-mark: 12px;
+    --wiki-box: 14px;
+    --wiki-corner: 4px;
+    --dot-gap: 12px;
+  }
+}
+
 /* The RAID cover's extraction row: a 3x3 arrow marching rightwards, and a
    sheen crossing the title. Both sit paused until an ancestor carries
    .raid-live, so a card scrolled out of view animates nothing. The cells also
