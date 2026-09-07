@@ -26,7 +26,10 @@ export const Sidebar = () => {
 	);
 
 	return (
-		<div className="w-full md:max-w-2xs xl:max-w-xs md:sticky md:top-px md:h-[calc(100vh-2px)] md:shrink-0 flex flex-col gap-px">
+		<aside
+			aria-label="Profile and filters"
+			className="w-full md:max-w-2xs xl:max-w-xs md:sticky md:top-px md:h-[calc(100vh-2px)] md:shrink-0 flex flex-col gap-px"
+		>
 			<div className="panel h-8 flex items-center justify-around text-gray-300 [&>svg]:shrink-0 [&>svg]:opacity-75">
 				<span className="sr-only">
 					Tools I use: Figma, Claude, Paper, Motion, Tailwind CSS, Swift
@@ -44,6 +47,6 @@ export const Sidebar = () => {
 			<TimelineTabs available={available} counts={counts} />
 
 			<Footer className="md:grid hidden" />
-		</div>
+		</aside>
 	);
 };

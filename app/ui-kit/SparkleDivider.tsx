@@ -2,8 +2,13 @@ import { cn } from "./cn";
 
 export function SparkleDivider({ className }: { className?: string }) {
 	return (
-		<div className={cn("flex items-center gap-4 w-full", className)}>
-			<hr className="w-full border-gray-200" />
+		// An ornament between sections, not a section break of its own — the
+		// heading that follows is the real one, so this stays out of the tree.
+		<div
+			aria-hidden="true"
+			className={cn("flex items-center gap-4 w-full", className)}
+		>
+			<span className="block w-full border-t border-gray-200" />
 			<svg
 				viewBox="0 0 15 15"
 				fill="none"
@@ -15,7 +20,7 @@ export function SparkleDivider({ className }: { className?: string }) {
 					fill="currentColor"
 				/>
 			</svg>
-			<hr className="w-full border-gray-200" />
+			<span className="block w-full border-t border-gray-200" />
 		</div>
 	);
 }

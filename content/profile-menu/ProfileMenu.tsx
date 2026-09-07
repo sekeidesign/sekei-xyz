@@ -261,30 +261,32 @@ const Sidebar = () => {
 	);
 };
 
+const BAR = "rounded-full border border-gray-100 bg-gray-50";
+
+/** Filler bars standing in for the page behind the menu. */
+function Lines({ count, className }: { count: number; className?: string }) {
+	return (
+		<div className={cn("flex flex-col gap-5", className)}>
+			{Array.from({ length: count }, (_, index) => (
+				// biome-ignore lint/suspicious/noArrayIndexKey: Just a mock UI example
+				<div key={index} className={cn(BAR, "w-full h-1.5")} />
+			))}
+		</div>
+	);
+}
+
 const MainContent = () => {
 	return (
 		<div className="h-full w-full bg-white rounded-bl-md shadow-skew ring-1 p-6 ring-gray-400/5">
 			<div className="mask-r-from-0% mask-b-from-0% w-full h-full">
-				<div className="min-w-[440px] w-full space-y-3 text-gray-400 leading-loose h-full">
-					<div className="py-1">
-						<div className="w-1/2 h-2 rounded-full border border-gray-100 bg-gray-50" />
-					</div>
-					<div className="py-1.5">
-						<div className="w-2/3 h-4 rounded-full border border-gray-100 bg-gray-50" />
-					</div>
-					{Array.from({ length: 5 }).map((_, index) => (
-						// biome-ignore lint/suspicious/noArrayIndexKey: Just a mock UI example
-						<div key={index} className="py-1">
-							<div className="w-full h-1.5 rounded-full border border-gray-100 bg-gray-50" />
-						</div>
-					))}
-					<div className="py-1"></div>
-					{Array.from({ length: 6 }).map((_, index) => (
-						// biome-ignore lint/suspicious/noArrayIndexKey: Just a mock UI example
-						<div key={index} className="py-1">
-							<div className="w-full h-1.5 rounded-full border border-gray-100 bg-gray-50" />
-						</div>
-					))}
+				<div
+					aria-hidden="true"
+					className="min-w-[440px] w-full h-full flex flex-col gap-5"
+				>
+					<div className={cn(BAR, "w-1/2 h-2")} />
+					<div className={cn(BAR, "w-2/3 h-4")} />
+					<Lines count={5} />
+					<Lines count={6} className="mt-5" />
 				</div>
 			</div>
 		</div>

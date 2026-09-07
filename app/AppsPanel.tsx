@@ -24,11 +24,15 @@ export function AppsPanel() {
 					height={1000}
 				/>
 				<div className="absolute inset-0 p-8.5 flex flex-col gap-6">
-					<div className="flex items-center justify-between gap-2 font-[450]">
+					{/* Mock status bar — chrome for the screenshot, not information. */}
+					<div
+						aria-hidden="true"
+						className="flex items-center justify-between gap-2 font-[450]"
+					>
 						<div className="flex-1 flex items-center justify-center text-xs h-full gap-1">
 							09:41 <NavigationIcon size={16} />
 						</div>
-						<div className="flex-1 flex items-center justify-center"></div>
+						<div className="flex-1" />
 						<div className="flex-1 flex items-center justify-center gap-1">
 							<div className="flex gap-0.5 items-end">
 								<div className="w-[3px] rounded-sm bg-gray-900 h-1" />
