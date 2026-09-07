@@ -76,7 +76,6 @@ export default function RootLayout({
 		<html lang="en">
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} ${geistPixel.variable} antialiased`}
-				style={{ backgroundColor: "var(--color-gray-200)" }}
 			>
 				<MotionProvider>
 					<TooltipProvider delay={200} closeDelay={0} timeout={400}>

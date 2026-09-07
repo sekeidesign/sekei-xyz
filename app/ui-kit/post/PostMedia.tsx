@@ -38,6 +38,8 @@ export function Media({
 	priority,
 	/** The image's own ratio as CSS aspect-ratio, e.g. "2000 / 1374". */
 	aspect,
+	/** On the box the ratio sizes, for a floor under it. */
+	className,
 	/** A cover drawn in code, in place of an image. */
 	children,
 }: {
@@ -47,13 +49,14 @@ export function Media({
 	badgeAlt?: string;
 	priority?: boolean;
 	aspect?: string;
+	className?: string;
 	children?: ReactNode;
 }) {
 	return (
 		<div className={cn("self-stretch w-full rounded-xl my-2", SURFACE_OUTER)}>
 			<div
 				style={{ aspectRatio: aspect }}
-				className={cn("relative w-full rounded-lg", SURFACE_INNER)}
+				className={cn("relative w-full rounded-lg", SURFACE_INNER, className)}
 			>
 				{children}
 				{!children && src && (

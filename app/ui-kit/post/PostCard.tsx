@@ -135,7 +135,9 @@ function entryMedia(
 				<Cover />
 			</Post.SquareMedia>
 		) : (
-			<Post.Media alt={entry.title} aspect={aspect}>
+			// A drawn cover is a crop, so on a narrow column the ratio alone leaves
+			// it too short to show anything.
+			<Post.Media alt={entry.title} aspect={aspect} className="min-h-60">
 				<Cover variant="page" />
 			</Post.Media>
 		);

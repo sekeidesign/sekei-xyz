@@ -188,8 +188,14 @@
   }
 }
 
+/* On html as well as body: the canvas behind an overscroll — or a page shorter
+   than the viewport — paints the root's background, which was left white. */
+html,
 body {
-  background: var(--background);
+  background: var(--color-gray-200);
+}
+
+body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
