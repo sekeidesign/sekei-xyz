@@ -117,7 +117,8 @@ export function ProfileCard({ className }: { className?: string }) {
 					backgroundPosition: sealHighlight,
 					opacity: sealOpacity,
 				}}
-				className="absolute -right-3 -bottom-3 z-0 pointer-events-none"
+				// Touch never raises the sheen, so the seal would sit dimmed forever.
+				className="absolute -right-3 -bottom-3 z-0 pointer-events-none max-md:opacity-100!"
 			/>
 
 			<div className="relative z-10 items-center flex md:items-start md:justify-between gap-2.5 md:gap-4">

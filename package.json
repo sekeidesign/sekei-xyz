@@ -24,6 +24,7 @@
     "clsx": "^2.1.1",
     "cobe": "^2.0.1",
     "gray-matter": "^4.0.3",
+    "html-to-image": "^1.11.13",
     "lucide-react": "^1.28.0",
     "motion": "^12.19.1",
     "motion-plus": "https://api.motion.dev/registry?package=motion-plus&version=1.5.4&token=227e71e4be314f5a9e5ba600faa60c97e9323cf108da08d6962dcfe62c549fcd",
