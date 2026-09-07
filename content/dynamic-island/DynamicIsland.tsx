@@ -175,7 +175,7 @@ function MediaContent({
 					type="button"
 					disabled
 					aria-label="Previous track"
-					className="flex items-center justify-center rounded-2xl w-12 h-12 hover:bg-zinc-800 transition-colors"
+					className="flex items-center justify-center rounded-2xl w-12 h-12 hover:bg-zinc-800"
 				>
 					<BackwardIcon className="w-8 h-8 text-white opacity-50" />
 				</button>
@@ -215,7 +215,7 @@ function MediaContent({
 					type="button"
 					disabled
 					aria-label="Next track"
-					className="flex items-center justify-center rounded-2xl w-12 h-12 hover:bg-zinc-800 transition-colors"
+					className="flex items-center justify-center rounded-2xl w-12 h-12 hover:bg-zinc-800"
 				>
 					<ForwardIcon className="w-8 h-8 text-white opacity-50" />
 				</button>

@@ -72,7 +72,7 @@ const OpenGraphPreview = ({
 								<div className="w-full aspect-video overflow-hidden object-cover bg-gray-100 mb-2 rounded-sm">
 									<Image
 										src={og.image}
-										alt={`${og.title} og image`}
+										alt=""
 										className="w-full h-full object-cover"
 										width={600}
 										height={400}

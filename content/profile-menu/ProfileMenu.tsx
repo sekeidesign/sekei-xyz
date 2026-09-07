@@ -28,7 +28,6 @@ interface ProfileButtonProps {
 	email?: string;
 	imageSrc?: string;
 	open?: boolean;
-	ref?: React.RefObject<HTMLDivElement>;
 }
 
 const ProfileButton = ({
@@ -42,7 +41,7 @@ const ProfileButton = ({
 			<div className="w-7 h-7 rounded-full overflow-hidden flex-shrink-0">
 				<Image
 					src={imageSrc}
-					alt={`${name} avatar`}
+					alt=""
 					width={56}
 					height={56}
 					className="w-full h-full object-cover"

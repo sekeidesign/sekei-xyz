@@ -169,7 +169,7 @@ export function LibraryPanel() {
 						type="button"
 						aria-label="Previous book"
 						onClick={goPrev}
-						className="p-1 rounded-sm text-gray-400 hover:text-gray-800 hover:bg-gray-200 transition-colors"
+						className="p-1 rounded-sm text-gray-400 hover:text-gray-800 hover:bg-gray-200"
 					>
 						<ChevronLeftIcon className="size-4" />
 					</button>
@@ -177,7 +177,7 @@ export function LibraryPanel() {
 						type="button"
 						aria-label="Next book"
 						onClick={goNext}
-						className="p-1 rounded-sm text-gray-400 hover:text-gray-800 hover:bg-gray-200 transition-colors"
+						className="p-1 rounded-sm text-gray-400 hover:text-gray-800 hover:bg-gray-200"
 					>
 						<ChevronRightIcon className="size-4" />
 					</button>

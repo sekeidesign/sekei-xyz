@@ -121,7 +121,7 @@ const CollapsableMenu = () => {
 			<div
 				ref={islandHome}
 				className={cn(
-					`absolute bottom-0 left-0 w-full h-[100px] bg-gray-100/50 z-0 border-t border-gray-200 border-dashed flex items-start justify-center text-xs text-gray-300 font-[450] transition-all duration-200`,
+					`absolute bottom-0 left-0 w-full h-[100px] bg-gray-100/50 z-0 border-t border-gray-200 border-dashed flex items-start justify-center text-xs text-gray-300 font-[450]`,
 					debug ? "opacity-100" : "opacity-0",
 					isOverHome && isDetached && "opacity-100",
 				)}

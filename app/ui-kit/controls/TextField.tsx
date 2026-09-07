@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import { ControlRow } from "./ControlPanel";
 
 const FIELD =
@@ -16,13 +17,15 @@ export function TextField({
 	placeholder?: string;
 	onChange: (value: string) => void;
 }) {
+	const labelId = useId();
+
 	return (
-		<ControlRow label={label}>
+		<ControlRow label={label} labelId={labelId}>
 			<input
 				type="text"
 				value={value}
 				placeholder={placeholder}
-				aria-label={label}
+				aria-labelledby={labelId}
 				onChange={(event) => onChange(event.target.value)}
 				className={FIELD}
 			/>
@@ -45,14 +48,16 @@ export function TextAreaField({
 	onChange: (value: string) => void;
 	ref?: React.Ref<HTMLTextAreaElement>;
 }) {
+	const labelId = useId();
+
 	return (
-		<ControlRow label={label}>
+		<ControlRow label={label} labelId={labelId}>
 			<textarea
 				ref={ref}
 				value={value}
 				rows={rows}
 				placeholder={placeholder}
-				aria-label={label}
+				aria-labelledby={labelId}
 				onChange={(event) => onChange(event.target.value)}
 				className={`${FIELD} resize-y leading-[1.6]`}
 			/>

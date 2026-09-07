@@ -33,6 +33,7 @@ export const BookLink = ({
 		>
 			<Link
 				href={href}
+				rel={target === "_blank" ? "noopener noreferrer" : undefined}
 				className="text-gray-900 group font-[500] relative no-underline inline-flex items-center px-0.5 gap-1.5 pl-5 ml-px"
 				target={target}
 			>

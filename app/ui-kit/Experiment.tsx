@@ -1,6 +1,5 @@
 "use client";
 
-import { Tooltip } from "@ark-ui/react/tooltip";
 import { CommandLineIcon } from "@heroicons/react/16/solid";
 import { AnimatePresence, m, useInView } from "motion/react";
 import Link from "next/link";
@@ -13,6 +12,7 @@ import {
 	useState,
 } from "react";
 import { cn } from "./cn";
+import { TooltipTrigger } from "./Tooltip";
 
 interface ExperimentContextValue {
 	sourceUrl?: string;
@@ -162,26 +162,21 @@ const ExperimentExample = ({ children, className }: ExperimentExampleProps) => {
 			)}
 		>
 			{sourceUrl && (
-				<Tooltip.Root
-					positioning={{ placement: "top" }}
-					openDelay={0}
-					closeDelay={0}
-				>
-					<Tooltip.Trigger asChild>
+				<TooltipTrigger
+					payload="View source code"
+					render={(props) => (
 						<Link
+							{...props}
 							href={sourceUrl}
 							target="_blank"
-							className="absolute top-2 right-2 bg-gray-200/60 hover:bg-gray-200 hover:text-gray-700 size-7 flex items-center justify-center rounded-md text-gray-500"
-						>
-							<CommandLineIcon className="w-4 h-4" />
-						</Link>
-					</Tooltip.Trigger>
-					<Tooltip.Positioner>
-						<Tooltip.Content className="bg-gray-900 text-gray-50 font-[450] p-2 py-1 text-xs rounded-md">
-							View source code
-						</Tooltip.Content>
-					</Tooltip.Positioner>
-				</Tooltip.Root>
+							rel="noopener noreferrer"
+							aria-label="View source code"
+						/>
+					)}
+					className="absolute top-2 right-2 bg-gray-200/60 hover:bg-gray-200 hover:text-gray-700 size-7 flex items-center justify-center rounded-md text-gray-500"
+				>
+					<CommandLineIcon className="w-4 h-4" />
+				</TooltipTrigger>
 			)}
 			{isRootInView && children}
 		</div>
