@@ -1,5 +1,4 @@
 import { AboutPanel } from "../AboutPanel";
-import { AppsPanel } from "../AppsPanel";
 import { GlobePanel } from "../GlobePanel";
 import { LibraryPanel } from "../LibraryPanel";
 import { Experiment } from "../ui-kit/Experiment";
@@ -14,10 +13,7 @@ export default function HomeAlt() {
 					<AboutPanel />
 					<GlobePanel />
 				</div>
-				<div className="flex gap-px bg-gray-200">
-					<AppsPanel />
-					<LibraryPanel />
-				</div>
+				<LibraryPanel />
 			</Experiment>
 		</HoverProvider>
 	);

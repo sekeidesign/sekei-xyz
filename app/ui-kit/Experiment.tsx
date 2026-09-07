@@ -195,7 +195,7 @@ interface ExperimentDescriptionProps {
 /** Takes its own paragraphs, so prose isn't one <p> broken up by <br />s. */
 const ExperimentDescription = ({ children }: ExperimentDescriptionProps) => {
 	return (
-		<div className="space-y-4 text-sm text-gray-500 font-[420] leading-relaxed">
+		<div className="space-y-6 text-sm text-gray-500 font-[420] leading-relaxed">
 			{children}
 		</div>
 	);
