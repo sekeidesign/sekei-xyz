@@ -91,12 +91,13 @@ const ExperimentTitle = ({ children, pageUrl }: ExperimentTitleProps) => {
 						strokeWidth={2.5}
 						stroke="currentColor"
 						className="size-3.5 text-gray-500 mt-0.5"
+						aria-hidden="true"
+						focusable="false"
 						initial={{ x: -4, y: 4, opacity: 0 }}
 						animate={{ x: 0, y: 0, opacity: 1 }}
 						exit={{ x: 4, y: -4, opacity: 0 }}
 						transition={{ duration: 0.2, type: "spring", bounce: 0 }}
 					>
-						<title>Link icon</title>
 						<path
 							strokeLinecap="round"
 							strokeLinejoin="round"

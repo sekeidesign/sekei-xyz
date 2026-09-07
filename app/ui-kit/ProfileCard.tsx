@@ -28,6 +28,10 @@ const SEAL_SHEEN =
 
 const MotionLink = m.create(Link);
 
+/**
+ * Site identity, on every page — so the name is not the page's heading. Each
+ * route owns its own h1.
+ */
 export function ProfileCard({ className }: { className?: string }) {
 	const cardRef = useRef<HTMLAnchorElement>(null);
 	const z = useSpring(0);
@@ -124,15 +128,15 @@ export function ProfileCard({ className }: { className?: string }) {
 			<div className="relative z-10 items-center flex md:items-start md:justify-between gap-2.5 md:gap-4">
 				<Portrait offsetX={offsetX} offsetY={offsetY} />
 				<div className="relative z-10 flex-1 block md:hidden">
-					<h1 className="font-[550] text-gray-800 w-full">PG Gonni</h1>
-					<h2 className="font-[450] text-xs text-gray-500 w-full">Design Engineer</h2>
+					<p className="font-[550] text-gray-800 w-full">PG Gonni</p>
+					<p className="font-[450] text-xs text-gray-500 w-full">Design Engineer</p>
 				</div>
 				<Coordinates />
 			</div>
 
 			<div className="relative z-10 hidden md:block">
-				<h1 className="font-[550] text-gray-800 w-full">PG Gonni</h1>
-				<h2 className="font-[450] text-gray-500 w-full">Design Engineer</h2>
+				<p className="font-[550] text-gray-800 w-full">PG Gonni</p>
+				<p className="font-[450] text-gray-500 w-full">Design Engineer</p>
 			</div>
 		</MotionLink>
 	);

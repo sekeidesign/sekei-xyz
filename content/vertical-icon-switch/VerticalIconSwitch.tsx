@@ -34,6 +34,9 @@ const VerticalIconSwitch = () => {
 			<MotionConfig transition={spring}>
 				<button
 					type="button"
+					role="switch"
+					aria-checked={trip === "return"}
+					aria-label="Return trip"
 					className="flex items-center justify-center gap-1.5 cursor-pointer"
 					onClick={() => {
 						setTrip(trip === "oneWay" ? "return" : "oneWay");
@@ -42,7 +45,9 @@ const VerticalIconSwitch = () => {
 						});
 					}}
 				>
-					<div className="relative">
+					{/* Each state is painted twice, one layer clipped against the other, so
+					    the pair is hidden and the switch is named by its own label. */}
+					<div className="relative" aria-hidden="true">
 						<div
 							className={cn(
 								"w-7 h-12 bg-gray-100 rounded-md overflow-hidden p-0.5 flex flex-col inset-shadow-sm outline outline-gray-200",
@@ -76,7 +81,7 @@ const VerticalIconSwitch = () => {
 							</div>
 						</div>
 					</div>
-					<div className="relative">
+					<div className="relative" aria-hidden="true">
 						<m.div
 							className="p-0.5 flex relative flex-col h-12 items-start text-xs font-[500] justify-between text-orange-500 z-20"
 							style={{ clipPath: rectangleClipPath }}
@@ -119,9 +124,9 @@ const OneWayIcon = ({ isActive }: { isActive: boolean }) => {
 				viewBox="0 0 16 16"
 				fill="currentColor"
 				className="h-4 w-full"
-				aria-label="One way icon"
+				aria-hidden="true"
+				focusable="false"
 			>
-				<title>One way icon</title>
 				<MotionConfig transition={{ delay: 0.15 }}>
 					<AnimatePresence mode="popLayout" initial={false}>
 						{isActive ? (
@@ -173,9 +178,9 @@ const ReturnIcon = ({ isActive }: { isActive: boolean }) => {
 				viewBox="0 0 16 16"
 				fill="currentColor"
 				className="h-4 w-full"
-				aria-label="Return icon"
+				aria-hidden="true"
+				focusable="false"
 			>
-				<title>Return icon</title>
 				<MotionConfig transition={{ delay: 0.15 }}>
 					<AnimatePresence mode="popLayout" initial={false}>
 						{isActive ? (

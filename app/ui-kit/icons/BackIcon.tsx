@@ -6,8 +6,9 @@ export const BackIcon = ({ size = 16 }) => {
 			viewBox="0 0 24 24"
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
+			aria-hidden="true"
+			focusable="false"
 		>
-			<title>Back</title>
 			<path
 				d="M7.49 13C6.13 11.64 5.36 10.87 4 9.51C5.36 8.15 6.13 7.38 7.49 6.02"
 				stroke="currentColor"

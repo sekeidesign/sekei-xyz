@@ -6,8 +6,9 @@ export const ResetIcon = ({ size = 16 }) => {
 			viewBox="0 0 24 24"
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
+			aria-hidden="true"
+			focusable="false"
 		>
-			<title>Reset</title>
 			<path
 				fillRule="evenodd"
 				clipRule="evenodd"

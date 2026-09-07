@@ -8,15 +8,15 @@ import type { TimelineEntry } from "@/lib/timeline";
  */
 export function PostHeader({
 	entry,
-	variant = "card",
+	heading = "h2",
 	href,
 }: {
 	entry: TimelineEntry;
-	variant?: "card" | "page";
+	/** h1 when the post is the page, h2 for a card in the feed. */
+	heading?: "h1" | "h2";
 	/** Makes the title a link. Omit on the page — it's already there. */
 	href?: string;
 }) {
-	const isPage = variant === "page";
 	const isBook = entry.kind === "book";
 	const isLaunch = entry.kind === "launch";
 
@@ -25,8 +25,7 @@ export function PostHeader({
 	const title = (
 		<Post.Title
 			href={href}
-			as={isPage ? "h1" : "h2"}
-			size={isPage ? "lg" : "md"}
+			as={heading}
 			byline={isBook && entry.author ? `by ${entry.author}` : undefined}
 			subtitle={entry.subtitle}
 			// Work posts show their mark inline; other kinds badge it on the media.
@@ -63,7 +62,7 @@ export function PostHeader({
 			)}
 
 			{entry.excerpt && !isBook && (
-				<Post.Description clamp={isPage ? null : entry.kind === "launch" ? 2 : 3}>
+				<Post.Description clamp={entry.kind === "launch" ? 2 : 3}>
 					{entry.excerpt}
 				</Post.Description>
 			)}

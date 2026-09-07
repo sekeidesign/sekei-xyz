@@ -112,40 +112,51 @@ const PopoverContent = ({
 			<div className="p-1">
 				<div className="w-full p-1 gap-1 flex flex-col text-sm font-sans font-medium bg-white rounded-lg shadow-skew ring-1 ring-gray-400/5">
 					<div>
-						<div className="w-full flex items-center gap-2 text-gray-600 px-2.5 h-8.5 cursor-default hover:bg-gray-400/10 rounded-md">
-							<UserIcon className="w-4 h-4  flex-shrink-0" strokeWidth={2} />
+						<button
+							type="button"
+							className="w-full flex items-center gap-2 text-gray-600 px-2.5 h-8.5 cursor-default hover:bg-gray-400/10 rounded-md"
+						>
+							<UserIcon className="w-4 h-4 flex-shrink-0" strokeWidth={2} />
 							Profile
-						</div>
-						<div className="w-full flex items-center gap-2 text-gray-600 px-2.5 h-8.5 cursor-default hover:bg-gray-400/10 rounded-md">
-							<BellIcon className="w-4 h-4  flex-shrink-0" strokeWidth={2} />
+						</button>
+						<button
+							type="button"
+							className="w-full flex items-center gap-2 text-gray-600 px-2.5 h-8.5 cursor-default hover:bg-gray-400/10 rounded-md"
+						>
+							<BellIcon className="w-4 h-4 flex-shrink-0" strokeWidth={2} />
 							Notifications
-						</div>
-						<div className="w-full flex items-center gap-2 text-gray-600 px-2.5 h-8.5 cursor-default hover:bg-gray-400/10 rounded-md">
-							<Cog6ToothIcon
-								className="w-4 h-4  flex-shrink-0"
-								strokeWidth={2}
-							/>
+						</button>
+						<button
+							type="button"
+							className="w-full flex items-center gap-2 text-gray-600 px-2.5 h-8.5 cursor-default hover:bg-gray-400/10 rounded-md"
+						>
+							<Cog6ToothIcon className="w-4 h-4 flex-shrink-0" strokeWidth={2} />
 							Settings
-						</div>
-						<div className="w-full flex items-center gap-2 text-gray-600 px-2.5 h-8.5 cursor-default hover:bg-gray-400/10 rounded-md">
-							<DocumentTextIcon
-								className="w-4 h-4  flex-shrink-0"
-								strokeWidth={2}
-							/>
+						</button>
+						<button
+							type="button"
+							className="w-full flex items-center gap-2 text-gray-600 px-2.5 h-8.5 cursor-default hover:bg-gray-400/10 rounded-md"
+						>
+							<DocumentTextIcon className="w-4 h-4 flex-shrink-0" strokeWidth={2} />
 							Documentation
-						</div>
+						</button>
 					</div>
 					<hr className="w-full border-gray-400/10" />
-					<div className="w-full flex items-center gap-2 text-red-600 px-2.5 h-8.5 cursor-default hover:bg-gray-400/10 rounded-md">
+					<button
+						type="button"
+						className="w-full flex items-center gap-2 text-red-600 px-2.5 h-8.5 cursor-default hover:bg-gray-400/10 rounded-md"
+					>
 						<ArrowRightStartOnRectangleIcon
-							className="w-4 h-4  flex-shrink-0"
+							className="w-4 h-4 flex-shrink-0"
 							strokeWidth={2}
 						/>
 						Logout
-					</div>
+					</button>
 				</div>
 			</div>
-			<div className="opacity-0">
+			{/* A copy of the trigger, holding the space the real one occupies under
+			    the popup — hidden, so its name and email aren't read twice. */}
+			<div className="opacity-0" aria-hidden="true">
 				<ProfileButton name={name} email={email} imageSrc={imageSrc} />
 			</div>
 		</div>
