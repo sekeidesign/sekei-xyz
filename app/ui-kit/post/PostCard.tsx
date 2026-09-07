@@ -31,41 +31,9 @@ export function PostCard({
 	children,
 }: PostCardProps) {
 	const href = linked && entry.hasPage ? `/p/${entry.slug}` : undefined;
-	const isBook = entry.kind === "book";
-	const isExperiment = entry.kind === "experiment";
-	const hasDemo = entry.preview === "live";
 
-	const media = isBook ? (
-		entry.cover && (
-			<Post.BookCover
-				book={{
-					id: entry.slug,
-					title: entry.title,
-					author: entry.author ?? "",
-					cover: entry.cover,
-					spineColor: entry.spineColor ?? "#4a5568",
-					rating: entry.rating ?? 0,
-				}}
-			/>
-		)
-	) : entry.kind === "launch" && entry.cover ? (
-		// Too wide for a narrow column — PostHeader's Title shows the app's own
-		// icon there instead, so this only needs room at md and up.
-		<div className="hidden md:block">
-			<Post.PhoneMedia src={entry.cover} alt={entry.title} priority={eager} />
-		</div>
-	) : !isExperiment && entry.kind !== "note" && (entry.cover || entry.icon) ? (
-		<Post.Media
-			src={entry.cover}
-			alt={entry.title}
-			badge={entry.icon}
-			badgeAlt={entry.subtitle ?? entry.title}
-			priority={eager}
-			aspect={entry.coverAspect}
-		/>
-	) : null;
-
-	const aside = isBook || entry.kind === "launch";
+	const media = entryMedia(entry, eager);
+	const aside = entry.kind === "book" || entry.kind === "launch";
 	const layout = media && aside ? "aside" : "column";
 
 	return (
@@ -90,7 +58,7 @@ export function PostCard({
 					<PostHeader entry={entry} heading={heading} href={href} />
 				)}
 
-				{hasDemo && (
+				{entry.preview === "live" && (
 					<LivePreview
 						slug={entry.slug}
 						previewCost={entry.previewCost}
@@ -102,24 +70,82 @@ export function PostCard({
 
 				{layout === "column" && media}
 
-				<Post.Footer>
-					<div className="flex items-center gap-2">
-						<SocialBar
-							slug={entry.slug}
-							// Notes have no page of their own, so their link points at the feed.
-							sharePath={href ?? `/timeline#${entry.slug}`}
-						/>
-						{entry.kind === "launch" && entry.link && (
-							<OutboundLink href={entry.link} label={entry.linkLabel} />
-						)}
-					</div>
-					{isExperiment && entry.sourceUrl && (
-						<Post.CodeLink href={entry.sourceUrl} />
-					)}
-				</Post.Footer>
+				<PostCardFooter entry={entry} href={href} />
 			</Post.Body>
 
 			{layout === "aside" && media}
 		</Post>
+	);
+}
+
+/**
+ * Ordered by kind, and the order matters: a launch with no cover falls through
+ * to the generic branch so its icon still gets a frame.
+ */
+function entryMedia(entry: TimelineEntry, eager?: boolean) {
+	if (entry.kind === "book") {
+		if (!entry.cover) return null;
+		return (
+			<Post.BookCover
+				book={{
+					id: entry.slug,
+					title: entry.title,
+					author: entry.author ?? "",
+					cover: entry.cover,
+					spineColor: entry.spineColor ?? "#4a5568",
+					rating: entry.rating ?? 0,
+				}}
+			/>
+		);
+	}
+
+	if (entry.kind === "launch" && entry.cover) {
+		// Too wide for a narrow column — PostHeader's Title shows the app's own
+		// icon there instead, so this only needs room at md and up.
+		return (
+			<div className="hidden md:block">
+				<Post.PhoneMedia src={entry.cover} alt={entry.title} priority={eager} />
+			</div>
+		);
+	}
+
+	if (entry.kind === "experiment" || entry.kind === "note") return null;
+	if (!entry.cover && !entry.icon) return null;
+
+	return (
+		<Post.Media
+			src={entry.cover}
+			alt={entry.title}
+			badge={entry.icon}
+			badgeAlt={entry.subtitle ?? entry.title}
+			priority={eager}
+			aspect={entry.coverAspect}
+		/>
+	);
+}
+
+function PostCardFooter({
+	entry,
+	href,
+}: {
+	entry: TimelineEntry;
+	href?: string;
+}) {
+	return (
+		<Post.Footer>
+			<div className="flex items-center gap-2">
+				<SocialBar
+					slug={entry.slug}
+					// Notes have no page of their own, so their link points at the feed.
+					sharePath={href ?? `/timeline#${entry.slug}`}
+				/>
+				{entry.kind === "launch" && entry.link && (
+					<OutboundLink href={entry.link} label={entry.linkLabel} />
+				)}
+			</div>
+			{entry.kind === "experiment" && entry.sourceUrl && (
+				<Post.CodeLink href={entry.sourceUrl} />
+			)}
+		</Post.Footer>
 	);
 }
