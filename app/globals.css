@@ -391,6 +391,22 @@ body {
   animation-play-state: running;
 }
 
+/* Every coded figure draws a full page inside a column a fraction of its
+   width, so it is drawn at its own size and scaled down as a whole. zoom rather
+   than a transform: zoom reflows, so the mock still gets the layout width it
+   was designed against, and the frame around it keeps its real height. Lower on
+   a phone, where that column is narrower still. */
+.figure-scale {
+  --figure-scale: 0.85;
+  zoom: var(--figure-scale);
+}
+
+@media (width < 48rem) {
+  .figure-scale {
+    --figure-scale: 0.55;
+  }
+}
+
 /* The extraction figure's dashes and rings. Both idle until an ancestor
    carries .flow-live, so a figure below the fold animates nothing. */
 .flow-pulse {

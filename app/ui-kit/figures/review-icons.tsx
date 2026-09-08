@@ -43,8 +43,14 @@ export const PlayIcon = ({ className }: { className?: string }) => (
 	</Glyph>
 );
 
-export const VolumeIcon = ({ className }: { className?: string }) => (
-	<Glyph className={className}>
+export const VolumeIcon = ({
+	size,
+	className,
+}: {
+	size?: number;
+	className?: string;
+}) => (
+	<Glyph size={size} className={className}>
 		<path
 			d="M14 14.813V9.186C14 6.041 14 4.469 13.075 4.077C12.149 3.686 11.06 4.798 8.882 7.022C7.754 8.174 7.111 8.429 5.506 8.429C4.103 8.429 3.401 8.429 2.897 8.773C1.85 9.487 2.009 10.882 2.009 12C2.009 13.118 1.85 14.513 2.897 15.227C3.401 15.571 4.103 15.571 5.506 15.571C7.111 15.571 7.754 15.826 8.882 16.978C11.06 19.202 12.149 20.314 13.075 19.923C14 19.531 14 17.959 14 14.813Z"
 			{...STROKE}
@@ -54,12 +60,140 @@ export const VolumeIcon = ({ className }: { className?: string }) => (
 	</Glyph>
 );
 
-export const CollapseIcon = ({ className }: { className?: string }) => (
-	<Glyph className={className}>
+export const CollapseIcon = ({
+	size,
+	className,
+}: {
+	size?: number;
+	className?: string;
+}) => (
+	<Glyph size={size} className={className}>
 		<path
 			d="M6.502 13.264C7.347 13.252 10.143 12.671 10.736 13.264C11.329 13.856 10.748 16.653 10.736 17.497M13.268 6.497C13.257 7.342 12.676 10.138 13.268 10.731C13.861 11.324 16.658 10.743 17.502 10.731M20.999 2.999L13.61 10.381M10.369 13.624L3 21.001"
 			{...STROKE}
 		/>
+	</Glyph>
+);
+
+/** The meeting a version came from, and the link out to it. */
+export const CalendarIcon = ({
+	size,
+	className,
+}: {
+	size?: number;
+	className?: string;
+}) => (
+	<Glyph size={size} className={className}>
+		<path
+			d="M21.75 11.928V14.026C21.75 15.808 21.75 17.244 21.599 18.374C21.441 19.547 21.105 20.535 20.322 21.319C19.54 22.103 18.554 22.441 17.384 22.598C16.257 22.75 14.824 22.75 13.046 22.75H10.954C9.176 22.75 7.743 22.75 6.616 22.598C5.446 22.441 4.46 22.103 3.678 21.319C2.895 20.535 2.559 19.547 2.401 18.374C2.25 17.244 2.25 15.808 2.25 14.026V11.928C2.25 11.135 2.25 10.41 2.263 9.75H4.214C4.2 10.396 4.2 11.138 4.2 12V13.954C4.2 15.825 4.202 17.129 4.334 18.114C4.462 19.07 4.697 19.576 5.057 19.937C5.417 20.297 5.922 20.532 6.876 20.661C7.858 20.793 9.159 20.796 11.025 20.796H12.975C14.841 20.796 16.142 20.793 17.125 20.661C18.078 20.532 18.584 20.297 18.943 19.937C19.303 19.576 19.538 19.07 19.666 18.114C19.798 17.129 19.8 15.825 19.8 13.954V12C19.8 11.138 19.8 10.396 19.786 9.75H21.737C21.75 10.41 21.75 11.135 21.75 11.928Z"
+			fill="currentColor"
+			opacity="0.4"
+		/>
+		<path
+			d="M8.1 1.25C8.638 1.25 9.075 1.688 9.075 2.227V3.213C9.653 3.205 10.278 3.205 10.954 3.205H13.046C13.722 3.205 14.347 3.205 14.925 3.213V2.227C14.925 1.688 15.361 1.25 15.9 1.25C16.439 1.25 16.875 1.688 16.875 2.227V3.299C17.051 3.316 17.221 3.334 17.384 3.356C18.554 3.514 19.54 3.851 20.322 4.636C21.105 5.42 21.441 6.408 21.599 7.58C21.683 8.207 21.72 8.928 21.737 9.75H2.263C2.28 8.928 2.317 8.207 2.401 7.58C2.559 6.408 2.895 5.42 3.678 4.636C4.46 3.851 5.446 3.514 6.616 3.356C6.779 3.334 6.949 3.316 7.125 3.299V2.227C7.125 1.688 7.562 1.25 8.1 1.25Z"
+			fill="currentColor"
+		/>
+	</Glyph>
+);
+
+export const ExternalLinkIcon = ({
+	size,
+	className,
+}: {
+	size?: number;
+	className?: string;
+}) => (
+	<Glyph size={size} className={className}>
+		<path
+			d="M11.1 3.002C7.452 3.009 5.541 3.098 4.32 4.319C3.002 5.637 3.002 7.758 3.002 12C3.002 16.241 3.002 18.362 4.32 19.68C5.637 20.998 7.758 20.998 12 20.998C16.242 20.998 18.363 20.998 19.681 19.68C20.902 18.459 20.992 16.548 20.998 12.9"
+			{...STROKE}
+		/>
+		<path
+			d="M20.48 3.518L14.931 9.052M20.48 3.518C19.986 3.023 16.659 3.069 15.955 3.079M20.48 3.518C20.974 4.012 20.928 7.343 20.918 8.048"
+			{...STROKE}
+		/>
+	</Glyph>
+);
+
+export const EditIcon = ({
+	size,
+	className,
+}: {
+	size?: number;
+	className?: string;
+}) => (
+	<Glyph size={size} className={className}>
+		<path
+			d="M3.5 18.985V20.5H5.014C6.241 20.5 6.854 20.5 7.405 20.272C7.957 20.043 8.39 19.61 9.257 18.743L19.121 8.879C20.004 7.996 20.445 7.555 20.494 7.013C20.502 6.924 20.502 6.834 20.494 6.744C20.445 6.203 20.004 5.761 19.121 4.879C18.238 3.996 17.797 3.555 17.256 3.506C17.166 3.498 17.076 3.498 16.986 3.506C16.445 3.555 16.004 3.996 15.121 4.879L5.257 14.743C4.39 15.61 3.957 16.043 3.728 16.595C3.5 17.146 3.5 17.759 3.5 18.985Z"
+			{...STROKE}
+		/>
+		<path d="M13.5 6.5L17.5 10.5" {...STROKE} />
+	</Glyph>
+);
+
+export const SkillsIcon = ({
+	size,
+	className,
+}: {
+	size?: number;
+	className?: string;
+}) => (
+	<Glyph size={size} className={className}>
+		<path
+			d="M17.506 2.019C12.829 2.835 12 7.5 12 7.5V22C12 22 12.887 17.127 18 16.559C18.549 16.498 19 16.058 19 15.506V3.393C19 2.565 18.322 1.876 17.506 2.019Z"
+			{...STROKE}
+		/>
+		<path
+			d="M5.333 5C7.794 4.997 10.168 5.887 12 7.5V22C10.168 20.387 7.794 19.497 5.333 19.5C3.771 19.5 2.99 19.5 2.645 19.279C2.438 19.147 2.353 19.062 2.221 18.855C2 18.51 2 17.894 2 16.663V8.403C2 6.975 2 6.262 2.549 5.683C3.097 5.104 3.659 5.074 4.783 5.015C4.965 5.005 5.149 5 5.333 5Z"
+			{...STROKE}
+		/>
+		<path
+			d="M12 22.001C13.832 20.388 16.206 19.498 18.667 19.501C20.229 19.501 21.01 19.501 21.355 19.28C21.562 19.148 21.646 19.063 21.779 18.856C22 18.511 22 17.895 22 16.664V8.404C22 6.976 22 6.263 21.451 5.684C20.902 5.105 20.123 5.06 19 5"
+			{...STROKE}
+		/>
+	</Glyph>
+);
+
+/** The bolt a skill card carries, filled rather than drawn. */
+export const SkillIcon = ({
+	size,
+	className,
+}: {
+	size?: number;
+	className?: string;
+}) => (
+	<Glyph size={size} className={className}>
+		<path
+			d="M13.608 1.147C14.314 1.448 14.797 2.163 14.797 3.017L14.798 9.785C14.798 9.895 14.887 9.985 14.998 9.985H18.099C18.985 9.985 19.595 10.583 19.847 11.21C20.097 11.837 20.064 12.642 19.563 13.285L12.565 22.268C12.003 22.988 11.12 23.163 10.392 22.852C9.685 22.551 9.202 21.837 9.202 20.983L9.202 14.215C9.202 14.104 9.112 14.015 9.002 14.015H5.9C5.014 14.015 4.404 13.417 4.153 12.789C3.902 12.163 3.936 11.357 4.437 10.715L11.435 1.732C11.996 1.011 12.879 0.837 13.608 1.147Z"
+			fill="currentColor"
+		/>
+	</Glyph>
+);
+
+/** The caret the panel's groups and its menus collapse behind. */
+export const ChevronIcon = ({
+	size,
+	className,
+}: {
+	size?: number;
+	className?: string;
+}) => (
+	<Glyph size={size} className={className}>
+		<path d="M18 9C18 9 13.581 15 12 15C10.419 15 6 9 6 9" {...STROKE} />
+	</Glyph>
+);
+
+export const MenuIcon = ({
+	size,
+	className,
+}: {
+	size?: number;
+	className?: string;
+}) => (
+	<Glyph size={size} className={className}>
+		{[6, 12, 18].map((cy) => (
+			<circle key={cy} cx="12" cy={cy} r="1.75" fill="currentColor" />
+		))}
 	</Glyph>
 );
 
@@ -127,38 +261,6 @@ export const CursorIcon = ({ className }: { className?: string }) => (
 			strokeLinejoin="round"
 			strokeLinecap="round"
 		/>
-	</svg>
-);
-
-export const StatusIcon = ({
-	started,
-	className,
-}: {
-	started?: boolean;
-	className?: string;
-}) => (
-	<svg
-		width={14}
-		height={14}
-		viewBox="0 0 16 16"
-		fill="none"
-		xmlns="http://www.w3.org/2000/svg"
-		className={className}
-		style={{ flexShrink: 0 }}
-		aria-hidden="true"
-		focusable="false"
-	>
-		<circle
-			cx="8"
-			cy="8"
-			r="7"
-			fill="none"
-			stroke="currentColor"
-			strokeWidth="2"
-			strokeLinecap="round"
-			strokeDasharray={started ? undefined : "2 2.5"}
-		/>
-		{started && <path d="M 8 3 A 5 5 0 0 1 13 8 L 8 8 Z" fill="currentColor" />}
 	</svg>
 );
 

@@ -8,14 +8,27 @@ excerpt: "The success of large complex projects hinges on a well managed RAID lo
 cover: "/casestudies/raid-2-0/edit-and-track.webp"
 ---
 
+import { Contributions } from "@ui-kit/Contributions";
 import { Figure } from "@ui-kit/Figure";
 import { NextCaseStudy } from "@ui-kit/NextCaseStudy";
 import { ExtractionFlow } from "@ui-kit/figures/ExtractionFlow";
+import { HistoryDrawer } from "@ui-kit/figures/HistoryDrawer";
 import { NeedsReview } from "@ui-kit/figures/NeedsReview";
+import { ProgressDemo } from "@ui-kit/figures/ProgressDemo";
+import { SummaryPanel } from "@ui-kit/figures/SummaryPanel";
 import { TrackPress } from "@ui-kit/figures/TrackPress";
+import { RaidTable } from "@ui-kit/figures/RaidTable";
 import { RaidTypes } from "@ui-kit/figures/RaidTypes";
 
 
+
+<Contributions prs={16} added={16843} removed={8751}>
+
+	<p className="-mb-4">
+		End-to-end ownership. Initial discovery, planning and scoping, designing and iterating in Figma and Paper, developing and shipping the front-end.
+	</p>
+
+</Contributions>
 
 A RAID log is a collection of Risks, Action Items, Issues, and Decisions.
 It documents the status of a project as it evolves, identifying threats to
@@ -66,8 +79,7 @@ easier to parse.
 I also exposed two primary actions on each item, so tracking or dismissing
 is always within reach and the log stays tidy. Dismissing tucks an item
 away, while tracking feels impactful and energetic. Tracking means an item
-is exceptionally relevant, so I doubled down on that energy with a subtle
-but powerful press interaction.
+is exceptionally relevant, so I doubled down on that energy with a subtle interaction.
 
 <TrackPress />
 
@@ -79,9 +91,7 @@ summary page from a single vertical column into two columns, giving RAID
 management its own first class surface where the user keeps meeting
 context in view while digging into items for proper grooming.
 
-\[two column RAID layout\]
-
-{/* <Figure src="/casestudies/raid-2-0/[two-column-summary].webp" alt="The two column activity summary with RAID management alongside meeting context" caption="[Caption]" /> */}
+<SummaryPanel />
 
 ## An auditable paper trail
 
@@ -95,9 +105,7 @@ Clarity matters even more when working alongside an agent. The history
 documents which changes the agent made and the reasoning behind them, so
 the human can understand them and correct them when necessary.
 
-\[show the RAID drawer with its history, and fake diffs probably\]
-
-{/* <Figure src="/casestudies/raid-2-0/[drawer-history].webp" alt="The RAID drawer showing an item's history" caption="[Caption]" /> */}
+<HistoryDrawer />
 
 I tried many iterations for showing an item's history and ultimately kept
 the drawer we already had. The drawer offers the most real estate for
@@ -106,12 +114,6 @@ current workflow, moving easily between every item in a list. Making it
 more visual and tightening the hierarchy also gave space back and
 increased legibility.
 
-<Figure
-	src="/casestudies/raid-2-0/edit-and-track.webp"
-	alt="A risk's edit panel, showing its assignee, priority, and scope, with a save and track action"
-	caption="Status, impact, and likelihood, editable in place"
-/>
-
 ## The ultimate control centre
 
 The last piece of this iteration was an improved control centre. Much of
@@ -119,20 +121,16 @@ the work happens in the context of an activity summary, and the components
 and flows are largely shared, but we still wanted a delightful surface for
 managing the full log.
 
-<Figure
-	src="/casestudies/tato-raid-dashboard.webp"
-	alt="The RAID log page, with grouped controls and a scrollable table"
-	caption="The RAID log page, before and after"
-/>
+<RaidTable />
 
-I started with basic UX improvements: tightening the space at the top for
-more breathing room, grouping related controls, and scrolling the table
-contents rather than the page, so the header, footer, and every available
-action stay visible.
+I started with basic UX improvements: tightening space for
+more breathing room, grouping related controls, and making the table
+contents scrollable rather than the page, so the header, footer, and every available
+action stay visible. 
 
-\[status of a raid item being changed and animated from the table\]
+Along with all of the other status icons to show impact and likelihood, I built this fractional progress indicator so we can smoothly animate between the states, and support any number of intermediate states.
 
-{/* <Figure src="/casestudies/raid-2-0/[inline-status-change].webp" alt="A RAID item's status being changed directly from the table" caption="[Caption]" /> */}
+<ProgressDemo />
 
 Finally, based on user feedback, I made the table editable without opening
 an item. That feedback partly inspired the drawer redesign too, making
@@ -141,7 +139,7 @@ every property of an item visual as well as editable inline.
 ## The future of RAID
 
 The goal of this project, and of Tato as a whole, is to make the processes
-behind these large projects more automated and effortless, shifting the
+behind these large transformations more automated and effortless, shifting the
 human workload from note taking and data transfer to verification and the
 occasional correction.
 
