@@ -19,12 +19,14 @@ import { PostRow } from "./PostRow";
 /**
  * How a card arranges its copy and its artwork.
  *
- * `aside` — artwork beside the copy at every width, for a book cover, a phone,
- *   or a case study's square cover in the feed.
+ * `aside` — artwork beside the copy at every width, for a book cover or a phone.
  * `column` — one column at every width; a screenshot runs full width inside
  *   it, in the slot a live demo occupies on an experiment.
+ * `split` — a case study: the square cover sits beside the copy at md and up,
+ *   and stacks under it on a phone, where the card carries the post page's own
+ *   full-width cover instead.
  */
-export type PostLayout = "aside" | "column";
+export type PostLayout = "aside" | "column" | "split";
 
 export function Post({
 	as,
@@ -59,6 +61,8 @@ export function Post({
 				// No items-start: the body has to fill the card's width, or a live demo
 				// or cover inside it shrink-wraps to its own copy.
 				layout === "column" && "flex flex-col gap-2.5",
+				layout === "split" &&
+					"flex flex-col gap-2.5 md:flex-row md:items-center md:gap-8",
 				className,
 			)}
 		>

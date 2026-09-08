@@ -56,7 +56,13 @@ export function Media({
 		<div className={cn("self-stretch w-full rounded-xl my-2", SURFACE_OUTER)}>
 			<div
 				style={{ aspectRatio: aspect }}
-				className={cn("relative w-full rounded-lg", SURFACE_INNER, className)}
+				// Named container: a drawn cover sizes itself off this box, which the
+				// sidebar leaves narrow at md as well as on a phone.
+				className={cn(
+					"@container/media relative w-full rounded-lg",
+					SURFACE_INNER,
+					className,
+				)}
 			>
 				{children}
 				{!children && src && (

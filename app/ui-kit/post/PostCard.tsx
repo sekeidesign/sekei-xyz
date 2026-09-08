@@ -36,13 +36,16 @@ export function PostCard({
 }: PostCardProps) {
 	const href = linked && entry.hasPage ? `/p/${entry.slug}` : undefined;
 
-	// A case study's cover crops into the artwork column in the feed, and only
-	// runs full width on the post's own page, where it is the lead image.
+	// A case study's cover crops into the artwork column beside the copy, and
+	// runs full width on the post's own page, where it is the lead image. On a
+	// phone the card runs it full width too, so the feed and the page lead with
+	// the same cover at the same size rather than two crops of it.
 	const squareCover = entry.kind === "writing" && !lead;
 	const media = entryMedia(entry, eager, squareCover);
-	const aside =
-		entry.kind === "book" || entry.kind === "launch" || squareCover;
-	const layout = media && aside ? "aside" : "column";
+	const stacked = squareCover ? entryMedia(entry, eager, false) : null;
+	const aside = entry.kind === "book" || entry.kind === "launch";
+	const layout =
+		media && squareCover ? "split" : media && aside ? "aside" : "column";
 
 	return (
 		<Post as={as} id={entry.slug} href={href} layout={layout}>
@@ -51,7 +54,11 @@ export function PostCard({
 				    of the excerpt, already styled by mdx-components. */}
 				{children ? (
 					<>
-						<Post.Meta kind={entry.kind} date={entry.date} draft={entry.draft} />
+						<Post.Meta
+							kind={entry.kind}
+							date={entry.date}
+							draft={entry.draft}
+						/>
 						<Post.Title
 							as={heading}
 							subtitle={entry.subtitle}
@@ -77,11 +84,19 @@ export function PostCard({
 				)}
 
 				{layout === "column" && media}
+				{/* self-stretch against Body's items-start, or the cover shrink-wraps
+				    to its own drawn width. */}
+				{layout === "split" && (
+					<div className="w-full self-stretch md:hidden">{stacked}</div>
+				)}
 
 				<PostCardFooter entry={entry} href={href} />
 			</Post.Body>
 
 			{layout === "aside" && media}
+			{layout === "split" && (
+				<div className="hidden shrink-0 md:block">{media}</div>
+			)}
 		</Post>
 	);
 }
