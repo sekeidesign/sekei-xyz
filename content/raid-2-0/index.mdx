@@ -12,6 +12,7 @@ import { Figure } from "@ui-kit/Figure";
 import { NextCaseStudy } from "@ui-kit/NextCaseStudy";
 import { ExtractionFlow } from "@ui-kit/figures/ExtractionFlow";
 import { NeedsReview } from "@ui-kit/figures/NeedsReview";
+import { TrackPress } from "@ui-kit/figures/TrackPress";
 import { RaidTypes } from "@ui-kit/figures/RaidTypes";
 
 
@@ -68,12 +69,12 @@ away, while tracking feels impactful and energetic. Tracking means an item
 is exceptionally relevant, so I doubled down on that energy with a subtle
 but powerful press interaction.
 
-\[interaction of tracking button being pressed\]
-
-{/* <Figure src="/casestudies/raid-2-0/[track-interaction].webp" alt="The track button being pressed on a RAID item" caption="[Caption]" /> */}
+<TrackPress />
 
 This first iteration landed well, with early feedback showing a perception
-that Tato was smarter and more nuanced. To take it further I reworked the
+that Tato was smarter and more nuanced. We've found our users' quantitative perception to be just as important as the qualitative improvements when it comes to interacting with an LLM.
+
+To take it further I reworked the
 summary page from a single vertical column into two columns, giving RAID
 management its own first class surface where the user keeps meeting
 context in view while digging into items for proper grooming.

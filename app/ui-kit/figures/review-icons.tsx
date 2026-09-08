@@ -63,19 +63,72 @@ export const CollapseIcon = ({ className }: { className?: string }) => (
 	</Glyph>
 );
 
-export const DismissIcon = ({ className }: { className?: string }) => (
-	<Glyph className={className}>
+export const DismissIcon = ({
+	size,
+	className,
+}: {
+	size?: number;
+	className?: string;
+}) => (
+	<Glyph size={size} className={className}>
 		<path d="M18 6L6.001 17.999M17.999 18L6 6.001" {...STROKE} />
 	</Glyph>
 );
 
-export const TrackIcon = ({ className }: { className?: string }) => (
-	<Glyph className={className}>
-		<path
-			d="M13.856 22C26.078 19 19.234 7 10.923 2C9.945 5.5 8.478 6.5 5.545 10C1.661 14.634 3.59 20 8.967 22C8.152 21 6.05 18.901 7.5 16C8 15 9 14 8.5 12C9.478 12.5 11.5 13 12 15.5C12.815 14.5 13.66 12.4 12.878 10C19 14.5 16.5 19 13.856 22Z"
-			{...STROKE}
-		/>
+/** The flame's own outline, which the tracked fill is clipped to. */
+export const FLAME =
+	"M13.856 22C26.078 19 19.234 7 10.923 2C9.945 5.5 8.478 6.5 5.545 10C1.661 14.634 3.59 20 8.967 22C8.152 21 6.05 18.901 7.5 16C8 15 9 14 8.5 12C9.478 12.5 11.5 13 12 15.5C12.815 14.5 13.66 12.4 12.878 10C19 14.5 16.5 19 13.856 22Z";
+
+export const TrackIcon = ({
+	size,
+	filled,
+	className,
+}: {
+	size?: number;
+	filled?: boolean;
+	className?: string;
+}) => (
+	<Glyph size={size} className={className}>
+		<path d={FLAME} {...STROKE} fill={filled ? "currentColor" : "none"} />
 	</Glyph>
+);
+
+const POINTER = "M5 3L18.5 12.5L11 13.8L5 18Z";
+
+/**
+ * The pointer that drives the press figure, after Figma's: no tail, the corners
+ * softened by stroking the same path it fills, and a white outline from a
+ * wider stroke of that path underneath.
+ */
+export const CursorIcon = ({ className }: { className?: string }) => (
+	<svg
+		width={26}
+		height={26}
+		viewBox="0 0 24 24"
+		fill="none"
+		xmlns="http://www.w3.org/2000/svg"
+		className={className}
+		style={{ flexShrink: 0 }}
+		aria-hidden="true"
+		focusable="false"
+	>
+		<path
+			d={POINTER}
+			fill="white"
+			stroke="white"
+			strokeWidth="4.5"
+			strokeLinejoin="round"
+			strokeLinecap="round"
+		/>
+		<path
+			d={POINTER}
+			fill="currentColor"
+			stroke="currentColor"
+			strokeWidth="1.75"
+			strokeLinejoin="round"
+			strokeLinecap="round"
+		/>
+	</svg>
 );
 
 /** A quarter-turn dial for an item in progress, an open ring for one not started. */

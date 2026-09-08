@@ -485,6 +485,10 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  /* Declared rather than left to a var() fallback: an undeclared property is
+     folded away to its fallback at build time, and the ripple could then only
+     ever start from the centre. */
+  --ripple-y: 50%;
   background-image: radial-gradient(
     var(--ripple-color, #ff5500) var(--dot-size, 0.5px),
     transparent calc(var(--dot-size, 0.5px) + 0.5px)
@@ -492,7 +496,7 @@ body {
   background-size: var(--dot-gap, 3px) var(--dot-gap, 3px);
   background-position: center;
   mask-image: radial-gradient(
-    circle at var(--ripple-x, 50%) 50%,
+    circle at var(--ripple-x, 50%) var(--ripple-y),
     transparent calc(var(--ripple-r) - 14px),
     #000 var(--ripple-r),
     transparent calc(var(--ripple-r) + 14px)
