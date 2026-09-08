@@ -10,6 +10,7 @@ import { TooltipProvider, TooltipSurface } from "./ui-kit/Tooltip";
 import { getTimeline } from "@/lib/timeline";
 import { Footer } from "./Footer";
 import { MotionProvider } from "./ui-kit/motion/MotionProvider";
+import { NavigationTracker } from "./ui-kit/nav-history";
 import { siteUrl } from "@/lib/site";
 
 const geistSans = Geist({
@@ -78,6 +79,7 @@ export default function RootLayout({
 				className={`${geistSans.variable} ${geistMono.variable} ${geistPixel.variable} antialiased`}
 				style={{ backgroundColor: "var(--color-gray-200)" }}
 			>
+				<NavigationTracker />
 				<MotionProvider>
 					<TooltipProvider delay={200} closeDelay={0} timeout={400}>
 						<TooltipSurface />
