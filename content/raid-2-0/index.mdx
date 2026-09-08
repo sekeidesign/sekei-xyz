@@ -10,6 +10,8 @@ cover: "/casestudies/raid-2-0/edit-and-track.webp"
 
 import { Figure } from "@ui-kit/Figure";
 import { NextCaseStudy } from "@ui-kit/NextCaseStudy";
+import { ExtractionFlow } from "@ui-kit/figures/ExtractionFlow";
+import { RaidTypes } from "@ui-kit/figures/RaidTypes";
 
 
 
@@ -21,17 +23,14 @@ In digital transformation programs, where projects span three to five
 years, cross project dependencies, large teams, and even larger budgets
 make a RAID log critical to success and extremely difficult to manage.
 
-\[image of RAIDs with their icons\]
-
-{/* <Figure src="/casestudies/raid-2-0/[raid-types].webp" alt="The four RAID item types with their icons" caption="[Caption]" /> */}
+<RaidTypes />
 
 RAIDs crop up in meetings, chat messages, emails, reports, and any other
 surface where people interact. They get discussed and tackled in an even
 broader set of tools, and their evolution is long and rarely clear-cut.
-
-That complexity is an opportunity for Tato to put its deep project
-knowledge, integrations, and agents to work extracting, monitoring, and
-documenting RAID items across the lifecycle of a multi-year project.
+This complexity is an opportunity for Tato to put its deep project
+knowledge, integrations, and agents to work to extract, monitor, and
+document RAID items across the lifecycle of a multi-year project.
 
 ## Extraction and human-in-the-loop
 
@@ -42,9 +41,7 @@ act as a single source of truth. Tato updates the log after any activity,
 and pulls from external tools periodically or on command through MCPs and
 bespoke integrations.
 
-\[activity flows from tools to a little block where a RAID item is produced\]
-
-{/* <Figure src="/casestudies/raid-2-0/[extraction-flow].webp" alt="Activity from connected tools flowing into a single extracted RAID item" caption="[Caption]" /> */}
+<ExtractionFlow />
 
 The RAID updates on the activity summary page started as a simple section
 showing the under-the-hood thinking of our agent. Exposing that machinery

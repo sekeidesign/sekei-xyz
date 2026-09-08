@@ -391,6 +391,84 @@ body {
   animation-play-state: running;
 }
 
+/* The extraction figure: a lit dash running each path towards the Tato mark,
+   and rings breathing out of it. Both idle until an ancestor carries
+   .flow-live, so a figure below the fold animates nothing. */
+.flow-pulse {
+  animation: flow-travel 2.4s linear infinite;
+  animation-play-state: paused;
+}
+
+/* One travelling dash, from wherever the element says it starts to wherever it
+   says it ends. Every path is drawn with pathLength 1 against a gap of 1, so
+   only one dash is ever on a path and both ends are plain numbers the figure
+   works out from its own dash length. */
+@keyframes flow-travel {
+  from {
+    stroke-dashoffset: var(--flow-from);
+  }
+  to {
+    stroke-dashoffset: var(--flow-to);
+  }
+}
+
+.flow-ring {
+  animation: flow-ring 3.6s ease-out infinite;
+  animation-play-state: paused;
+}
+
+/* Starts on the mark's own frame — 52px box, 10px corner — so a ring grows out
+   of that edge rather than popping in around it, and ends on the design's
+   outermost ring at 88/28. The box and the corner are animated rather than
+   scaled: a scale would carry the 10px corner up to 17px, where the design
+   opens it to 28px. */
+@keyframes flow-ring {
+  from {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    opacity: 0.7;
+  }
+  to {
+    width: 88px;
+    height: 88px;
+    border-radius: 28px;
+    opacity: 0;
+  }
+}
+
+.flow-live .flow-pulse,
+.flow-live .flow-ring {
+  animation-play-state: running;
+}
+
+/* The run out of the mark crosses in half a lap and waits out the rest, so the
+   pulse travels faster than the lanes feeding it while items still land at the
+   lap's own pace. The hold sits at the head of the keyframes rather than the
+   tail, so the lap ends the moment the pulse lands and the hand-off it drives
+   stays in step. */
+.flow-held {
+  animation-name: flow-travel-held;
+}
+
+@keyframes flow-travel-held {
+  from,
+  50% {
+    stroke-dashoffset: var(--flow-from);
+  }
+  to {
+    stroke-dashoffset: var(--flow-to);
+  }
+}
+
+/* The same dash carrying on around the badge, split over the top and bottom
+   halves of its border and run once per hand-off rather than looped. Held on
+   its last frame, or the resting offset would drop the dash back at the west
+   point as a flash. */
+.flow-trace {
+  animation: flow-travel 0.4s ease-out forwards;
+}
+
 /* Registered so the ring radius can be interpolated by an animation; an
    unregistered custom property would jump rather than tween. */
 @property --ripple-r {
