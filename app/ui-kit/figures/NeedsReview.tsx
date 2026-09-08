@@ -72,7 +72,9 @@ export function NeedsReview() {
 function Player() {
 	return (
 		<div className="flex gap-2 rounded-2xl bg-white p-2 ring-1 ring-gray-500/10 shadow-lg shadow-gray-900/5">
-			<div className="relative aspect-video shrink-0 self-stretch overflow-hidden rounded-lg bg-black ring-1 ring-gray-500/20">
+			{/* 72px is the controls beside it: a 6px bar, 12px gap, a 36px row and
+			    the block's own padding — so the thumbnail fills the player. */}
+			<div className="relative aspect-video h-18 shrink-0 overflow-hidden rounded-lg bg-black ring-1 ring-gray-500/20">
 				<Image
 					src="/casestudies/raid-2-0/meeting-thumb.webp"
 					alt=""
