@@ -72,7 +72,7 @@ export function NeedsReview() {
 function Player() {
 	return (
 		<div className="flex gap-2 rounded-2xl bg-white p-2 ring-1 ring-gray-500/10 shadow-lg shadow-gray-900/5">
-			<div className="relative aspect-video h-14 shrink-0 overflow-hidden rounded-lg bg-black ring-1 ring-gray-500/20 sm:h-18">
+			<div className="relative aspect-video shrink-0 self-stretch overflow-hidden rounded-lg bg-black ring-1 ring-gray-500/20">
 				<Image
 					src="/casestudies/raid-2-0/meeting-thumb.webp"
 					alt=""
@@ -99,7 +99,7 @@ function Player() {
 							0:00:00 / 1:04:19
 						</span>
 					</div>
-					<div className="hidden w-full items-center justify-end gap-2 sm:flex">
+					<div className="flex w-full items-center justify-end gap-2">
 						<span
 							className={cn(
 								"flex size-7 shrink-0 items-center justify-center rounded-full text-gray-600",
