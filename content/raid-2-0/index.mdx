@@ -4,89 +4,145 @@ title: "A RAID log for the AI native era"
 kind: writing
 icon: /logos/tato.webp
 tags: [Tato, case study]
-excerpt: "The RAID log is a core part of successful large scale projects. We built the next generation of this tool, with automated extraction, human in the loop, and lots of design love."
+excerpt: "The success of large complex projects hinges on a well managed RAID log. To help more of these projects succeed we built one with automated extraction, human in the loop, and lots of design love."
 cover: "/casestudies/raid-2-0/edit-and-track.webp"
 ---
 
+import { Contributions } from "@ui-kit/Contributions";
 import { Figure } from "@ui-kit/Figure";
 import { NextCaseStudy } from "@ui-kit/NextCaseStudy";
-import { Problems } from "@ui-kit/Problems";
+import { ExtractionFlow } from "@ui-kit/figures/ExtractionFlow";
+import { HistoryDrawer } from "@ui-kit/figures/HistoryDrawer";
+import { NeedsReview } from "@ui-kit/figures/NeedsReview";
+import { ProgressDemo } from "@ui-kit/figures/ProgressDemo";
+import { SummaryPanel } from "@ui-kit/figures/SummaryPanel";
+import { TrackPress } from "@ui-kit/figures/TrackPress";
+import { RaidTable } from "@ui-kit/figures/RaidTable";
+import { RaidTypes } from "@ui-kit/figures/RaidTypes";
 
 
 
-Tato extracted six entity types from every meeting: Changes, Risks,
-Assumptions, Action Items, Issues, and Decisions. On paper that's thorough.
-In practice it produced a wall of overlapping items that most users
-scrolled past.
+<Contributions prs={16} added={16843} removed={8751}>
 
-<Problems
-	items={[
-		"The six types overlapped: a change was usually a decision, an issue was a risk that had already happened.",
-		"Extraction produced more items per meeting than anyone could act on.",
-		"Items were read-only snippets. If Tato got one slightly wrong, you were stuck with it.",
-	]}
-/>
+End-to-end ownership. Initial discovery, planning and scoping, designing and
+iterating in Figma and Paper, developing and shipping the front-end.
 
-## Approach
+</Contributions>
 
-We replaced the six types with three: Risk, Action Item, Decision. A risk
-has an owner and a priority: critical, high, medium, or low. An action
-item has an assignee and a due date. A decision is attributable to a
-person and tied to the meeting where it was made. Everything else was cut.
-The target was blunt: roughly half the items per meeting, so the list
-after a meeting is short enough to act on in a minute.
+## Anatomy of a RAID log
 
-### A human in the loop
+A RAID log is a collection of Risks, Action Items, Issues, and Decisions.
+It documents the status of a project as it evolves, identifying threats to
+the critical path and ensuring appropriate ownership and traceability.
 
-Cleaner extraction only matters if people trust it, so every item became
-reviewable. After a meeting, items land in a needs-review list on the
-summary. From there the user edits what Tato got slightly wrong, dismisses
-false positives, and tracks what matters. Tracked items move to the RAID
-page and get monitored across meetings, with badges showing what's new and
-what changed since last time. Tato does the reading; the user makes the
-calls.
+In digital transformation programs, where projects span three to five
+years, cross project dependencies, large teams, and even larger budgets
+make a RAID log critical to success and extremely difficult to manage.
 
-<Figure
-	src="/casestudies/raid-2-0/needs-review.webp"
-	alt="A meeting summary's needs-review list, with action items and decisions awaiting review, dismissal, or tracking"
-	caption="The needs-review list on a meeting summary"
-/>
+<RaidTypes />
 
-Editing isn't limited to a form, either. Drop in a file or tell Tato what
-changed in chat, and it updates the item and timestamps the edit. Risks,
-actions, and decisions link to each other too, so a decision traces back
-to the risk that prompted it.
+RAIDs crop up in meetings, chat messages, emails, reports, and any other
+surface where people interact. They get discussed and tackled in an even
+broader set of tools, and their evolution is long and rarely clear-cut.
+This complexity is an opportunity for Tato to put its deep project
+knowledge, integrations, and agents to work to extract, monitor, and
+document RAID items across the lifecycle of a multi-year project.
 
-<Figure
-	src="/casestudies/raid-2-0/edit-and-track.webp"
-	alt="A risk's edit panel, showing its assignee, priority, and scope, with a save and track action"
-	caption="Editing a risk before tracking it"
-/>
+## Extraction and human-in-the-loop
 
-### The rollout
+Meetings are the primary source of RAID items, but the items themselves
+are usually managed in Jira, Smartsheet, or plain old spreadsheets. Our
+first job was consolidating those sources into a normalized log that could
+act as a single source of truth. Tato updates the log after any activity,
+and pulls from external tools periodically or on command through MCPs and
+bespoke integrations.
 
-Replacing entity types means touching customers' existing data, so the
-rollout became its own project. We ran it in three phases over a month: a
-banner prompted people to review and track what mattered, the new view
-became default two weeks later with a manual switch-back, then the cutover
-went permanent. Tracked items migrated with full history. Everything else,
-including the retired Changes, Assumptions, and Issues types, was archived
-instead of deleted, and CS could still pull an item back on request.
+<ExtractionFlow />
 
-<Figure
-	src="/casestudies/tato-raid-dashboard.webp"
-	alt="Tato RAID dashboard screen"
-	caption="RAID 2.0, with a human in the loop"
-/>
+The RAID updates on the activity summary page started as a simple section
+showing the under-the-hood thinking of our agent. Exposing that machinery
+is almost always a mistake that overloads the user, and despite our best
+efforts, LLMs produce volume, which leads to an overwhelming number of
+items.
 
-## Outcome
+Hiding the machinery was the first improvement, and it cut a lot of noise
+on its own, since multiple snippets often related to a single update on a
+single item. From there I reduced the amount of text and added icons and
+avatars, which improved legibility and hierarchy and made the whole list
+easier to parse.
 
-RAID went from a wall of snippets people scrolled past to a short list
-they clear after each meeting. Risks persist until someone resolves them,
-and decisions carry a paper trail back to the meeting and speaker where
-they were made. The project is also the core of Proactive Visibility, an
-objective I own: giving customers independent visibility into
-implementation risk before sign-off, not after.
+<NeedsReview />
+
+I also exposed two primary actions on each item, so tracking or dismissing
+is always within reach and the log stays tidy. 
+
+Dismissing an item tucks it away, letting the system know this AI extraction was not useful.
+Tracking an item marks as exceptionally relevant, so I used a subtle interaction to make it feel impactful and energetic.
+
+<TrackPress />
+
+This first iteration landed well, with early feedback showing a perception
+that Tato was smarter and more nuanced. We've found our users' quantitative perception to be just as important as the qualitative improvements when it comes to interacting with an LLM.
+
+To take it further I reworked the
+summary page from a single vertical column into two columns, giving RAID
+management its own first class surface where the user keeps meeting
+context in view while digging into items for proper grooming.
+
+<SummaryPanel />
+
+## An auditable paper trail
+
+A well managed RAID log is also an accurate record of a project's
+evolution, and of what the team did to mitigate critical risks. Our
+history view was hard to reach, sometimes hidden behind two separate
+clicks, and it focused on diffs between versions. Diffs matter, but they
+fail to paint the most important picture: what caused a change, and when.
+
+Clarity matters even more when working alongside an agent. The history
+documents which changes the agent made and the reasoning behind them, so
+the human can understand them and correct them when necessary.
+
+<HistoryDrawer />
+
+I tried many iterations for showing an item's history and ultimately kept
+the drawer we already had. The drawer offers the most real estate for
+understanding a risk and its history while letting the user stay in their
+current workflow, moving easily between every item in a list. Making it
+more visual and tightening the hierarchy also gave space back and
+increased legibility.
+
+## The ultimate control centre
+
+The last piece of this iteration was an improved control centre. Much of
+the work happens in the context of an activity summary, and the components
+and flows are largely shared, but we still wanted a delightful surface for
+managing the full log.
+
+<RaidTable />
+
+I started with basic UX improvements: tightening space for
+more breathing room, grouping related controls, and making the table
+contents scrollable rather than the page, so the header, footer, and every available
+action stay visible. 
+
+Along with all of the other status icons to show impact and likelihood, I built this Linear inspired fractional progress indicator so we can smoothly animate between the states, and support any number of intermediate states.
+
+<ProgressDemo />
+
+Finally, based on user feedback, I made the table editable without opening
+an item. That feedback partly inspired the drawer redesign too, making
+every property of an item visual as well as editable inline.
+
+## The future of RAID
+
+The goal of this project, and of Tato as a whole, is to make the processes
+behind these large transformations more automated and effortless, shifting the
+human workload from note taking and data transfer to verification and the
+occasional correction.
+
+This RAID log is one small step toward a future where humans and AI
+collaborate to ensure successful business transformations.
 
 
 <NextCaseStudy

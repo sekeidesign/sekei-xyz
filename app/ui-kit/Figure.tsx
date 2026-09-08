@@ -62,7 +62,7 @@ export function Figure({ src, alt, caption }: FigureProps) {
 				/>
 			</button>
 			{caption && (
-				<figcaption className="px-6 md:px-13 pt-2 text-sm text-gray-400">
+				<figcaption className="px-6 md:px-13 pt-2 text-sm text-center text-gray-400">
 					{caption}
 				</figcaption>
 			)}

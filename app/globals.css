@@ -513,6 +513,91 @@ body {
   animation-play-state: running;
 }
 
+/* Every coded figure draws a full page inside a column a fraction of its
+   width, so it is drawn at its own size and scaled down as a whole. zoom rather
+   than a transform: zoom reflows, so the mock still gets the layout width it
+   was designed against, and the frame around it keeps its real height. Lower on
+   a phone, where that column is narrower still. */
+.figure-scale {
+  --figure-scale: 0.85;
+  zoom: var(--figure-scale);
+}
+
+@media (width < 48rem) {
+  .figure-scale {
+    --figure-scale: 0.55;
+  }
+}
+
+/* The extraction figure's dashes and rings. Both idle until an ancestor
+   carries .flow-live, so a figure below the fold animates nothing. */
+.flow-pulse {
+  animation: flow-travel 2.4s linear infinite;
+  animation-play-state: paused;
+}
+
+/* Paths carry pathLength 1 against a gap of 1, so only one dash is ever on a
+   path and both ends are numbers the figure works out from its dash length. */
+@keyframes flow-travel {
+  from {
+    stroke-dashoffset: var(--flow-from);
+  }
+  to {
+    stroke-dashoffset: var(--flow-to);
+  }
+}
+
+.flow-ring {
+  animation: flow-ring 3.6s ease-out infinite;
+  animation-play-state: paused;
+}
+
+/* From the mark's own frame, 52px box and 10px corner, out to the design's
+   outermost ring at 88/28. The box and corner animate rather than scale: a
+   scale would carry that corner to 17px, where the design opens it to 28. */
+@keyframes flow-ring {
+  from {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    opacity: 0.7;
+  }
+  to {
+    width: 88px;
+    height: 88px;
+    border-radius: 28px;
+    opacity: 0;
+  }
+}
+
+.flow-live .flow-pulse,
+.flow-live .flow-ring {
+  animation-play-state: running;
+}
+
+/* Crossing in half a lap and waiting out the rest lets this pulse outpace the
+   lanes feeding it while items still land at the lap's pace. The hold sits at
+   the head, so the lap ends on arrival and the hand-off stays in step. */
+.flow-held {
+  animation-name: flow-travel-held;
+}
+
+@keyframes flow-travel-held {
+  from,
+  50% {
+    stroke-dashoffset: var(--flow-from);
+  }
+  to {
+    stroke-dashoffset: var(--flow-to);
+  }
+}
+
+/* The same dash carrying on around the badge, once per hand-off. Held on its
+   last frame, or the resting offset drops the dash back at the west point. */
+.flow-trace {
+  animation: flow-travel 0.4s ease-out forwards;
+}
+
 /* Registered so the ring radius can be interpolated by an animation; an
    unregistered custom property would jump rather than tween. */
 @property --ripple-r {
@@ -529,6 +614,10 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  /* Declared rather than left to a var() fallback: an undeclared property is
+     folded away to its fallback at build time, and the ripple could then only
+     ever start from the centre. */
+  --ripple-y: 50%;
   background-image: radial-gradient(
     var(--ripple-color, #ff5500) var(--dot-size, 0.5px),
     transparent calc(var(--dot-size, 0.5px) + 0.5px)
@@ -536,7 +625,7 @@ body {
   background-size: var(--dot-gap, 3px) var(--dot-gap, 3px);
   background-position: center;
   mask-image: radial-gradient(
-    circle at var(--ripple-x, 50%) 50%,
+    circle at var(--ripple-x, 50%) var(--ripple-y),
     transparent calc(var(--ripple-r) - 14px),
     #000 var(--ripple-r),
     transparent calc(var(--ripple-r) + 14px)
