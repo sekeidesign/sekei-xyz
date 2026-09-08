@@ -11,6 +11,7 @@ cover: "/casestudies/raid-2-0/edit-and-track.webp"
 import { Figure } from "@ui-kit/Figure";
 import { NextCaseStudy } from "@ui-kit/NextCaseStudy";
 import { ExtractionFlow } from "@ui-kit/figures/ExtractionFlow";
+import { NeedsReview } from "@ui-kit/figures/NeedsReview";
 import { RaidTypes } from "@ui-kit/figures/RaidTypes";
 
 
@@ -59,11 +60,7 @@ single item. From there I reduced the amount of text and added icons and
 avatars, which improved legibility and hierarchy and made the whole list
 easier to parse.
 
-<Figure
-	src="/casestudies/raid-2-0/needs-review.webp"
-	alt="A meeting summary's needs-review list, with action items and decisions awaiting review, dismissal, or tracking"
-	caption="The needs-review list on a meeting summary"
-/>
+<NeedsReview />
 
 I also exposed two primary actions on each item, so tracking or dismissing
 is always within reach and the log stays tidy. Dismissing tucks an item
