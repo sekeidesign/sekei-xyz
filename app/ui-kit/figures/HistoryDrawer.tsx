@@ -57,7 +57,7 @@ export function HistoryDrawer() {
 					<RaidPanel shown={[3, 4, 2, 2]} />
 				</div>
 				<div className="absolute inset-0 bg-gray-900/20" />
-				<div className="relative flex w-full flex-col gap-4 bg-white p-5 ring-1 ring-gray-500/10 shadow-2xl sm:w-130">
+				<div className="relative flex w-4/6 flex-col gap-4 bg-white p-5 ring-1 ring-gray-500/10 shadow-2xl sm:w-130">
 					<div className="flex flex-col gap-4">
 						<div className="flex items-center justify-between gap-3">
 							<div className="flex items-center gap-1">

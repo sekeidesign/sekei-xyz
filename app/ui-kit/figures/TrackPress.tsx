@@ -20,7 +20,8 @@ const SEQUENCE: { phase: Phase; ms: number }[] = [
 ];
 
 /** Critically damped: it settles into place without overshooting. */
-const SPRING = { type: "spring", bounce: 0, duration: 0.55 } as const;
+const SPRING = { type: "spring", bounce: 0, duration: 0.3 } as const;
+const SPRING_LONG = { type: "spring", bounce: 0, duration: 0.6 } as const;
 
 /**
  * Where the pointer waits, and where it lands: below and right of the button's
@@ -82,8 +83,8 @@ export function TrackPress() {
 				<div className="flex w-full items-center gap-6 px-8">
 					<div className="flex min-w-0 grow items-center gap-4">
 						<span className="size-7 shrink-0 rounded-full bg-gray-500/10" />
-						<span className="h-4 w-full max-w-72 rounded-full bg-gray-500/10" />
-						<span className="h-4 w-14 shrink-0 rounded-full bg-gray-500/10" />
+						<span className="h-4 w-8 md:w-full max-w-72 rounded-full bg-gray-500/10" />
+						<span className="h-4 w-8 md:w-14 shrink-0 rounded-full bg-gray-500/10" />
 					</div>
 					{/* The pill measures itself around what it holds, so dropping the
 					    dismiss action closes it up on the compositor rather than
@@ -100,6 +101,8 @@ export function TrackPress() {
 								<m.span
 									key="dismiss"
 									layout
+									initial={{ opacity: 0 }}
+									animate={{ opacity: 1 }}
 									exit={{ opacity: 0 }}
 									transition={SPRING}
 									className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full text-gray-600"
@@ -111,6 +114,8 @@ export function TrackPress() {
 								<m.span
 									key="rule"
 									layout
+									initial={{ opacity: 0 }}
+									animate={{ opacity: 1 }}
 									exit={{ opacity: 0 }}
 									transition={SPRING}
 									className="-mx-px h-6 w-px shrink-0 bg-gray-400/20"
@@ -119,7 +124,7 @@ export function TrackPress() {
 						</AnimatePresence>
 						<m.span
 							layout
-							animate={{ scale: pressed ? 0.94 : 1 }}
+							animate={{ scale: pressed ? 0.90 : 1 }}
 							transition={SPRING}
 							className="relative flex size-14 shrink-0 items-center justify-center rounded-full text-gray-600"
 						>
@@ -186,7 +191,7 @@ export function TrackPress() {
 									...(onButton ? ON : AWAY),
 									scale: pressed ? 0.88 : 1,
 								}}
-								transition={{ ...SPRING, scale: { duration: 0.12 } }}
+								transition={{ ...SPRING_LONG, scale: { duration: 0.12 } }}
 								className="absolute top-1/2 left-1/2 text-gray-900 drop-shadow-md drop-shadow-black/25"
 							>
 								<CursorIcon />
