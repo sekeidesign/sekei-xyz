@@ -8,10 +8,7 @@ import { useEffect } from "react";
 let lastPath: string | null = null;
 let depth = 0;
 
-/**
- * Counts distinct paths visited in this document. Mounted once at the root,
- * above every route, so it keeps counting while pages come and go.
- */
+/** Mounted at the root, above every route, so it counts across navigation. */
 export function NavigationTracker() {
 	const pathname = usePathname();
 

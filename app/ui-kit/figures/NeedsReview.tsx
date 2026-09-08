@@ -194,7 +194,6 @@ const SECTIONS: { heading: string; items: Item[] }[] = [
 
 const CHIP = "bg-white ring-1 ring-gray-500/15 shadow-sm";
 const TAB = "flex h-7 w-21 shrink-0 items-center justify-center rounded-full text-sm font-[500] text-gray-900";
-/** Unselected sits on a translucent fill, as in the design — not on nothing. */
 const TAB_IDLE = "bg-gray-500/10 ring-1 ring-gray-500/10";
 
 export function NeedsReview() {

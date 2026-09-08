@@ -61,7 +61,7 @@ const PULSE_PERIOD = DASH + 2;
 const PULSE_FROM = round(PULSE_PERIOD + DASH);
 const PULSE_TO = round(PULSE_PERIOD - 1);
 
-/** The badge's outline: a 50px circle around its 48, stroked 1.5 on the edge. */
+/** Stroked on the badge's own edge, hence the half stroke off the radius. */
 const TRACE_BOX = 50;
 const TRACE_R = TRACE_BOX / 2 - 0.75;
 
@@ -204,11 +204,7 @@ export function ExtractionFlow() {
 	);
 }
 
-/**
- * A layer of lines over the whole card, under the badges they run between. The
- * viewBox is the design's card stretched to whatever the layout is, and a
- * non-scaling stroke keeps the hairline 1px through that distortion.
- */
+/** The viewBox stretches to the layout, so the stroke has to refuse to. */
 function Flow({
 	paths,
 	tone,
@@ -219,14 +215,12 @@ function Flow({
 	onArrive,
 }: {
 	paths: string[];
-	/** Text colour the pulse draws from. */
 	tone: string;
 	/** Seconds a lap takes. Also the window the paths stagger across. */
 	duration: number;
 	delay?: number;
 	/** Wait out half the lap before setting off, so the loop reads slower. */
 	held?: boolean;
-	/** Fade the pulse in and out along the path rather than drawing it flat. */
 	fade?: boolean;
 	onArrive?: () => void;
 }) {
@@ -325,8 +319,8 @@ function Trace({ tone }: { tone: string }) {
 			aria-hidden="true"
 			focusable="false"
 		>
-			{/* One arc over the top, one under the bottom, both leaving the west
-			    point together — the pulse splitting around the badge. */}
+			{/* Sweep 1 goes over the top and 0 under the bottom, both from the
+			    west point — the pulse splitting around the badge. */}
 			{[1, 0].map((sweep) => (
 				<path
 					key={sweep}

@@ -1,10 +1,6 @@
 const TABS = ["Risks", "Action Items", "Issues", "Decisions"];
 
-/**
- * The same three risks the reviewed list carries, in the shape the old view
- * gave them: a heading, two lines of metadata, and a paragraph of the agent's
- * own prose, one entity type per tab.
- */
+/** The reviewed list's own three risks, so the toggle compares form, not content. */
 const ITEMS = [
 	{
 		title: "Recorder can't join authenticated meetings",

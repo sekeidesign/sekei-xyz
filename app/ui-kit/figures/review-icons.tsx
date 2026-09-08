@@ -96,9 +96,8 @@ export const TrackIcon = ({
 const POINTER = "M5 3L18.5 12.5L11 13.8L5 18Z";
 
 /**
- * The pointer that drives the press figure, after Figma's: no tail, the corners
- * softened by stroking the same path it fills, and a white outline from a
- * wider stroke of that path underneath.
+ * After Figma's pointer. Drawn twice: the wider stroke underneath is the white
+ * outline, and stroking each path with its own fill is what rounds the corners.
  */
 export const CursorIcon = ({ className }: { className?: string }) => (
 	<svg
@@ -131,7 +130,6 @@ export const CursorIcon = ({ className }: { className?: string }) => (
 	</svg>
 );
 
-/** A quarter-turn dial for an item in progress, an open ring for one not started. */
 export const StatusIcon = ({
 	started,
 	className,
@@ -164,10 +162,7 @@ export const StatusIcon = ({
 	</svg>
 );
 
-/**
- * Impact, as four quadrants around a centre: the first lit quadrant sits at
- * the bottom left and they fill clockwise, the centre only at the top step.
- */
+/** Ordered from the bottom left clockwise, which is the order they light in. */
 const QUADRANTS = [
 	"M9 4.614C9 4.867 8.81 5.078 8.562 5.125C6.638 5.487 5.487 6.638 5.125 8.562C5.078 8.81 4.867 9 4.614 9H2.631C2.33 9 2.096 8.736 2.154 8.441C2.78 5.274 5.274 2.779 8.441 2.153C8.736 2.095 9 2.329 9 2.63V4.614Z",
 	"M11 2.63C11 2.329 11.264 2.095 11.559 2.153C14.726 2.779 17.22 5.274 17.846 8.441C17.904 8.736 17.67 9 17.369 9H15.386C15.133 9 14.922 8.81 14.875 8.562C14.513 6.638 13.362 5.487 11.438 5.125C11.19 5.078 11 4.867 11 4.614V2.63Z",
@@ -207,7 +202,6 @@ export const ImpactIcon = ({
 	</svg>
 );
 
-/** Likelihood, as three bars of rising height filled up to the level. */
 export const LikelihoodIcon = ({
 	level,
 	className,

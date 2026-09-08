@@ -88,8 +88,7 @@ export function TrackPress() {
 						<span className="h-4 w-14 shrink-0 rounded-full bg-gray-500/10" />
 					</div>
 					<div className="flex shrink-0 items-center rounded-full bg-white ring-1 ring-gray-500/10 shadow-skew">
-						{/* Tracking leaves one action, so dismiss and its rule fold away
-						    and the pill lands on a circle. */}
+						{/* Tracking leaves one action to take. */}
 						<m.span
 							animate={{ width: tracked ? 0 : BUTTON, opacity: tracked ? 0 : 1 }}
 							transition={SPRING}
@@ -136,8 +135,6 @@ export function TrackPress() {
 									/>
 								)}
 							</span>
-							{/* The fill is an orange disc rising out of the flame's base,
-							    clipped to the flame itself. */}
 							<svg
 								viewBox="0 0 24 24"
 								className="absolute size-8 text-orange-600"

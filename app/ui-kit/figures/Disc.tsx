@@ -1,10 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "../cn";
 
-/**
- * The design's badge: a white ring holding a tinted disc. The white gradient
- * over the tint is what makes the disc catch light at the top.
- */
 export function Disc({
 	wash,
 	className,
