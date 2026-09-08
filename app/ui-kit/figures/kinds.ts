@@ -3,7 +3,7 @@ export const RAID_KINDS = [
 	{ kind: "risk", label: "Risks", wash: "bg-red-100 shadow-orange-500/20" },
 	{
 		kind: "action",
-		label: "Action items",
+		label: "Actions",
 		wash: "bg-amber-100 shadow-amber-500/20",
 	},
 	{ kind: "issue", label: "Issues", wash: "bg-purple-100 shadow-purple-500/20" },
