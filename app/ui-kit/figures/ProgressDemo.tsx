@@ -20,7 +20,7 @@ export function ProgressDemo() {
 	const [fraction, setFraction] = useState(0.3);
 
 	return (
-		<div className={cn("my-6 w-full rounded-xl", SURFACE_OUTER)}>
+		<div className={cn("my-6 w-full cursor-default rounded-xl", SURFACE_OUTER)}>
 			<div
 				className={cn(
 					"flex flex-col items-center gap-8 rounded-lg px-6 py-10",

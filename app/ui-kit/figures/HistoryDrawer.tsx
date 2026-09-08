@@ -47,6 +47,8 @@ const HISTORY = [
 	},
 ];
 
+const LATEST = HISTORY.findIndex((entry) => entry.version);
+
 export function HistoryDrawer() {
 	return (
 		<FigureFrame ratio="8 / 5">
@@ -133,7 +135,7 @@ export function HistoryDrawer() {
 					<div className="h-px w-full bg-gray-500/10" />
 					<div className="relative flex flex-col gap-2">
 						<div className="absolute inset-y-3 left-5 w-px -translate-x-1/2 bg-gray-500/10" />
-						{HISTORY.map((entry) => (
+						{HISTORY.map((entry, index) => (
 							<div
 								key={entry.at}
 								className="relative flex min-w-0 gap-2.5 rounded-lg p-1"
@@ -147,7 +149,10 @@ export function HistoryDrawer() {
 											<span className="h-4 content-center font-mono text-xs text-gray-600">
 												{entry.version}
 											</span>
-											<span className="absolute top-2 -left-1.5 h-2.5 w-0.5 -translate-y-1/2 rounded-full bg-blue-500" />
+											{/* Only the version on show is marked. */}
+											{index === LATEST && (
+												<span className="absolute top-2 -left-1.5 h-2.5 w-0.5 -translate-y-1/2 rounded-full bg-blue-500" />
+											)}
 										</>
 									) : (
 										<span className="flex h-4 items-center">

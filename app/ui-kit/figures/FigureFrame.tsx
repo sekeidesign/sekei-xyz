@@ -18,7 +18,7 @@ export function FigureFrame({
 	footer?: ReactNode;
 }) {
 	return (
-		<div className="my-6 -mx-6 border-y border-gray-200 bg-white md:-mx-13">
+		<div className="my-6 -mx-6 cursor-default border-y border-gray-200 bg-white md:-mx-13">
 			<div className="overflow-hidden" style={{ aspectRatio: ratio }}>
 				<div
 					className="figure-scale h-full"

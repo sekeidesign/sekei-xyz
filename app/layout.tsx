@@ -10,7 +10,7 @@ import { TooltipProvider, TooltipSurface } from "./ui-kit/Tooltip";
 import { getTimeline } from "@/lib/timeline";
 import { Footer } from "./Footer";
 import { MotionProvider } from "./ui-kit/motion/MotionProvider";
-import { NavigationTracker } from "./ui-kit/nav-history";
+import { NavigationTracker } from "./ui-kit/NavigationTracker";
 import { siteUrl } from "@/lib/site";
 
 const geistSans = Geist({

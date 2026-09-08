@@ -1,6 +1,6 @@
 "use client";
 
-import { m, useInView } from "motion/react";
+import { AnimatePresence, m, useInView } from "motion/react";
 import { type CSSProperties, useEffect, useId, useRef, useState } from "react";
 import { cn } from "../cn";
 import { SURFACE_INNER, SURFACE_OUTER } from "../post/surface";
@@ -29,8 +29,6 @@ const SPRING = { type: "spring", bounce: 0, duration: 0.55 } as const;
  */
 const AWAY = { x: -76, y: 54 };
 const ON = { x: 8, y: 7 };
-
-const BUTTON = 56;
 
 /** Seconds the flame lags the release, in step with the ripple's own delay. */
 const FILL_DELAY = 0.075;
@@ -68,7 +66,7 @@ export function TrackPress() {
 	const tracked = phase === "held" || phase === "leaving";
 
 	return (
-		<div className={cn("my-6 w-full rounded-xl", SURFACE_OUTER)}>
+		<div className={cn("my-6 w-full cursor-default rounded-xl", SURFACE_OUTER)}>
 			<div
 				ref={ref}
 				role="img"
@@ -87,29 +85,40 @@ export function TrackPress() {
 						<span className="h-4 w-full max-w-72 rounded-full bg-gray-500/10" />
 						<span className="h-4 w-14 shrink-0 rounded-full bg-gray-500/10" />
 					</div>
-					<div className="flex shrink-0 items-center rounded-full bg-white ring-1 ring-gray-500/10 shadow-skew">
-						{/* Tracking leaves one action to take. */}
+					{/* The pill measures itself around what it holds, so dropping the
+					    dismiss action closes it up on the compositor rather than
+					    animating a width frame by frame. Radius as a style, or the
+					    projection would distort it on the way down. */}
+					<m.div
+						layout
+						transition={SPRING}
+						style={{ borderRadius: 9999 }}
+						className="flex shrink-0 items-center bg-white ring-1 ring-gray-500/10 shadow-skew"
+					>
+						<AnimatePresence initial={false} mode="popLayout">
+							{!tracked && (
+								<m.span
+									key="dismiss"
+									layout
+									exit={{ opacity: 0 }}
+									transition={SPRING}
+									className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full text-gray-600"
+								>
+									<DismissIcon size={32} />
+								</m.span>
+							)}
+							{!tracked && (
+								<m.span
+									key="rule"
+									layout
+									exit={{ opacity: 0 }}
+									transition={SPRING}
+									className="-mx-px h-6 w-px shrink-0 bg-gray-400/20"
+								/>
+							)}
+						</AnimatePresence>
 						<m.span
-							animate={{ width: tracked ? 0 : BUTTON, opacity: tracked ? 0 : 1 }}
-							transition={SPRING}
-							className="flex h-14 shrink-0 items-center justify-center overflow-hidden rounded-full text-gray-600"
-						>
-							<DismissIcon size={32} />
-						</m.span>
-						{/* The rule overlaps its neighbours by a pixel a side, which has to
-						    go with it — left in, the collapsed pill lands 2px narrower
-						    than it is tall and the flame sits off centre. */}
-						<m.span
-							animate={{
-								width: tracked ? 0 : 1,
-								marginLeft: tracked ? 0 : -1,
-								marginRight: tracked ? 0 : -1,
-								opacity: tracked ? 0 : 1,
-							}}
-							transition={SPRING}
-							className="h-6 shrink-0 bg-gray-400/20"
-						/>
-						<m.span
+							layout
 							animate={{ scale: pressed ? 0.94 : 1 }}
 							transition={SPRING}
 							className="relative flex size-14 shrink-0 items-center justify-center rounded-full text-gray-600"
@@ -183,7 +192,7 @@ export function TrackPress() {
 								<CursorIcon />
 							</m.span>
 						</m.span>
-					</div>
+					</m.div>
 				</div>
 			</div>
 		</div>

@@ -12,7 +12,7 @@ function Rule({ className }: { className?: string }) {
 
 export function RaidTypes() {
 	return (
-		<div className={cn("my-6 w-full rounded-xl", SURFACE_OUTER)}>
+		<div className={cn("my-6 w-full cursor-default rounded-xl", SURFACE_OUTER)}>
 			<div
 				className={cn(
 					"flex h-48 sm:h-60 items-center justify-between gap-2 sm:gap-4 rounded-lg",

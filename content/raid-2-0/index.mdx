@@ -24,11 +24,12 @@ import { RaidTypes } from "@ui-kit/figures/RaidTypes";
 
 <Contributions prs={16} added={16843} removed={8751}>
 
-	<p className="-mb-4">
-		End-to-end ownership. Initial discovery, planning and scoping, designing and iterating in Figma and Paper, developing and shipping the front-end.
-	</p>
+End-to-end ownership. Initial discovery, planning and scoping, designing and
+iterating in Figma and Paper, developing and shipping the front-end.
 
 </Contributions>
+
+## Anatomy of a RAID log
 
 A RAID log is a collection of Risks, Action Items, Issues, and Decisions.
 It documents the status of a project as it evolves, identifying threats to
@@ -64,10 +65,6 @@ is almost always a mistake that overloads the user, and despite our best
 efforts, LLMs produce volume, which leads to an overwhelming number of
 items.
 
-\[old raid view\]
-
-{/* <Figure src="/casestudies/raid-2-0/[old-raid-view].webp" alt="The original RAID section on an activity summary" caption="[Caption]" /> */}
-
 Hiding the machinery was the first improvement, and it cut a lot of noise
 on its own, since multiple snippets often related to a single update on a
 single item. From there I reduced the amount of text and added icons and
@@ -77,9 +74,10 @@ easier to parse.
 <NeedsReview />
 
 I also exposed two primary actions on each item, so tracking or dismissing
-is always within reach and the log stays tidy. Dismissing tucks an item
-away, while tracking feels impactful and energetic. Tracking means an item
-is exceptionally relevant, so I doubled down on that energy with a subtle interaction.
+is always within reach and the log stays tidy. 
+
+Dismissing an item tucks it away, letting the system know this AI extraction was not useful.
+Tracking an item marks as exceptionally relevant, so I used a subtle interaction to make it feel impactful and energetic.
 
 <TrackPress />
 

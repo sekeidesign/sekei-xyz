@@ -9,7 +9,8 @@ import { SURFACE_INNER, SURFACE_OUTER } from "../post/surface";
 import { usePrefersReducedMotion } from "../use-prefers-reduced-motion";
 import { Disc } from "./Disc";
 import { RAID_KINDS } from "./kinds";
-import { SOURCES, SourceIcon } from "./sources";
+import { SourceIcon } from "./SourceIcon";
+import { SOURCES } from "./sources";
 
 /**
  * The design's own card, and the x of each column's centre in it. Both the
@@ -97,7 +98,7 @@ export function ExtractionFlow() {
 	const next = (current + 1) % RAID_KINDS.length;
 
 	return (
-		<div className={cn("my-6 w-full rounded-xl", SURFACE_OUTER)}>
+		<div className={cn("my-6 w-full cursor-default rounded-xl", SURFACE_OUTER)}>
 			<div
 				ref={ref}
 				role="img"
