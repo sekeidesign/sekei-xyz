@@ -783,3 +783,74 @@ body {
     /* biome-ignore-end lint/complexity/noImportantStyles: as above */
   }
 }
+
+/* The sheet is laid out at its real paper size — 8.5in of CSS pixels — and
+   scaled down to fit the column it previews inside, the same trick the coded
+   figures use. zoom rather than transform so the sheet still reflows against
+   the width it will actually print at. */
+.resume-stage {
+  display: flex;
+  justify-content: center;
+}
+
+.resume-sheet {
+  position: relative;
+  width: 8.5in;
+  min-height: 11in;
+  padding: 0.55in 0.6in;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: var(--shadow-skew);
+  outline: 1px solid color-mix(in srgb, var(--color-gray-500) 8%, transparent);
+  zoom: var(--resume-zoom, 0.88);
+}
+
+/* Where the paper actually ends. The sheet grows past 11in when the content
+   does, and nothing on screen would otherwise show it. */
+.resume-sheet::after {
+  content: "";
+  position: absolute;
+  top: 11in;
+  left: 0;
+  right: 0;
+  border-top: 1px dashed color-mix(in srgb, #ff5500 45%, transparent);
+}
+
+@media (width < 48rem) {
+  .resume-sheet {
+    --resume-zoom: 0.44;
+  }
+}
+
+@media print {
+  @page {
+    size: letter;
+    margin: 0;
+  }
+
+  /* Everything wrapping the sheet is screen furniture — the site's panels,
+     gutters and sidebar. Dropping each ancestor out of the box tree leaves the
+     sheet as the page's only content, and does it without naming the layout's
+     anonymous divs. Scoped to a page carrying a sheet, so no other route is
+     touched. */
+  body :has([data-resume-sheet]) {
+    display: contents;
+  }
+
+  body:has([data-resume-sheet]) aside,
+  body:has([data-resume-sheet]) footer,
+  body:has([data-resume-sheet]) .stripes {
+    display: none;
+  }
+
+  .resume-sheet {
+    --resume-zoom: 1;
+    box-shadow: none;
+    outline: none;
+    border-radius: 0;
+  }
+
+  .resume-sheet::after {
+    display: none;
+  }
+}
