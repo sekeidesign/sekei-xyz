@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# sekei.xyz
 
-## Getting Started
+PG Gonni's site: a timeline of shipped work, case studies, reading notes and UI
+experiments. Next.js App Router, Tailwind v4, Base UI, Motion.
 
-First, run the development server:
+It also publishes a [shadcn](https://ui.shadcn.com) registry — see
+[Dither FX](components/dither-fx/README.md) for the library and
+[/dither-fx](https://www.sekei.xyz/dither-fx) for its docs page.
+
+## Running it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`dev` and `build` both run `scripts/generate-previews.mjs` first, which writes
+`content/previews.generated.ts` from every `content/<slug>/Preview.tsx`. That
+file is committed; regenerate it with `pnpm content:sync` if a preview appears
+missing.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Layout
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Path | What lives there |
+| --- | --- |
+| `app/(site)/` | Everything wearing the sidebar: timeline, `/p/<slug>`, kitchen, lab |
+| `app/dither-fx/` | The standalone registry docs page, no sidebar |
+| `app/ui-kit/` | Shared components, imported as `@ui-kit/*` |
+| `content/<slug>/` | One folder per timeline entry: `index.mdx`, `Preview.tsx` |
+| `components/dither-fx/` | The published library |
+| `registry.json` | Registry source of truth |
+| `public/registry/` | Built registry, served at `/registry/<item>.json` |
 
-## Learn More
+The root layout holds fonts, providers and analytics only. The site chrome is
+`app/(site)/layout.tsx`, so a route outside that group renders on a bare page.
 
-To learn more about Next.js, take a look at the following resources:
+## Registry
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm registry:build   # rebuild public/registry from registry.json
+pnpm registry:check   # fail if public/registry is stale (offline)
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+`registry:build` shells out to a pinned `npx shadcn`, so it is not wired into
+`build`. Run `registry:check` before committing; it is offline and instant.
 
-## Deploy on Vercel
+## Checks
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+pnpm lint
+pnpm doctor
+npx tsc --noEmit
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Building while `pnpm dev` is running corrupts `.next`. Use a dist dir of your
+own instead:
+
+```bash
+NEXT_DIST_DIR=.next-verify npx next build
+```
+
+That rewrites `tsconfig.json` and `next-env.d.ts`; revert both afterwards.
