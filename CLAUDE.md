@@ -28,7 +28,7 @@ why, without narrating the implementation.
 Never add `transition-colors`, or any other transition utility, unless asked
 for it explicitly.
 
-## Dither FX
+## dither-fx
 
 `components/dither-fx/` is vendored from
 [sekeidesign/dither-fx](https://github.com/sekeidesign/dither-fx). Fix bugs

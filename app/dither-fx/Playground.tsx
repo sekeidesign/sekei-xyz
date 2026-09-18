@@ -28,13 +28,13 @@ const BUILDERS: Record<string, () => DitherEffect> = {
 const EFFECTS = Object.keys(BUILDERS).map((value) => ({ value, label: value }));
 
 const SURFACES = [
-	{ value: "dark", label: "Dark" },
 	{ value: "light", label: "Light" },
+	{ value: "dark", label: "Dark" },
 ];
 
 export function Playground() {
 	const [kind, setKind] = useState("fire");
-	const [surface, setSurface] = useState("dark");
+	const [surface, setSurface] = useState("light");
 	const [cell, setCell] = useState(3);
 	const [seed, setSeed] = useState(1);
 	const [active, setActive] = useState(true);
@@ -58,8 +58,10 @@ export function Playground() {
 		<div className="flex flex-col gap-4 lg:flex-row">
 			<div
 				className={cn(
-					"relative min-h-70 flex-1 overflow-hidden rounded-xl ring ring-gray-500/10",
-					surface === "dark" ? "bg-gray-900" : "bg-gray-50",
+					"relative min-h-70 flex-1 overflow-hidden rounded-xl shadow-skew",
+					surface === "dark"
+						? "bg-gray-900 ring-1 ring-gray-950"
+						: "bg-white ring-1 ring-gray-200",
 				)}
 			>
 				<DitherCanvas effect={effect} active={active} cell={cell} seed={seed} />

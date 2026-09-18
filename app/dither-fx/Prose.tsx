@@ -29,7 +29,7 @@ export function P({ children }: { children: ReactNode }) {
 
 export function Code({ children }: { children: ReactNode }) {
 	return (
-		<code className="rounded bg-gray-100 px-1 py-0.5 font-mono text-[13px] text-gray-900">
+		<code className="rounded bg-gray-200/70 px-1 py-0.5 font-mono text-[13px] text-gray-900">
 			{children}
 		</code>
 	);
@@ -53,7 +53,7 @@ export function Table({ head, rows }: { head: string[]; rows: Row[] }) {
 		<div className="overflow-x-auto">
 			<table className="w-full border-collapse text-left">
 				<thead>
-					<tr className="border-b border-gray-200">
+					<tr className="border-b border-gray-300/70">
 						{head.map((cell) => (
 							<th
 								key={cell}
@@ -66,7 +66,7 @@ export function Table({ head, rows }: { head: string[]; rows: Row[] }) {
 				</thead>
 				<tbody>
 					{rows.map((row) => (
-						<tr key={row.key} className="border-b border-gray-100 align-top">
+						<tr key={row.key} className="border-b border-gray-200 align-top">
 							{row.cells.map((cell, column) => (
 								<td
 									key={`${row.key}:${head[column]}`}
