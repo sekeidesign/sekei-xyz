@@ -55,10 +55,10 @@ const FamilyStatusButton = () => {
 			layout
 			role="status"
 			transition={{ duration: 0.2 }}
-			className={`rounded-full font-[550] cursor-pointer text-lg flex items-center justify-center pr-6 pl-4 gap-2 py-3 overflow-hidden relative ${statuses[status].color}`}
+			className={`rounded-full font-[550] active:scale-97 transition-transform duration-100 cursor-pointer text-lg flex items-center justify-center pr-6 pl-4 gap-2 py-3 overflow-hidden relative ${statuses[status].color}`}
 		>
 			<AnimatePresence mode="popLayout" initial={false}>
-				<Icon key={`${status}-icon`} status={status} />
+				<Icon status={status} />
 				<m.span
 					layoutId={status}
 					initial={{ opacity: 0, x: -24 }}
