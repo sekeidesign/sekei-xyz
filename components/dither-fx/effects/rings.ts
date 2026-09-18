@@ -3,12 +3,13 @@ import {
 	type DitherEffect,
 	type DitherFrame,
 	resolveAnchor,
-	type Rgb,
+	type RgbInput,
+	toRgb,
 } from "../engine";
 import { arms, twinkle } from "./particles";
 
 export interface RingsOptions {
-	color?: Rgb;
+	color?: RgbInput;
 	origin?: Anchor;
 	/** Seconds between rings. */
 	interval?: number;
@@ -31,12 +32,13 @@ const TAU = Math.PI * 2;
  * so easing out lets the ones in flight finish.
  */
 export function rings({
-	color = [172, 75, 255],
+	color: colorInput = [172, 75, 255],
 	origin = [0.5, 0.42],
 	interval = 1.15,
 	speed = 0.45,
 	width = 2.6,
 }: RingsOptions = {}): DitherEffect {
+	const color = toRgb(colorInput);
 	let cols = 0;
 	let rows = 0;
 	let cx = 0;

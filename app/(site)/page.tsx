@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { getTimeline } from "@/lib/timeline";
-import { TimelineFeed } from "./TimelineFeed";
+import { TimelineFeed } from "../TimelineFeed";
 
 // Without a canonical the apex and www hosts index as two separate pages.
 export const metadata: Metadata = {
@@ -21,7 +21,7 @@ export default async function HomePage() {
 		compiling.push(
 			(async () => {
 				const { default: Body } = await import(
-					`../content/${entry.slug}/index.mdx`
+					`../../content/${entry.slug}/index.mdx`
 				);
 				bodies[entry.slug] = <Body />;
 			})(),

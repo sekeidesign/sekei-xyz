@@ -5,7 +5,7 @@ import { DynamicIslandExperiment } from "../ui-experiments/dynamic-island/Experi
 import { ProfileMenuExperiment } from "../ui-experiments/profile-menu/Experiment";
 import { TransactionStatusButtonExperiment } from "../ui-experiments/transaction-status-button/Experiment";
 import { VerticalIconSwitchExperiment } from "../ui-experiments/vertical-icon-switch/Experiment";
-import { ExperimentDivider } from "../ui-kit/Experiment";
+import { ExperimentDivider } from "../../ui-kit/Experiment";
 import { Fragment } from "react";
 
 const experiments = [

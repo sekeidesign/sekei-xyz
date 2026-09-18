@@ -1,3 +1,8 @@
+// The ordered-dither rendering here — a low-resolution backing canvas scaled up
+// pixelated, the Bayer threshold matrix, and the two-alpha-tier fill — derives
+// from dither-kit (MIT, https://github.com/Boring-Software-Inc/dither-kit).
+// See NOTICE.md.
+
 export type Rgb = readonly [number, number, number];
 
 /** 4×4 Bayer thresholds in 0–1, indexed by `((y & 3) << 2) | (x & 3)`. */
@@ -5,7 +10,7 @@ export const BAYER4: readonly number[] = [
 	0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5,
 ].map((v) => (v + 0.5) / 16);
 
-export const clamp01 = (t: number) => (t < 0 ? 0 : t > 1 ? 1 : t);
+export const clamp01 = (t: number) => Math.min(1, Math.max(0, t));
 
 /**
  * A point as fractions of the canvas box. A getter is read on every resize, so
@@ -27,16 +32,23 @@ export function hex(value: string): Rgb {
 	return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
 }
 
-/** xorshift32: a seeded stream so an effect replays identically for a given seed. */
-export function xorshift32(seed: number): () => number {
-	let s = seed || 0x9e3779b9;
+/** What every effect takes for a colour: `"#e5343a"` or `[229, 52, 58]`. */
+export type RgbInput = Rgb | string;
+
+export const toRgb = (value: RgbInput): Rgb =>
+	typeof value === "string" ? hex(value) : value;
+
+/**
+ * mulberry32 (Tommy Ettinger, public domain): a seeded stream, so an effect
+ * replays identically for a given seed rather than drifting between reloads.
+ */
+export function seededRandom(seed: number): () => number {
+	let s = seed >>> 0;
 	return () => {
-		s ^= s << 13;
-		s >>>= 0;
-		s ^= s >>> 17;
-		s ^= s << 5;
-		s >>>= 0;
-		return s / 0x100000000;
+		s = (s + 0x6d2b79f5) >>> 0;
+		let t = Math.imul(s ^ (s >>> 15), 1 | s);
+		t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+		return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
 	};
 }
 
@@ -96,10 +108,11 @@ export class Painter {
 	}
 
 	/**
-	 * Ordered dither in one colour. A cell that clears the Bayer threshold is
-	 * "lit"; one that doesn't keeps a faint tint of the same colour rather than
-	 * a hole, so the falloff reads smooth and the background never punches
-	 * through as white specks.
+	 * Ordered dither in one colour, at two alpha tiers rather than one alpha and
+	 * a hole. Every cell in range is painted; clearing the Bayer threshold only
+	 * decides whether it lands at full strength or a faint one. Punching actual
+	 * holes makes the falloff crawl, and on a pale surface the gaps read as
+	 * white specks instead of a fade.
 	 */
 	dither(x: number, y: number, density: number, color: Rgb, gain = 1) {
 		if (density <= 0.004) return;
@@ -159,7 +172,6 @@ export interface EngineOptions {
 export class DitherEngine {
 	private painter: Painter | null = null;
 	private readonly ctx: CanvasRenderingContext2D;
-	private readonly bloomCtx: CanvasRenderingContext2D | null;
 	private readonly cell: number;
 	private readonly maxCols: number;
 	private readonly maxRows: number;
@@ -173,18 +185,16 @@ export class DitherEngine {
 
 	constructor(
 		private readonly canvas: HTMLCanvasElement,
-		bloom: HTMLCanvasElement | null,
 		private effect: DitherEffect,
 		{ cell = 3, seed = 1, maxCols = 640, maxRows = 400 }: EngineOptions = {},
 	) {
 		const ctx = canvas.getContext("2d");
 		if (!ctx) throw new Error("DitherEngine: 2d context unavailable");
 		this.ctx = ctx;
-		this.bloomCtx = bloom?.getContext("2d") ?? null;
 		this.cell = cell;
 		this.maxCols = maxCols;
 		this.maxRows = maxRows;
-		this.rand = xorshift32(seed);
+		this.rand = seededRandom(seed);
 	}
 
 	resize(width: number, height: number) {
@@ -193,10 +203,6 @@ export class DitherEngine {
 		if (this.painter && this.painter.cols === cols && this.painter.rows === rows) return;
 		this.canvas.width = cols;
 		this.canvas.height = rows;
-		if (this.bloomCtx) {
-			this.bloomCtx.canvas.width = cols;
-			this.bloomCtx.canvas.height = rows;
-		}
 		this.painter = new Painter(cols, rows);
 		this.effect.resize(cols, rows, this.rand);
 		this.wake();
@@ -251,13 +257,7 @@ export class DitherEngine {
 			reduced: this.reduced,
 			rand: this.rand,
 		});
-		if (painted) {
-			this.ctx.putImageData(px.image, 0, 0);
-			if (this.bloomCtx) {
-				this.bloomCtx.clearRect(0, 0, px.cols, px.rows);
-				this.bloomCtx.drawImage(this.canvas, 0, 0);
-			}
-		}
+		if (painted) this.ctx.putImageData(px.image, 0, 0);
 
 		const settled = this.intensity === this.target;
 		if (settled && this.effect.idle() && (this.target === 0 || this.reduced)) return;

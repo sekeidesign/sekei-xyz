@@ -3,12 +3,13 @@ import {
 	type DitherEffect,
 	type DitherFrame,
 	resolveAnchor,
-	type Rgb,
+	type RgbInput,
+	toRgb,
 } from "../engine";
 import { arms, type Particle, twinkle } from "./particles";
 
 export interface BeamOptions {
-	color?: Rgb;
+	color?: RgbInput;
 	/** Only the x of the anchor is used: the column the light falls along. */
 	origin?: Anchor;
 	/** Half-width at the bottom edge as a fraction of the width. */
@@ -23,11 +24,12 @@ export interface BeamOptions {
  * to run down, so it goes dark the moment the ease lands on zero.
  */
 export function beam({
-	color = [48, 128, 255],
+	color: colorInput = [48, 128, 255],
 	origin = [0.5, 0.5],
 	spread = 0.5,
 	motes = 16,
 }: BeamOptions = {}): DitherEffect {
+	const color = toRgb(colorInput);
 	let cols = 0;
 	let rows = 0;
 	let rand: () => number = Math.random;
