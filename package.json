@@ -21,7 +21,7 @@
     "@types/mdx": "^2.0.14",
     "@upstash/redis": "^1.38.2",
     "@vercel/analytics": "^1.5.0",
-    "clsx": "^2.1.1",
+    "cn": "^0.2.6",
     "cobe": "^2.0.1",
     "gray-matter": "^4.0.3",
     "html-to-image": "^1.11.13",
@@ -35,8 +35,7 @@
     "remark-frontmatter": "^5.0.0",
     "remark-gfm": "^4.0.1",
     "remark-mdx-frontmatter": "^5.2.0",
-    "slot-text": "^0.3.3",
-    "tailwind-merge": "^3.3.1"
+    "slot-text": "^0.3.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
