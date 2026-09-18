@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "dither-fx",
+  "title": "Dither FX",
+  "description": "The canvas plus every effect.",
+  "registryDependencies": [
+    "https://www.sekei.xyz/registry/dither-fx-fire.json",
+    "https://www.sekei.xyz/registry/dither-fx-rings.json",
+    "https://www.sekei.xyz/registry/dither-fx-beam.json",
+    "https://www.sekei.xyz/registry/dither-fx-bolt.json",
+    "https://www.sekei.xyz/registry/dither-fx-fluid.json"
+  ],
+  "type": "registry:ui"
+}
