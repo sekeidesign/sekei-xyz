@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { cn } from "../cn";
-import { usePrefersReducedMotion } from "../use-prefers-reduced-motion";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
+import { cn } from "@/lib/utils";
 import { type BloomInput, bloomStyle } from "./bloom";
 import { type DitherEffect, DitherEngine } from "./engine";
 

@@ -1,10 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import type { BloomInput } from "@/components/dither/bloom";
 import { ControlPanel, ControlSection } from "@ui-kit/controls/ControlPanel";
 import { Select } from "@ui-kit/controls/Select";
 import { Slider } from "@ui-kit/controls/Slider";
-import type { BloomInput } from "@ui-kit/dither/bloom";
 import { RaidTypes, type RaidTypesTweaks } from "@ui-kit/figures/RaidTypes";
 
 const ACTIVE = [
