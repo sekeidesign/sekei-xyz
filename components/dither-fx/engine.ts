@@ -1,11 +1,14 @@
-// The ordered-dither rendering here — a low-resolution backing canvas scaled up
-// pixelated, the Bayer threshold matrix, and the two-alpha-tier fill — derives
-// from dither-kit (MIT, https://github.com/Boring-Software-Inc/dither-kit).
-// See NOTICE.md.
-
 export type Rgb = readonly [number, number, number];
 
-/** 4×4 Bayer thresholds in 0–1, indexed by `((y & 3) << 2) | (x & 3)`. */
+/**
+ * 4×4 Bayer thresholds in 0–1, indexed by `((y & 3) << 2) | (x & 3)`.
+ *
+ * The ordered-dither rendering here — this matrix, the low-resolution backing
+ * canvas scaled up pixelated, and the two-alpha-tier fill — derives from
+ * dither-kit (MIT, https://github.com/Boring-Software-Inc/dither-kit). The shadcn
+ * CLI drops a file's leading comment on install, so the notice lives here.
+ * Full attribution: https://github.com/sekeidesign/dither-fx/blob/main/NOTICE.md
+ */
 export const BAYER4: readonly number[] = [
 	0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5,
 ].map((v) => (v + 0.5) / 16);
