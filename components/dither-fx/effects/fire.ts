@@ -63,11 +63,12 @@ export function fire({
 			const src = y * cols;
 			const dst = src - cols;
 			for (let x = 0; x < cols; x++) {
-				const r = rand();
-				const jitter = r < 0.3 ? -1 : r < 0.6 ? 1 : 0;
+				// -1, 0 or +1 in even thirds: the sideways lean that keeps a column
+				// of flame from rising as a straight bar.
+				const jitter = Math.floor(rand() * 3) - 1;
 				const sx = Math.min(cols - 1, Math.max(0, x + jitter));
 				const h = heat[src + sx] - loss * rand() * 2;
-				heat[dst + x] = h > 0 ? h : 0;
+				heat[dst + x] = Math.max(0, h);
 			}
 		}
 	}

@@ -45,7 +45,7 @@ Files land under `components/dither-fx/` and `hooks/`, following your
 | `dither-fx-beam` | Canvas |
 | `dither-fx-bolt` | Canvas |
 | `dither-fx-fluid` | Canvas |
-| `dither-fx-engine` | Nothing — painter, RNG, colour helpers, bloom presets |
+| `dither-fx-engine` | Nothing — painter, seeded RNG, colour helpers |
 | `use-prefers-reduced-motion` | Nothing |
 
 ## Usage
@@ -62,7 +62,7 @@ export function Card() {
 
   return (
     <div className="relative overflow-hidden rounded-lg">
-      <DitherCanvas effect={effect} bloom="soft" />
+      <DitherCanvas effect={effect} />
       <p className="relative">Burning</p>
     </div>
   );
@@ -82,18 +82,11 @@ constant.
 | `active` | `true` | Eases in and out. Drive it from hover for a reveal. |
 | `cell` | `3` | CSS px per dither cell. Lower is finer and costlier. |
 | `seed` | `1` | Seeds the RNG, so a given seed replays identically. |
-| `bloom` | `"off"` | `"soft"`, `"glow"`, `"aura"`, or a `BloomConfig`. |
 | `maxCols` / `maxRows` | `640` / `400` | Ceiling on the backing grid. |
 | `className` | — | Merged onto the wrapper. |
 
 The element is `aria-hidden` and `pointer-events-none`: it is decoration, and
 never the only carrier of meaning.
-
-### Bloom
-
-`bloom` draws a blurred copy of the frame under the crisp one. `"soft"` is the
-light-theme preset; `"glow"` and `"aura"` blend additively and are for dark
-surfaces, where they read as light rather than washing out to white.
 
 ### Effects
 
@@ -142,3 +135,12 @@ disk, so it is the one to run before committing.
 
 Tune effect defaults at `/lab/dither`, which exposes every option as a control.
 That route is hidden in production.
+
+## Credit
+
+The ordered-dither rendering — a low-resolution backing canvas scaled up
+pixelated, the Bayer threshold matrix, and filling every cell at one of two
+alpha tiers rather than leaving holes — derives from
+[dither-kit](https://github.com/Boring-Software-Inc/dither-kit) (MIT). The
+effects, the `Painter`, the frame loop and the reduced-motion handling are not.
+See [NOTICE.md](../../NOTICE.md) for the full attribution.

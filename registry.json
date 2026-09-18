@@ -23,7 +23,7 @@
 			"name": "dither-fx-engine",
 			"type": "registry:lib",
 			"title": "Dither FX: engine",
-			"description": "Bayer-dithered canvas loop, seeded RNG, colour helpers and the bloom presets every effect builds on.",
+			"description": "Bayer-dithered canvas loop, seeded RNG and the colour helpers every effect builds on.",
 			"author": "PG Gonni <https://www.sekei.xyz>",
 			"categories": ["dither-fx", "canvas"],
 			"files": [
@@ -31,11 +31,6 @@
 					"path": "components/dither-fx/engine.ts",
 					"type": "registry:lib",
 					"target": "@components/dither-fx/engine.ts"
-				},
-				{
-					"path": "components/dither-fx/bloom.ts",
-					"type": "registry:lib",
-					"target": "@components/dither-fx/bloom.ts"
 				},
 				{
 					"path": "components/dither-fx/effects/particles.ts",

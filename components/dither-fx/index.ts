@@ -1,4 +1,3 @@
-export { BLOOM, type BloomConfig, type BloomInput, bloomStyle } from "./bloom";
 export { DitherCanvas, type DitherCanvasProps } from "./dither-canvas";
 export { beam, type BeamOptions } from "./effects/beam";
 export { bolt, type BoltOptions } from "./effects/bolt";

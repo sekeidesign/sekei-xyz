@@ -100,7 +100,7 @@ export function Card() {
 
   return (
     <div className="relative overflow-hidden rounded-lg">
-      <DitherCanvas effect={effect} bloom="soft" />
+      <DitherCanvas effect={effect} />
       <p className="relative">Burning</p>
     </div>
   );
@@ -251,7 +251,7 @@ export default function DitherFxDocs() {
 									key: "engine",
 									cells: [
 										<Code key="n">dither-fx-engine</Code>,
-										"Nothing — painter, RNG, colour helpers, bloom presets",
+										"Nothing — painter, seeded RNG, colour helpers",
 									],
 								},
 								{
@@ -314,14 +314,6 @@ export default function DitherFxDocs() {
 									],
 								},
 								{
-									key: "bloom",
-									cells: [
-										<Code key="n">bloom</Code>,
-										<Code key="v">{'"off"'}</Code>,
-										'"soft", "glow", "aura", or a BloomConfig.',
-									],
-								},
-								{
 									key: "max",
 									cells: [
 										<Code key="n">maxCols / maxRows</Code>,
@@ -346,17 +338,6 @@ export default function DitherFxDocs() {
 						</P>
 					</Section>
 
-					<Section title="Bloom" id="bloom">
-						<P>
-							<Code>bloom</Code> draws a blurred copy of the frame under the
-							crisp one. <Code>soft</Code> is the light-theme preset.{" "}
-							<Code>glow</Code> and <Code>aura</Code> blend additively and are
-							for dark surfaces, where they read as light rather than washing
-							out to white. Switch the surface in the playground above to see
-							the difference.
-						</P>
-					</Section>
-
 					<Section title="Reduced motion" id="reduced-motion">
 						<P>
 							The canvas reads <Code>prefers-reduced-motion</Code> through{" "}
@@ -376,6 +357,23 @@ export default function DitherFxDocs() {
 							effect costs nothing. Each frame is one <Code>putImageData</Code>{" "}
 							over a grid capped at 640×400 cells, not a <Code>fillRect</Code>{" "}
 							per cell.
+						</P>
+					</Section>
+
+					<Section title="Credit" id="credit">
+						<P>
+							The ordered-dither rendering here, meaning the low-resolution
+							backing canvas scaled up pixelated, the Bayer threshold matrix,
+							and filling every cell at one of two alpha tiers rather than
+							leaving holes, derives from{" "}
+							<a
+								href="https://github.com/Boring-Software-Inc/dither-kit"
+								className="text-gray-900 underline underline-offset-2"
+							>
+								dither-kit
+							</a>{" "}
+							under the MIT licence. The effects, the painter, the frame loop
+							and the reduced-motion handling are not.
 						</P>
 					</Section>
 				</main>

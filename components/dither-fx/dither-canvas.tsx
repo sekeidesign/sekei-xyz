@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { cn } from "@/lib/utils";
-import { type BloomInput, bloomStyle } from "./bloom";
 import { type DitherEffect, DitherEngine } from "./engine";
 
 export interface DitherCanvasProps {
@@ -13,7 +12,6 @@ export interface DitherCanvasProps {
 	active?: boolean;
 	cell?: number;
 	seed?: number;
-	bloom?: BloomInput;
 	/** Ceiling on the backing grid, so a large box can't cost a large frame. */
 	maxCols?: number;
 	maxRows?: number;
@@ -30,31 +28,26 @@ export function DitherCanvas({
 	active = true,
 	cell = 3,
 	seed = 1,
-	bloom = "off",
 	maxCols,
 	maxRows,
 	className,
 }: DitherCanvasProps) {
 	const wrapRef = useRef<HTMLDivElement>(null);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const bloomRef = useRef<HTMLCanvasElement>(null);
 	const engineRef = useRef<DitherEngine | null>(null);
 	const runningRef = useRef(effect);
 	const reduced = usePrefersReducedMotion();
-	const glow = bloomStyle(bloom);
-	const hasBloom = glow !== null;
 
 	// Only the options baked into the constructor rebuild the engine. `effect`,
 	// `active` and `reduced` are seeded into a fresh one here and applied on
 	// their own below, so listing them would tear down the canvas and its
-	// observer on every change. `hasBloom` is listed because the bloom canvas
-	// read through `bloomRef` mounts and unmounts with it.
+	// observer on every change.
 	// biome-ignore lint/correctness/useExhaustiveDependencies: see above
 	useEffect(() => {
 		const wrap = wrapRef.current;
 		const canvas = canvasRef.current;
 		if (!wrap || !canvas) return;
-		const engine = new DitherEngine(canvas, bloomRef.current, effect, {
+		const engine = new DitherEngine(canvas, effect, {
 			cell,
 			seed,
 			maxCols,
@@ -76,7 +69,7 @@ export function DitherCanvas({
 			engineRef.current = null;
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [cell, seed, hasBloom, maxCols, maxRows]);
+	}, [cell, seed, maxCols, maxRows]);
 
 	useEffect(() => {
 		if (runningRef.current === effect) return;
@@ -101,13 +94,6 @@ export function DitherCanvas({
 				className,
 			)}
 		>
-			{glow && (
-				<canvas
-					ref={bloomRef}
-					className="absolute inset-0 size-full"
-					style={glow}
-				/>
-			)}
 			<canvas
 				ref={canvasRef}
 				className="absolute inset-0 size-full"

@@ -14,7 +14,7 @@
   "files": [
     {
       "path": "components/dither-fx/index.ts",
-      "content": "export { BLOOM, type BloomConfig, type BloomInput, bloomStyle } from \"./bloom\";\nexport { DitherCanvas, type DitherCanvasProps } from \"./dither-canvas\";\nexport { beam, type BeamOptions } from \"./effects/beam\";\nexport { bolt, type BoltOptions } from \"./effects/bolt\";\nexport { fire, type FireOptions } from \"./effects/fire\";\nexport { fluid, type FluidOptions } from \"./effects/fluid\";\nexport { rings, type RingsOptions } from \"./effects/rings\";\nexport {\n\ttype Anchor,\n\ttype DitherEffect,\n\ttype DitherFrame,\n\tDitherEngine,\n\ttype EngineOptions,\n\thex,\n\tmix,\n\tPainter,\n\ttype Rgb,\n\ttype RgbInput,\n\ttoRgb,\n} from \"./engine\";\n",
+      "content": "export { DitherCanvas, type DitherCanvasProps } from \"./dither-canvas\";\nexport { beam, type BeamOptions } from \"./effects/beam\";\nexport { bolt, type BoltOptions } from \"./effects/bolt\";\nexport { fire, type FireOptions } from \"./effects/fire\";\nexport { fluid, type FluidOptions } from \"./effects/fluid\";\nexport { rings, type RingsOptions } from \"./effects/rings\";\nexport {\n\ttype Anchor,\n\ttype DitherEffect,\n\ttype DitherFrame,\n\tDitherEngine,\n\ttype EngineOptions,\n\thex,\n\tmix,\n\tPainter,\n\ttype Rgb,\n\ttype RgbInput,\n\ttoRgb,\n} from \"./engine\";\n",
       "type": "registry:lib",
       "target": "@components/dither-fx/index.ts"
     }

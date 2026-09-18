@@ -51,7 +51,7 @@ function Tile({
 	return (
 		<figure className="flex flex-col gap-2">
 			<div className="relative h-40 overflow-hidden rounded-lg bg-gray-900 ring ring-gray-500/10">
-				<DitherCanvas effect={effect} bloom="glow" cell={3} />
+				<DitherCanvas effect={effect} cell={3} />
 			</div>
 			<figcaption className="flex flex-col gap-0.5 px-0.5">
 				<span className="font-mono text-[12px] font-[450] text-gray-900">

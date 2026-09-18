@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import {
 	beam,
-	type BloomInput,
 	bolt,
 	DitherCanvas,
 	type DitherEffect,
@@ -28,13 +27,6 @@ const BUILDERS: Record<string, () => DitherEffect> = {
 
 const EFFECTS = Object.keys(BUILDERS).map((value) => ({ value, label: value }));
 
-const BLOOMS = [
-	{ value: "soft", label: "soft — for light surfaces" },
-	{ value: "glow", label: "glow — additive" },
-	{ value: "aura", label: "aura — additive, wide" },
-	{ value: "off", label: "off" },
-];
-
 const SURFACES = [
 	{ value: "dark", label: "Dark" },
 	{ value: "light", label: "Light" },
@@ -42,7 +34,6 @@ const SURFACES = [
 
 export function Playground() {
 	const [kind, setKind] = useState("fire");
-	const [bloom, setBloom] = useState<BloomInput>("glow");
 	const [surface, setSurface] = useState("dark");
 	const [cell, setCell] = useState(3);
 	const [seed, setSeed] = useState(1);
@@ -58,7 +49,6 @@ export function Playground() {
 		active ? null : "  active={false}",
 		cell === 3 ? null : `  cell={${cell}}`,
 		seed === 1 ? null : `  seed={${seed}}`,
-		bloom === "off" ? null : `  bloom="${bloom}"`,
 		"/>",
 	]
 		.filter(Boolean)
@@ -72,13 +62,7 @@ export function Playground() {
 					surface === "dark" ? "bg-gray-900" : "bg-gray-50",
 				)}
 			>
-				<DitherCanvas
-					effect={effect}
-					active={active}
-					cell={cell}
-					seed={seed}
-					bloom={bloom}
-				/>
+				<DitherCanvas effect={effect} active={active} cell={cell} seed={seed} />
 			</div>
 
 			<div className="flex w-full shrink-0 flex-col gap-3 lg:max-w-xs">
@@ -106,12 +90,6 @@ export function Playground() {
 						max={12}
 						step={1}
 						onChange={setSeed}
-					/>
-					<Select
-						label="bloom"
-						value={String(bloom)}
-						options={BLOOMS}
-						onChange={(value) => setBloom(value as BloomInput)}
 					/>
 					<Select
 						label="surface"
