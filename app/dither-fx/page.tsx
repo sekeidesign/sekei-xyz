@@ -106,8 +106,7 @@ export function Card() {
   );
 }`;
 
-const INSTALL = `npx shadcn registry add @sekei=https://www.sekei.xyz/registry/{name}.json
-npx shadcn@latest add @sekei/dither-fx
+const INSTALL = `npx shadcn@latest add @sekei/dither-fx
 npx shadcn@latest add @sekei/dither-fx-fire`;
 
 const REGISTRY_CONFIG = `{
@@ -208,15 +207,13 @@ export default function DitherFxDocs() {
 					</Section>
 
 					<Section title="Install" id="install">
-						<P>
-							Register the <Code>@sekei</Code> namespace once, then take the
-							whole library or one effect:
-						</P>
+						<P>Take the whole library, or one effect:</P>
 						<Snippet code={INSTALL} />
 						<P>
-							The first command writes a <Code>registries</Code> entry into your
-							components.json, or your package.json when that is the file it
-							finds. Either works. By hand it is:
+							Nothing to configure. <Code>@sekei</Code> is in the shadcn
+							registry directory, so the CLI resolves it and writes the{" "}
+							<Code>registries</Code> entry into your components.json itself. To
+							pin it yourself, by hand or in package.json — the CLI reads both:
 						</P>
 						<Snippet code={REGISTRY_CONFIG} />
 						<P>
@@ -224,15 +221,15 @@ export default function DitherFxDocs() {
 							<Code>hooks/</Code>, following your components.json aliases.
 						</P>
 						<P>
-							Rather not touch your config? The{" "}
+							The{" "}
 							<a
 								href="https://github.com/sekeidesign/dither-fx"
 								className="text-gray-900 underline underline-offset-2"
 							>
 								repo
 							</a>{" "}
-							is a registry in its own right, so the owner/repo/item form needs
-							no setup at all:
+							is a registry on its own terms too, so the owner/repo/item form
+							works without touching any config:
 						</P>
 						<Snippet code="npx shadcn@latest add sekeidesign/dither-fx/dither-fx" />
 						<Table
