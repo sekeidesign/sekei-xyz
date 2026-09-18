@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { canGoBack } from "./nav-history";
 
-export function BackLink() {
+export function BackLink({ label = "Back" }: { label?: string }) {
 	const pathname = usePathname();
 	const router = useRouter();
 	const segments = pathname.split("/").filter(Boolean);
@@ -35,7 +35,7 @@ export function BackLink() {
 			className="inline-flex items-center gap-1 h-6.5 w-fit rounded-full pl-1.5 pr-2 bg-white ring-1 ring-gray-500/10 shadow-skew text-[14px] font-[500] text-gray-500 hover:bg-gray-50"
 		>
 			<BackIcon size={16} />
-			Back
+			{label}
 		</Link>
 	);
 }
