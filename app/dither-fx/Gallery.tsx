@@ -10,6 +10,8 @@ import {
 	fluid,
 	rings,
 } from "@/components/dither-fx";
+import { cn } from "@ui-kit/cn";
+import { SURFACE_INNER, SURFACE_OUTER } from "@ui-kit/post/surface";
 
 const TILES = [
 	{
@@ -50,8 +52,10 @@ function Tile({
 }) {
 	return (
 		<figure className="flex flex-col gap-2">
-			<div className="relative h-40 overflow-hidden rounded-xl bg-white ring-1 ring-gray-200 shadow-skew">
-				<DitherCanvas effect={effect} cell={3} />
+			<div className={cn("rounded-xl", SURFACE_OUTER)}>
+				<div className={cn("relative h-40 rounded-lg", SURFACE_INNER)}>
+					<DitherCanvas effect={effect} cell={3} />
+				</div>
 			</div>
 			<figcaption className="flex flex-col gap-0.5 px-0.5">
 				<span className="font-mono text-[12px] font-[450] text-gray-900">
