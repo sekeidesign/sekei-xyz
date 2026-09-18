@@ -36,7 +36,7 @@ export default function DitherFxDocs() {
 			<div className="panel flex w-full min-w-0 flex-col md:max-w-screen-md">
 				<div className="flex flex-col p-4 md:p-6">
 					<header className="flex flex-col gap-6">
-						<BackLink />
+						<BackLink label="sekei.xyz" />
 						<div className="flex flex-col gap-3">
 							<div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
 								<h1 className="font-pixel text-5xl leading-[1.1] text-gray-900 md:text-6xl">
