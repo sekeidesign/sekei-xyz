@@ -106,6 +106,10 @@ export function Card() {
   );
 }`;
 
+const INSTALL = `npx shadcn registry add @sekei=https://www.sekei.xyz/registry/{name}.json
+npx shadcn@latest add @sekei/dither-fx
+npx shadcn@latest add @sekei/dither-fx-fire`;
+
 const REGISTRY_CONFIG = `{
   "registries": {
     "@sekei": "https://www.sekei.xyz/registry/{name}.json"
@@ -124,9 +128,17 @@ export default function DitherFxDocs() {
 						← sekei.xyz
 					</Link>
 					<div className="flex flex-col gap-3">
-						<h1 className="text-[32px] leading-[1.15] font-[550] text-gray-900 md:text-[40px]">
-							Dither FX
-						</h1>
+						<div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+							<h1 className="text-[32px] leading-[1.15] font-[550] text-gray-900 md:text-[40px]">
+								Dither FX
+							</h1>
+							<a
+								href="https://github.com/sekeidesign/dither-fx"
+								className="font-mono text-[12px] font-[450] text-gray-400 hover:text-gray-900"
+							>
+								sekeidesign/dither-fx ↗
+							</a>
+						</div>
 						<p className="max-w-xl text-[17px] leading-[1.55] font-[420] text-gray-500">
 							Ordered-dither canvas effects for React. Fire, lightning, sonar
 							rings, a light beam and a sloshing fluid, painted as Bayer
@@ -196,20 +208,33 @@ export default function DitherFxDocs() {
 					</Section>
 
 					<Section title="Install" id="install">
-						<P>Add the registry to your components.json once:</P>
+						<P>
+							Register the <Code>@sekei</Code> namespace once, then take the
+							whole library or one effect:
+						</P>
+						<Snippet code={INSTALL} />
+						<P>
+							The first command writes a <Code>registries</Code> entry into your
+							components.json, or your package.json when that is the file it
+							finds. Either works. By hand it is:
+						</P>
 						<Snippet code={REGISTRY_CONFIG} />
-						<P>Then take the whole library, or one effect:</P>
-						<Snippet
-							code={
-								"npx shadcn@latest add @sekei/dither-fx\nnpx shadcn@latest add @sekei/dither-fx-fire"
-							}
-						/>
-						<P>Without the registries entry, the full URL works too:</P>
-						<Snippet code="npx shadcn@latest add https://www.sekei.xyz/registry/dither-fx.json" />
 						<P>
 							Files land under <Code>components/dither-fx/</Code> and{" "}
 							<Code>hooks/</Code>, following your components.json aliases.
 						</P>
+						<P>
+							Rather not touch your config? The{" "}
+							<a
+								href="https://github.com/sekeidesign/dither-fx"
+								className="text-gray-900 underline underline-offset-2"
+							>
+								repo
+							</a>{" "}
+							is a registry in its own right, so the owner/repo/item form needs
+							no setup at all:
+						</P>
+						<Snippet code="npx shadcn@latest add sekeidesign/dither-fx/dither-fx" />
 						<Table
 							head={["Item", "Pulls in"]}
 							rows={[
@@ -384,7 +409,14 @@ export default function DitherFxDocs() {
 						<Link href="/" className="text-gray-500 hover:text-gray-900">
 							PG Gonni
 						</Link>
-						. Source lives in components/dither-fx.
+						.{" "}
+						<a
+							href="https://github.com/sekeidesign/dither-fx"
+							className="text-gray-500 hover:text-gray-900"
+						>
+							Source on GitHub
+						</a>
+						.
 					</p>
 				</footer>
 			</div>

@@ -8,8 +8,6 @@
     "start": "next start",
     "lint": "next lint",
     "content:sync": "node scripts/generate-previews.mjs",
-    "registry:build": "npx -y shadcn@4.21.0 build --output public/registry",
-    "registry:check": "node scripts/check-registry.mjs",
     "doctor": "npx react-doctor@latest"
   },
   "dependencies": {
