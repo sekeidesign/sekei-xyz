@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { BloomInput } from "@/components/dither-fx/bloom";
 import { ControlPanel, ControlSection } from "@ui-kit/controls/ControlPanel";
 import { Select } from "@ui-kit/controls/Select";
 import { Slider } from "@ui-kit/controls/Slider";
@@ -16,13 +15,6 @@ const ACTIVE = [
 	{ value: "decision", label: "Decisions only" },
 ];
 
-const BLOOMS = [
-	{ value: "soft", label: "Soft (light theme)" },
-	{ value: "glow", label: "Glow (additive)" },
-	{ value: "aura", label: "Aura" },
-	{ value: "off", label: "Off" },
-];
-
 const DECISION = [
 	{ value: "fluid", label: "Fluid" },
 	{ value: "beam", label: "Beam" },
@@ -30,7 +22,6 @@ const DECISION = [
 
 export function DitherStudio() {
 	const [cell, setCell] = useState(2);
-	const [bloom, setBloom] = useState<BloomInput>("soft");
 	const [active, setActive] = useState<RaidTypesTweaks["active"]>("hover");
 	const [decision, setDecision] = useState<"fluid" | "beam">("fluid");
 
@@ -58,7 +49,6 @@ export function DitherStudio() {
 	const tweaks = useMemo<RaidTypesTweaks>(
 		() => ({
 			cell,
-			bloom,
 			active,
 			decision,
 			fire: { height: fireHeight, rate: fireRate, embers },
@@ -69,7 +59,6 @@ export function DitherStudio() {
 		}),
 		[
 			cell,
-			bloom,
 			active,
 			decision,
 			fireHeight,
@@ -95,12 +84,6 @@ export function DitherStudio() {
 			<div className="grid gap-4 md:grid-cols-2">
 				<ControlPanel title="Canvas">
 					<Slider label="Cell" value={cell} min={1} max={8} step={1} unit="px" onChange={setCell} />
-					<Select
-						label="Bloom"
-						value={typeof bloom === "string" ? bloom : "soft"}
-						options={BLOOMS}
-						onChange={(value) => setBloom(value as BloomInput)}
-					/>
 					<Select
 						label="Run"
 						value={active ?? "hover"}

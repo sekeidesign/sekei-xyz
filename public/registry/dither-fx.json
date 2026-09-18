@@ -2,13 +2,26 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "dither-fx",
   "title": "Dither FX",
-  "description": "The canvas plus every effect.",
+  "author": "PG Gonni <https://www.sekei.xyz>",
+  "description": "The canvas, every effect, and a barrel that re-exports them.",
   "registryDependencies": [
     "https://www.sekei.xyz/registry/dither-fx-fire.json",
     "https://www.sekei.xyz/registry/dither-fx-rings.json",
     "https://www.sekei.xyz/registry/dither-fx-beam.json",
     "https://www.sekei.xyz/registry/dither-fx-bolt.json",
     "https://www.sekei.xyz/registry/dither-fx-fluid.json"
+  ],
+  "files": [
+    {
+      "path": "components/dither-fx/index.ts",
+      "content": "export { DitherCanvas, type DitherCanvasProps } from \"./dither-canvas\";\nexport { beam, type BeamOptions } from \"./effects/beam\";\nexport { bolt, type BoltOptions } from \"./effects/bolt\";\nexport { fire, type FireOptions } from \"./effects/fire\";\nexport { fluid, type FluidOptions } from \"./effects/fluid\";\nexport { rings, type RingsOptions } from \"./effects/rings\";\nexport {\n\ttype Anchor,\n\ttype DitherEffect,\n\ttype DitherFrame,\n\tDitherEngine,\n\ttype EngineOptions,\n\thex,\n\tmix,\n\tPainter,\n\ttype Rgb,\n\ttype RgbInput,\n\ttoRgb,\n} from \"./engine\";\n",
+      "type": "registry:lib",
+      "target": "@components/dither-fx/index.ts"
+    }
+  ],
+  "docs": "Everything imports from `@/components/dither-fx`.",
+  "categories": [
+    "dither-fx"
   ],
   "type": "registry:ui"
 }
