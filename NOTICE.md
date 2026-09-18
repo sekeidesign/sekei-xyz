@@ -4,7 +4,7 @@
 
 <https://github.com/Boring-Software-Inc/dither-kit>
 
-The Dither FX library in `components/dither-fx/` began from dither-kit's
+The dither-fx library in `components/dither-fx/` began from dither-kit's
 ordered-dither rendering and is derived from it in these respects:
 
 - Drawing into a low-resolution backing canvas and scaling it up with

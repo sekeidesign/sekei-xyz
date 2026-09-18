@@ -4,7 +4,7 @@ My site, live at [sekei.xyz](https://www.sekei.xyz): a timeline of shipped
 work, case studies, reading notes and UI experiments. Next.js App Router,
 Tailwind v4, Base UI, Motion.
 
-## Dither FX
+## dither-fx
 
 Ordered-dither canvas effects, published as a shadcn registry so they can be
 pulled into another project. The library lives in its own repo now; this site

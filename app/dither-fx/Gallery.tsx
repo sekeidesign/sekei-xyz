@@ -50,7 +50,7 @@ function Tile({
 }) {
 	return (
 		<figure className="flex flex-col gap-2">
-			<div className="relative h-40 overflow-hidden rounded-lg bg-gray-900 ring ring-gray-500/10">
+			<div className="relative h-40 overflow-hidden rounded-xl bg-white ring-1 ring-gray-200 shadow-skew">
 				<DitherCanvas effect={effect} cell={3} />
 			</div>
 			<figcaption className="flex flex-col gap-0.5 px-0.5">

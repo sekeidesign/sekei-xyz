@@ -1,4 +1,4 @@
-# Dither FX (vendored)
+# dither-fx (vendored)
 
 These files are a copy. The source of truth is
 [sekeidesign/dither-fx](https://github.com/sekeidesign/dither-fx), which also
