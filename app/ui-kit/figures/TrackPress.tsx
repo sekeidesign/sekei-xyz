@@ -2,9 +2,9 @@
 
 import { AnimatePresence, m, useInView } from "motion/react";
 import { type CSSProperties, useEffect, useId, useRef, useState } from "react";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { cn } from "../cn";
 import { SURFACE_INNER, SURFACE_OUTER } from "../post/surface";
-import { usePrefersReducedMotion } from "../use-prefers-reduced-motion";
 import { CursorIcon, DismissIcon, FLAME, TrackIcon } from "./review-icons";
 
 type Phase = "away" | "over" | "press" | "held" | "leaving" | "reset";

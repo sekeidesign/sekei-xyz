@@ -2,8 +2,8 @@
 
 import { useHighlight } from "@highlighters/react";
 import { type ReactNode, useMemo, useState } from "react";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { PEN, PEN_STILL, QUOTATION } from "../quote-pen";
-import { usePrefersReducedMotion } from "../use-prefers-reduced-motion";
 
 export function QuotedProse({ children }: { children: ReactNode }) {
 	// State, not a ref: the hook reads the target in a layout effect, and a ref
