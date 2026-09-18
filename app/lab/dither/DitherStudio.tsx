@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { BloomInput } from "@/components/dither/bloom";
+import type { BloomInput } from "@/components/dither-fx/bloom";
 import { ControlPanel, ControlSection } from "@ui-kit/controls/ControlPanel";
 import { Select } from "@ui-kit/controls/Select";
 import { Slider } from "@ui-kit/controls/Slider";

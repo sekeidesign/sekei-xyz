@@ -1,8 +1,8 @@
 "use client";
 
 import { Fragment, useMemo, useRef, useState } from "react";
-import type { BloomInput } from "@/components/dither/bloom";
-import { DitherCanvas } from "@/components/dither/dither-canvas";
+import type { BloomInput } from "@/components/dither-fx/bloom";
+import { DitherCanvas } from "@/components/dither-fx/dither-canvas";
 import { cn } from "../cn";
 import { KIND } from "../covers/raid-log";
 import { SURFACE_INNER, SURFACE_OUTER } from "../post/surface";

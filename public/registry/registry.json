@@ -17,138 +17,138 @@
 			]
 		},
 		{
-			"name": "dither-engine",
+			"name": "dither-fx-engine",
 			"type": "registry:lib",
 			"title": "Dither engine",
 			"description": "Bayer-dithered canvas loop, seeded RNG, colour helpers and the bloom presets every effect builds on.",
 			"files": [
 				{
-					"path": "components/dither/engine.ts",
+					"path": "components/dither-fx/engine.ts",
 					"type": "registry:lib",
-					"target": "@components/dither/engine.ts"
+					"target": "@components/dither-fx/engine.ts"
 				},
 				{
-					"path": "components/dither/bloom.ts",
+					"path": "components/dither-fx/bloom.ts",
 					"type": "registry:lib",
-					"target": "@components/dither/bloom.ts"
+					"target": "@components/dither-fx/bloom.ts"
 				},
 				{
-					"path": "components/dither/effects/particles.ts",
+					"path": "components/dither-fx/effects/particles.ts",
 					"type": "registry:lib",
-					"target": "@components/dither/effects/particles.ts"
+					"target": "@components/dither-fx/effects/particles.ts"
 				}
 			]
 		},
 		{
-			"name": "dither-canvas",
+			"name": "dither-fx-canvas",
 			"type": "registry:ui",
 			"title": "Dither canvas",
 			"description": "Fills its positioned parent with a pixelated canvas running a dither effect.",
-			"docs": "Keep the `effect` prop referentially stable (useMemo or module scope) — a new reference restarts the engine.",
+			"docs": "Keep the `effect` prop referentially stable (useMemo or module scope) - a new reference restarts the engine.",
 			"registryDependencies": [
-				"https://www.sekei.xyz/registry/dither-engine.json",
+				"https://www.sekei.xyz/registry/dither-fx-engine.json",
 				"https://www.sekei.xyz/registry/use-prefers-reduced-motion.json",
 				"utils"
 			],
 			"files": [
 				{
-					"path": "components/dither/dither-canvas.tsx",
+					"path": "components/dither-fx/dither-canvas.tsx",
 					"type": "registry:ui",
-					"target": "@components/dither/dither-canvas.tsx"
+					"target": "@components/dither-fx/dither-canvas.tsx"
 				}
 			]
 		},
 		{
-			"name": "dither-fire",
+			"name": "dither-fx-fire",
 			"type": "registry:lib",
 			"title": "Fire",
 			"description": "Rising flame front with embers.",
 			"registryDependencies": [
-				"https://www.sekei.xyz/registry/dither-canvas.json"
+				"https://www.sekei.xyz/registry/dither-fx-canvas.json"
 			],
 			"files": [
 				{
-					"path": "components/dither/effects/fire.ts",
+					"path": "components/dither-fx/effects/fire.ts",
 					"type": "registry:lib",
-					"target": "@components/dither/effects/fire.ts"
+					"target": "@components/dither-fx/effects/fire.ts"
 				}
 			]
 		},
 		{
-			"name": "dither-rings",
+			"name": "dither-fx-rings",
 			"type": "registry:lib",
 			"title": "Rings",
 			"description": "Concentric rings pulsing out from an anchor.",
 			"registryDependencies": [
-				"https://www.sekei.xyz/registry/dither-canvas.json"
+				"https://www.sekei.xyz/registry/dither-fx-canvas.json"
 			],
 			"files": [
 				{
-					"path": "components/dither/effects/rings.ts",
+					"path": "components/dither-fx/effects/rings.ts",
 					"type": "registry:lib",
-					"target": "@components/dither/effects/rings.ts"
+					"target": "@components/dither-fx/effects/rings.ts"
 				}
 			]
 		},
 		{
-			"name": "dither-beam",
+			"name": "dither-fx-beam",
 			"type": "registry:lib",
 			"title": "Beam",
 			"description": "Directional beam with drifting motes.",
 			"registryDependencies": [
-				"https://www.sekei.xyz/registry/dither-canvas.json"
+				"https://www.sekei.xyz/registry/dither-fx-canvas.json"
 			],
 			"files": [
 				{
-					"path": "components/dither/effects/beam.ts",
+					"path": "components/dither-fx/effects/beam.ts",
 					"type": "registry:lib",
-					"target": "@components/dither/effects/beam.ts"
+					"target": "@components/dither-fx/effects/beam.ts"
 				}
 			]
 		},
 		{
-			"name": "dither-bolt",
+			"name": "dither-fx-bolt",
 			"type": "registry:lib",
 			"title": "Bolt",
 			"description": "Intermittent lightning arcs on a randomised interval.",
 			"registryDependencies": [
-				"https://www.sekei.xyz/registry/dither-canvas.json"
+				"https://www.sekei.xyz/registry/dither-fx-canvas.json"
 			],
 			"files": [
 				{
-					"path": "components/dither/effects/bolt.ts",
+					"path": "components/dither-fx/effects/bolt.ts",
 					"type": "registry:lib",
-					"target": "@components/dither/effects/bolt.ts"
+					"target": "@components/dither-fx/effects/bolt.ts"
 				}
 			]
 		},
 		{
-			"name": "dither-fluid",
+			"name": "dither-fx-fluid",
 			"type": "registry:lib",
 			"title": "Fluid",
 			"description": "Sloshing liquid level with rising bubbles.",
 			"registryDependencies": [
-				"https://www.sekei.xyz/registry/dither-canvas.json"
+				"https://www.sekei.xyz/registry/dither-fx-canvas.json"
 			],
 			"files": [
 				{
-					"path": "components/dither/effects/fluid.ts",
+					"path": "components/dither-fx/effects/fluid.ts",
 					"type": "registry:lib",
-					"target": "@components/dither/effects/fluid.ts"
+					"target": "@components/dither-fx/effects/fluid.ts"
 				}
 			]
 		},
 		{
-			"name": "dither",
+			"name": "dither-fx",
 			"type": "registry:ui",
-			"title": "Dither",
+			"title": "Dither FX",
 			"description": "The canvas plus every effect.",
 			"registryDependencies": [
-				"https://www.sekei.xyz/registry/dither-fire.json",
-				"https://www.sekei.xyz/registry/dither-rings.json",
-				"https://www.sekei.xyz/registry/dither-beam.json",
-				"https://www.sekei.xyz/registry/dither-bolt.json",
-				"https://www.sekei.xyz/registry/dither-fluid.json"
+				"https://www.sekei.xyz/registry/dither-fx-fire.json",
+				"https://www.sekei.xyz/registry/dither-fx-rings.json",
+				"https://www.sekei.xyz/registry/dither-fx-beam.json",
+				"https://www.sekei.xyz/registry/dither-fx-bolt.json",
+				"https://www.sekei.xyz/registry/dither-fx-fluid.json"
 			]
 		}
 	]
