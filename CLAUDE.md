@@ -28,6 +28,14 @@ why, without narrating the implementation.
 Never add `transition-colors`, or any other transition utility, unless asked
 for it explicitly.
 
+## Dither FX
+
+`components/dither-fx/` is vendored from
+[sekeidesign/dither-fx](https://github.com/sekeidesign/dither-fx). Fix bugs
+upstream and re-add with `npx shadcn@latest add @sekei/dither-fx`; do not edit
+the copy in place. `/registry/*` is a rewrite onto that repo, not a real
+directory under `public/`.
+
 ## Dev server
 
 The dev server belongs to the user and is usually already running. Check with

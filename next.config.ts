@@ -18,6 +18,20 @@ const nextConfig: NextConfig = {
     "/p/**": ["./lib/og/fonts/*.ttf"],
   },
 
+  // @sekei resolves through this domain rather than straight at GitHub, so the
+  // namespace survives a repo rename and can pick up a second library later
+  // without every consumer re-running `shadcn registry add`. The source of
+  // truth is r/ in sekeidesign/dither-fx; nothing is copied back here.
+  async rewrites() {
+    return [
+      {
+        source: "/registry/:path*",
+        destination:
+          "https://raw.githubusercontent.com/sekeidesign/dither-fx/main/r/:path*",
+      },
+    ];
+  },
+
   async redirects() {
     return [
       // Filters moved from route segments to a query param, so several can be
