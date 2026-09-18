@@ -1,9 +1,16 @@
-import { type DitherEffect, type DitherFrame, mix, type Rgb } from "../engine";
+import {
+	type DitherEffect,
+	type DitherFrame,
+	mix,
+	type Rgb,
+	type RgbInput,
+	toRgb,
+} from "../engine";
 import { arms, type Particle, twinkle } from "./particles";
 
 export interface FireOptions {
 	/** Cold → hot: the tips, the body, the base. */
-	colors?: readonly [Rgb, Rgb, Rgb];
+	colors?: readonly [RgbInput, RgbInput, RgbInput];
 	/** Fraction of the height the flames reach at full intensity. */
 	height?: number;
 	/** Simulation steps per second; lower reads chunkier. */
@@ -28,7 +35,9 @@ export function fire({
 	rate = 36,
 	embers = 8,
 }: FireOptions = {}): DitherEffect {
-	const [cold, warm, hot] = colors;
+	const cold = toRgb(colors[0]);
+	const warm = toRgb(colors[1]);
+	const hot = toRgb(colors[2]);
 	let cols = 0;
 	let rows = 0;
 	let heat = new Float32Array(0);

@@ -27,6 +27,12 @@ export function hex(value: string): Rgb {
 	return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
 }
 
+/** What every effect takes for a colour: `"#e5343a"` or `[229, 52, 58]`. */
+export type RgbInput = Rgb | string;
+
+export const toRgb = (value: RgbInput): Rgb =>
+	typeof value === "string" ? hex(value) : value;
+
 /** xorshift32: a seeded stream so an effect replays identically for a given seed. */
 export function xorshift32(seed: number): () => number {
 	let s = seed || 0x9e3779b9;
