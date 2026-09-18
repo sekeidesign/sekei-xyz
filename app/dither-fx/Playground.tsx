@@ -11,6 +11,7 @@ import {
 	rings,
 } from "@/components/dither-fx";
 import { cn } from "@ui-kit/cn";
+import { SURFACE_INNER, SURFACE_OUTER } from "@ui-kit/post/surface";
 import { ControlPanel } from "@ui-kit/controls/ControlPanel";
 import { Select } from "@ui-kit/controls/Select";
 import { Slider } from "@ui-kit/controls/Slider";
@@ -56,15 +57,21 @@ export function Playground() {
 
 	return (
 		<div className="flex flex-col gap-4 lg:flex-row">
-			<div
-				className={cn(
-					"relative min-h-70 flex-1 overflow-hidden rounded-xl shadow-skew",
-					surface === "dark"
-						? "bg-gray-900 ring-1 ring-gray-950"
-						: "bg-white ring-1 ring-gray-200",
-				)}
-			>
-				<DitherCanvas effect={effect} active={active} cell={cell} seed={seed} />
+			<div className={cn("flex-1 rounded-xl", SURFACE_OUTER)}>
+				<div
+					className={cn(
+						"relative min-h-70 size-full rounded-lg",
+						SURFACE_INNER,
+						surface === "dark" && "bg-gray-900",
+					)}
+				>
+					<DitherCanvas
+						effect={effect}
+						active={active}
+						cell={cell}
+						seed={seed}
+					/>
+				</div>
 			</div>
 
 			<div className="flex w-full shrink-0 flex-col gap-3 lg:max-w-xs">
