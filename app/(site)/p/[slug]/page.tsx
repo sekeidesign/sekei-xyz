@@ -60,7 +60,7 @@ export default async function PostPage({
 
 	// Only the body compiles here — the feed never reaches this import.
 	const { default: Body } = await import(
-		`../../../content/${slug}/index.mdx`
+		`../../../../content/${slug}/index.mdx`
 	);
 
 	return (
