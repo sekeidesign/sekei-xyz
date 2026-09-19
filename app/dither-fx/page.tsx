@@ -19,10 +19,10 @@ const GUTTER =
 export const metadata: Metadata = {
 	title: "dither-fx",
 	description:
-		"Ordered-dither canvas effects for React — fire, lightning, sonar rings, a light beam and a sloshing fluid. Installed with the shadcn CLI.",
+		"Dither environmental canvas effects for React — fire, lightning, sonar rings, a light beam, a sloshing fluid, rain and snow. Installed with the shadcn CLI.",
 	openGraph: {
 		title: "dither-fx",
-		description: "Ordered-dither canvas effects for React",
+		description: "Dither environmental canvas effects for React",
 		type: "article",
 	},
 	alternates: { canonical: "/dither-fx" },
@@ -50,9 +50,8 @@ export default function DitherFxDocs() {
 								</a>
 							</div>
 							<p className="max-w-xl text-base leading-[1.55] font-[420] text-gray-500">
-								Ordered-dither canvas effects for React. Fire, lightning, sonar
-								rings, a light beam and a sloshing fluid, painted as Bayer
-								thresholded cells over a pixelated canvas.
+								Dither environmental canvas effects for React, painted as
+								Bayer thresholded cells over a pixelated canvas.
 							</p>
 						</div>
 						<Snippet code="npx shadcn@latest add @sekei/dither-fx" />
@@ -72,7 +71,8 @@ export default function DitherFxDocs() {
 								<Code>useSyncExternalStore</Code>, so it is correct on the server
 								and updates when the setting changes. Under reduce, each effect
 								paints one settled frame and stops: fire is pre-warmed and still,
-								rings sit at three fixed radii, particles are dropped. Nothing
+								rings sit at three fixed radii, rain and snow hang mid-fall,
+								particles are dropped. Nothing
 								animates and the frame loop parks.
 							</P>
 						</Section>

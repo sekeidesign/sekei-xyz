@@ -33,6 +33,8 @@ const COLOR_NAMES: Record<Kind, string[]> = {
 	rings: ["color"],
 	fluid: ["color"],
 	beam: ["color"],
+	rain: ["color"],
+	snow: ["color"],
 };
 
 type Anchors = Record<Kind, { on: boolean; x: number; y: number }>;

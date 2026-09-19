@@ -25,6 +25,14 @@ const OPTIONS = [
 		key: "beam",
 		cells: [<Code key="n">beam</Code>, "color, origin (x only), spread, motes"],
 	},
+	{
+		key: "rain",
+		cells: [<Code key="n">rain</Code>, "color, drops, speed, slant, length"],
+	},
+	{
+		key: "snow",
+		cells: [<Code key="n">snow</Code>, "color, flakes, speed, sway, settle"],
+	},
 ];
 
 export function Effects() {
