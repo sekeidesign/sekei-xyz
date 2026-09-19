@@ -764,6 +764,32 @@ body {
   border-radius: 6px;
 }
 
+/* A left-to-right reveal whose edge is the dither-fx Bayer pattern, baked once
+   into the mask image by dither-ramp.ts. Sliding a static image is what keeps
+   it cheap: no canvas, no per-frame work, and the pattern is identical on every
+   element it runs on.
+
+   The travel is in cqw, so the sweep crosses the container at one speed and a
+   delay places each line under it. A percentage can't do that here — in
+   mask-position it resolves against the element minus the image, which is
+   1092px of tail the element never sees. */
+.dither-reveal {
+  mask-image: var(--dither-ramp);
+  mask-size: var(--dither-ramp-width) var(--dither-ramp-height);
+  mask-repeat: no-repeat repeat;
+  mask-position: calc(-1 * var(--dither-ramp-width)) 0;
+  animation: dither-reveal var(--dither-reveal-duration, 900ms) ease-out both;
+}
+
+@keyframes dither-reveal {
+  from {
+    mask-position: calc(-1 * var(--dither-ramp-width)) 0;
+  }
+  to {
+    mask-position: calc(100cqw - var(--dither-ramp-tail)) 0;
+  }
+}
+
 /**
  * Durations shortened rather than animations removed: a reveal that starts at
  * opacity 0 and relies on a `forwards` animation to land at 1 would stay

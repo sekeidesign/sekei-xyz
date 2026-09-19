@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BackLink } from "@ui-kit/BackLink";
 import { SparkleDivider } from "@ui-kit/SparkleDivider";
+import { ditherRamp } from "@ui-kit/dither-ramp";
 import { Effects } from "./Effects";
 import { Install } from "./Install";
 import { Playground } from "./Playground";
@@ -35,21 +36,25 @@ export default function DitherFxDocs() {
 
 			<div className="panel flex w-full min-w-0 flex-col md:max-w-screen-md">
 				<div className="flex flex-col p-4 md:p-6">
-					<header className="flex flex-col gap-6">
+					<header className="@container flex flex-col gap-6" style={ditherRamp}>
 						<BackLink label="sekei.xyz" />
 						<div className="flex flex-col gap-3">
 							<div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-								<h1 className="font-pixel text-5xl leading-[1.1] text-gray-900 md:text-6xl">
+								<h1 className="dither-reveal font-pixel text-5xl leading-[1.1] text-gray-900 md:text-6xl">
 									dither-fx
 								</h1>
 								<a
 									href={REPO}
-									className="font-mono text-[12px] font-[450] text-gray-400 hover:text-gray-900"
+									className="dither-reveal font-mono text-[12px] font-[450] text-gray-400 hover:text-gray-900"
+									style={{ animationDelay: "160ms" }}
 								>
 									sekeidesign/dither-fx ↗
 								</a>
 							</div>
-							<p className="max-w-xl text-base leading-[1.55] font-[420] text-gray-500">
+							<p
+								className="dither-reveal max-w-xl text-base leading-[1.55] font-[420] text-gray-500"
+								style={{ animationDelay: "90ms" }}
+							>
 								Dither environmental canvas effects for React, painted as
 								Bayer thresholded cells over a pixelated canvas.
 							</p>
