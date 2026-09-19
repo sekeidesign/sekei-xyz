@@ -1,18 +1,20 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { cn } from "../cn";
-import { usePrefersReducedMotion } from "../use-prefers-reduced-motion";
-import { type BloomInput, bloomStyle } from "./bloom";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
+import { cn } from "@/lib/utils";
 import { type DitherEffect, DitherEngine } from "./engine";
 
 export interface DitherCanvasProps {
-	/** Keep this reference stable (useMemo / module scope); a new one restarts the engine. */
+	/** A new reference restarts the simulation; the canvas itself is kept. */
 	effect: DitherEffect;
-	active: boolean;
+	/** Eases the effect in and out. Defaults to on. */
+	active?: boolean;
 	cell?: number;
 	seed?: number;
-	bloom?: BloomInput;
+	/** Ceiling on the backing grid, so a large box can't cost a large frame. */
+	maxCols?: number;
+	maxRows?: number;
 	className?: string;
 }
 
@@ -23,27 +25,39 @@ export interface DitherCanvasProps {
  */
 export function DitherCanvas({
 	effect,
-	active,
+	active = true,
 	cell = 3,
 	seed = 1,
-	bloom = "off",
+	maxCols,
+	maxRows,
 	className,
 }: DitherCanvasProps) {
 	const wrapRef = useRef<HTMLDivElement>(null);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const bloomRef = useRef<HTMLCanvasElement>(null);
 	const engineRef = useRef<DitherEngine | null>(null);
+	const runningRef = useRef(effect);
 	const reduced = usePrefersReducedMotion();
-	const glow = bloomStyle(bloom);
-	const hasBloom = glow !== null;
 
+	// Only the options baked into the constructor rebuild the engine. `effect`,
+	// `active` and `reduced` are seeded into a fresh one here and applied on
+	// their own below, so listing them would tear down the canvas and its
+	// observer on every change.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: see above
 	useEffect(() => {
 		const wrap = wrapRef.current;
 		const canvas = canvasRef.current;
 		if (!wrap || !canvas) return;
-		const engine = new DitherEngine(canvas, bloomRef.current, effect, { cell, seed });
+		const engine = new DitherEngine(canvas, effect, {
+			cell,
+			seed,
+			maxCols,
+			maxRows,
+		});
 		engineRef.current = engine;
+		runningRef.current = effect;
 		engine.resize(wrap.clientWidth, wrap.clientHeight);
+		engine.setReduced(reduced);
+		engine.setActive(active);
 		const ro = new ResizeObserver(([entry]) => {
 			const { width, height } = entry.contentRect;
 			engine.resize(width, height);
@@ -54,7 +68,14 @@ export function DitherCanvas({
 			engine.destroy();
 			engineRef.current = null;
 		};
-	}, [effect, cell, seed, hasBloom]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [cell, seed, maxCols, maxRows]);
+
+	useEffect(() => {
+		if (runningRef.current === effect) return;
+		runningRef.current = effect;
+		engineRef.current?.setEffect(effect);
+	}, [effect]);
 
 	useEffect(() => {
 		engineRef.current?.setReduced(reduced);
@@ -68,15 +89,11 @@ export function DitherCanvas({
 		<div
 			ref={wrapRef}
 			aria-hidden
-			className={cn("pointer-events-none absolute inset-0 overflow-hidden", className)}
-		>
-			{glow && (
-				<canvas
-					ref={bloomRef}
-					className="absolute inset-0 size-full"
-					style={glow}
-				/>
+			className={cn(
+				"pointer-events-none absolute inset-0 overflow-hidden",
+				className,
 			)}
+		>
 			<canvas
 				ref={canvasRef}
 				className="absolute inset-0 size-full"

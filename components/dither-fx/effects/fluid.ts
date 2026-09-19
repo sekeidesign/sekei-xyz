@@ -1,8 +1,13 @@
-import type { DitherEffect, DitherFrame, Rgb } from "../engine";
+import {
+	type DitherEffect,
+	type DitherFrame,
+	type RgbInput,
+	toRgb,
+} from "../engine";
 import { arms, type Particle, twinkle } from "./particles";
 
 export interface FluidOptions {
-	color?: Rgb;
+	color?: RgbInput;
 	/** Resting depth as a fraction of the height, at full intensity. */
 	level?: number;
 	/** How far the surface tilts at either edge, as a fraction of the height. */
@@ -22,12 +27,13 @@ const TAU = Math.PI * 2;
  * the wave.
  */
 export function fluid({
-	color = [48, 128, 255],
+	color: colorInput = [48, 128, 255],
 	level = 0.2,
 	slosh = 0.09,
 	tempo = 0.15,
 	bubbles = 12,
 }: FluidOptions = {}): DitherEffect {
+	const color = toRgb(colorInput);
 	let cols = 0;
 	let rows = 0;
 	let rand: () => number = Math.random;

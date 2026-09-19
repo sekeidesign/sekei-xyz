@@ -1,9 +1,16 @@
-import { type DitherEffect, type DitherFrame, mix, type Rgb } from "../engine";
+import {
+	type DitherEffect,
+	type DitherFrame,
+	mix,
+	type Rgb,
+	type RgbInput,
+	toRgb,
+} from "../engine";
 import { arms, type Particle, twinkle } from "./particles";
 
 export interface FireOptions {
 	/** Cold → hot: the tips, the body, the base. */
-	colors?: readonly [Rgb, Rgb, Rgb];
+	colors?: readonly [RgbInput, RgbInput, RgbInput];
 	/** Fraction of the height the flames reach at full intensity. */
 	height?: number;
 	/** Simulation steps per second; lower reads chunkier. */
@@ -28,7 +35,9 @@ export function fire({
 	rate = 36,
 	embers = 8,
 }: FireOptions = {}): DitherEffect {
-	const [cold, warm, hot] = colors;
+	const cold = toRgb(colors[0]);
+	const warm = toRgb(colors[1]);
+	const hot = toRgb(colors[2]);
 	let cols = 0;
 	let rows = 0;
 	let heat = new Float32Array(0);
@@ -54,11 +63,12 @@ export function fire({
 			const src = y * cols;
 			const dst = src - cols;
 			for (let x = 0; x < cols; x++) {
-				const r = rand();
-				const jitter = r < 0.3 ? -1 : r < 0.6 ? 1 : 0;
+				// -1, 0 or +1 in even thirds: the sideways lean that keeps a column
+				// of flame from rising as a straight bar.
+				const jitter = Math.floor(rand() * 3) - 1;
 				const sx = Math.min(cols - 1, Math.max(0, x + jitter));
 				const h = heat[src + sx] - loss * rand() * 2;
-				heat[dst + x] = h > 0 ? h : 0;
+				heat[dst + x] = Math.max(0, h);
 			}
 		}
 	}

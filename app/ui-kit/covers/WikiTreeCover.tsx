@@ -2,8 +2,8 @@
 
 import { m, useInView } from "motion/react";
 import { type CSSProperties, useEffect, useRef, useState } from "react";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { cn } from "../cn";
-import { usePrefersReducedMotion } from "../use-prefers-reduced-motion";
 import { ACCENT, MARK_PATH, PROMPT, TREE } from "./wiki-tree";
 
 /**

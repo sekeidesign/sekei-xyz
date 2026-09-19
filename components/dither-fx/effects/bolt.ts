@@ -3,12 +3,13 @@ import {
 	type DitherEffect,
 	type DitherFrame,
 	resolveAnchor,
-	type Rgb,
+	type RgbInput,
+	toRgb,
 } from "../engine";
 import { arms, type Particle, twinkle } from "./particles";
 
 export interface BoltOptions {
-	color?: Rgb;
+	color?: RgbInput;
 	/** Seconds between strikes at full intensity, as a [min, max] range. */
 	interval?: readonly [number, number];
 	/** What the strikes aim for; they land just short of it or on it. */
@@ -23,11 +24,12 @@ export interface BoltOptions {
  * gives it an afterimage instead of a hard cut.
  */
 export function bolt({
-	color = [252, 187, 0],
+	color: colorInput = [252, 187, 0],
 	interval = [0.6, 1.4],
 	target = [0.5, 0.43],
 	rate = 30,
 }: BoltOptions = {}): DitherEffect {
+	const color = toRgb(colorInput);
 	let cols = 0;
 	let rows = 0;
 	let flash = new Float32Array(0);
@@ -170,6 +172,9 @@ export function bolt({
 		step(frame) {
 			const { dt, intensity, reduced } = frame;
 			lastReduced = reduced;
+			const [fx, fy] = resolveAnchor(target);
+			tx = cols * fx;
+			ty = rows * fy;
 			if (reduced) {
 				if (!staticBolt) {
 					flash.fill(0);

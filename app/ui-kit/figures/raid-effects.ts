@@ -1,10 +1,10 @@
+import { beam, type BeamOptions } from "@/components/dither-fx/effects/beam";
+import { bolt, type BoltOptions } from "@/components/dither-fx/effects/bolt";
+import { fire, type FireOptions } from "@/components/dither-fx/effects/fire";
+import { fluid, type FluidOptions } from "@/components/dither-fx/effects/fluid";
+import { rings, type RingsOptions } from "@/components/dither-fx/effects/rings";
+import { type Anchor, type DitherEffect, hex } from "@/components/dither-fx/engine";
 import { KIND } from "../covers/raid-log";
-import { beam, type BeamOptions } from "../dither/effects/beam";
-import { bolt, type BoltOptions } from "../dither/effects/bolt";
-import { fire, type FireOptions } from "../dither/effects/fire";
-import { fluid, type FluidOptions } from "../dither/effects/fluid";
-import { rings, type RingsOptions } from "../dither/effects/rings";
-import { type Anchor, type DitherEffect, hex } from "../dither/engine";
 import type { RAID_KINDS } from "./kinds";
 
 export type RaidKind = (typeof RAID_KINDS)[number]["kind"];

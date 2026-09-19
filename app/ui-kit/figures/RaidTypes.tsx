@@ -1,10 +1,9 @@
 "use client";
 
 import { Fragment, useMemo, useRef, useState } from "react";
+import { DitherCanvas } from "@/components/dither-fx/dither-canvas";
 import { cn } from "../cn";
 import { KIND } from "../covers/raid-log";
-import type { BloomInput } from "../dither/bloom";
-import { DitherCanvas } from "../dither/DitherCanvas";
 import { SURFACE_INNER, SURFACE_OUTER } from "../post/surface";
 import { Disc } from "./Disc";
 import { RAID_KINDS } from "./kinds";
@@ -12,14 +11,13 @@ import { type RaidEffectTweaks, type RaidKind, raidEffect } from "./raid-effects
 
 export interface RaidTypesTweaks extends RaidEffectTweaks {
 	cell?: number;
-	bloom?: BloomInput;
 	/** Run effects without a pointer: every one, or a single type. */
 	active?: "hover" | "all" | RaidKind;
 }
 
 export function RaidTypes({ tweaks }: { tweaks?: RaidTypesTweaks }) {
 	const [hovered, setHovered] = useState<RaidKind | null>(null);
-	const { cell = 2, bloom = "soft", active = "hover" } = tweaks ?? {};
+	const { cell = 2, active = "hover" } = tweaks ?? {};
 
 	return (
 		<div className={cn("my-6 w-full cursor-default rounded-xl", SURFACE_OUTER)}>
@@ -37,7 +35,6 @@ export function RaidTypes({ tweaks }: { tweaks?: RaidTypesTweaks }) {
 							kind={kind}
 							seed={index + 1}
 							cell={cell}
-							bloom={bloom}
 							tweaks={tweaks}
 							active={active === "all" || active === kind || hovered === kind}
 							onHover={(over) =>
@@ -57,7 +54,6 @@ function RaidCell({
 	kind,
 	seed,
 	cell,
-	bloom,
 	tweaks,
 	active,
 	onHover,
@@ -65,7 +61,6 @@ function RaidCell({
 	kind: RaidKind;
 	seed: number;
 	cell: number;
-	bloom: BloomInput;
 	tweaks?: RaidEffectTweaks;
 	active: boolean;
 	onHover: (over: boolean) => void;
@@ -95,7 +90,7 @@ function RaidCell({
 			onPointerEnter={() => onHover(true)}
 			onPointerLeave={() => onHover(false)}
 		>
-			<DitherCanvas effect={effect} active={active} cell={cell} seed={seed} bloom={bloom} />
+			<DitherCanvas effect={effect} active={active} cell={cell} seed={seed} />
 			<div className="relative flex flex-col items-center gap-4">
 				<span ref={discRef} className="flex">
 					<Disc wash={wash}>

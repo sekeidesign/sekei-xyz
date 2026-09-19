@@ -3,12 +3,13 @@ import {
 	type DitherEffect,
 	type DitherFrame,
 	resolveAnchor,
-	type Rgb,
+	type RgbInput,
+	toRgb,
 } from "../engine";
 import { arms, twinkle } from "./particles";
 
 export interface RingsOptions {
-	color?: Rgb;
+	color?: RgbInput;
 	origin?: Anchor;
 	/** Seconds between rings. */
 	interval?: number;
@@ -31,14 +32,17 @@ const TAU = Math.PI * 2;
  * so easing out lets the ones in flight finish.
  */
 export function rings({
-	color = [172, 75, 255],
+	color: colorInput = [172, 75, 255],
 	origin = [0.5, 0.42],
 	interval = 1.15,
 	speed = 0.45,
 	width = 2.6,
 }: RingsOptions = {}): DitherEffect {
+	const color = toRgb(colorInput);
 	let cols = 0;
 	let rows = 0;
+	let ax = Number.NaN;
+	let ay = Number.NaN;
 	let cx = 0;
 	let cy = 0;
 	let reach = 1;
@@ -48,6 +52,27 @@ export function rings({
 	let until = 0.05;
 	let alive = false;
 	let lastReduced = false;
+
+	/**
+	 * Caches every cell's distance from the origin, which is what lets a frame
+	 * be one subtraction per cell. Rebuilt when the box or the anchor changes,
+	 * never per frame.
+	 */
+	function place(fx: number, fy: number) {
+		ax = fx;
+		ay = fy;
+		cx = cols * fx;
+		cy = rows * fy;
+		if (dist.length !== cols * rows) dist = new Float32Array(cols * rows);
+		reach = 0;
+		for (let i = 0, y = 0; y < rows; y++) {
+			for (let x = 0; x < cols; x++, i++) {
+				dist[i] = Math.hypot(x + 0.5 - cx, y + 0.5 - cy);
+				if (dist[i] > reach) reach = dist[i];
+			}
+		}
+		reach *= 0.95;
+	}
 
 	function paint({ px, t, intensity, reduced }: DitherFrame, set: Ring[]) {
 		px.clear();
@@ -83,24 +108,15 @@ export function rings({
 			cols = c;
 			rows = r;
 			rand = random;
-			const [fx, fy] = resolveAnchor(origin);
-			cx = c * fx;
-			cy = r * fy;
-			dist = new Float32Array(c * r);
-			reach = 0;
-			for (let i = 0, y = 0; y < r; y++) {
-				for (let x = 0; x < c; x++, i++) {
-					dist[i] = Math.hypot(x + 0.5 - cx, y + 0.5 - cy);
-					if (dist[i] > reach) reach = dist[i];
-				}
-			}
-			reach *= 0.95;
+			place(...resolveAnchor(origin));
 			live = [];
 			until = 0.05;
 		},
 		step(frame) {
 			const { dt, intensity, reduced } = frame;
 			lastReduced = reduced;
+			const [fx, fy] = resolveAnchor(origin);
+			if (fx !== ax || fy !== ay) place(fx, fy);
 			if (reduced) {
 				paint(
 					frame,
