@@ -11,7 +11,7 @@ export function Section({
 }) {
 	return (
 		<section id={id} className="flex scroll-mt-8 flex-col gap-4">
-			<h2 className="text-[20px] leading-[1.35] font-[550] text-gray-900">
+			<h2 className="font-pixel text-2xl leading-[1.35] text-gray-900">
 				{title}
 			</h2>
 			{children}

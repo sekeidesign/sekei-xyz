@@ -1,67 +1,111 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import {
-	beam,
-	bolt,
-	DitherCanvas,
-	type DitherEffect,
-	fire,
-	fluid,
-	rings,
-} from "@/components/dither-fx";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { DitherCanvas } from "@/components/dither-fx";
 import { cn } from "@ui-kit/cn";
-import { SURFACE_INNER, SURFACE_OUTER } from "@ui-kit/post/surface";
-import { ControlPanel } from "@ui-kit/controls/ControlPanel";
+import { ControlPanel, ControlSection } from "@ui-kit/controls/ControlPanel";
 import { Select } from "@ui-kit/controls/Select";
 import { Slider } from "@ui-kit/controls/Slider";
+import { Swatches } from "@ui-kit/controls/Swatches";
 import { Toggle } from "@ui-kit/controls/Toggle";
+import { SURFACE_INNER, SURFACE_OUTER } from "@ui-kit/post/surface";
+import { AnchorHandle } from "./AnchorHandle";
+import {
+	type Anchor,
+	build,
+	DEFAULTS,
+	type Kind,
+	KINDS,
+	snippet,
+	SPECS,
+} from "./playground-config";
 import { Snippet } from "./Snippet";
 
-const BUILDERS: Record<string, () => DitherEffect> = {
-	fire,
-	bolt,
-	rings,
-	fluid,
-	beam,
-};
-
-const EFFECTS = Object.keys(BUILDERS).map((value) => ({ value, label: value }));
+const EFFECTS = KINDS.map((value) => ({ value, label: value }));
 
 const SURFACES = [
 	{ value: "light", label: "Light" },
 	{ value: "dark", label: "Dark" },
 ];
 
+const COLOR_NAMES: Record<Kind, string[]> = {
+	fire: ["cold", "warm", "hot"],
+	bolt: ["color"],
+	rings: ["color"],
+	fluid: ["color"],
+	beam: ["color"],
+};
+
+type Anchors = Record<Kind, { on: boolean; x: number; y: number }>;
+
+const initialAnchors = () =>
+	Object.fromEntries(
+		KINDS.map((kind) => {
+			const at = SPECS[kind].anchor?.at ?? [0.5, 0.5];
+			return [kind, { on: true, x: at[0], y: at[1] }];
+		}),
+	) as Anchors;
+
+const initialColors = () =>
+	Object.fromEntries(KINDS.map((kind) => [kind, SPECS[kind].colors])) as Record<
+		Kind,
+		string[]
+	>;
+
 export function Playground() {
-	const [kind, setKind] = useState("fire");
+	const [kind, setKind] = useState<Kind>("fire");
 	const [surface, setSurface] = useState("light");
 	const [cell, setCell] = useState(3);
 	const [seed, setSeed] = useState(1);
 	const [active, setActive] = useState(true);
 
-	// Rebuilt only when the effect changes, so the canvas and its observer
-	// survive every other control.
-	const effect = useMemo(() => BUILDERS[kind](), [kind]);
+	// Kept per effect rather than reset on every switch, so going away to look
+	// at rings and coming back finds fire the way it was left.
+	const [values, setValues] = useState(() => ({ ...DEFAULTS }));
+	const [colors, setColors] = useState(initialColors);
+	const [anchors, setAnchors] = useState(initialAnchors);
 
-	const code = [
-		"<DitherCanvas",
-		`  effect={${kind}Effect}`,
-		active ? null : "  active={false}",
-		cell === 3 ? null : `  cell={${cell}}`,
-		seed === 1 ? null : `  seed={${seed}}`,
-		"/>",
-	]
-		.filter(Boolean)
-		.join("\n");
+	const spec = SPECS[kind];
+	const anchor = anchors[kind];
+	const stage = useRef<HTMLDivElement>(null);
+
+	// The effects read this every frame. Holding the position in a ref rather
+	// than in the dependency list is what lets the handle steer a running
+	// effect: a new `effect` reference would restart the simulation on every
+	// pointer move, and rings would lose whatever is in flight.
+	const at = useRef<Anchor>([anchor.x, anchor.y]);
+	useEffect(() => {
+		at.current = [anchor.x, anchor.y];
+	}, [anchor.x, anchor.y]);
+	const getAnchor = useCallback(() => at.current, []);
+
+	const effect = useMemo(
+		() =>
+			build(
+				kind,
+				values[kind],
+				colors[kind],
+				spec.anchor && anchor.on ? getAnchor : undefined,
+			),
+		[kind, values, colors, spec.anchor, anchor.on, getAnchor],
+	);
+
+	const code = snippet(kind, values[kind], colors[kind], anchor, {
+		cell,
+		seed,
+		active,
+	});
+
+	const setValue = (key: string, value: number) =>
+		setValues((prev) => ({ ...prev, [kind]: { ...prev[kind], [key]: value } }));
 
 	return (
-		<div className="flex flex-col gap-4 lg:flex-row">
-			<div className={cn("flex-1 rounded-xl", SURFACE_OUTER)}>
+		<div className={cn("rounded-xl", SURFACE_OUTER)}>
+			<div className={cn("flex flex-col rounded-lg lg:flex-row", SURFACE_INNER)}>
 				<div
+					ref={stage}
 					className={cn(
-						"relative min-h-70 size-full rounded-lg",
-						SURFACE_INNER,
+						"relative min-h-70 flex-1",
 						surface === "dark" && "bg-gray-900",
 					)}
 				>
@@ -71,16 +115,32 @@ export function Playground() {
 						cell={cell}
 						seed={seed}
 					/>
+					{spec.anchor && anchor.on && (
+						<AnchorHandle
+							box={stage}
+							x={anchor.x}
+							y={anchor.y}
+							axis={spec.anchor.axis}
+							label={`Drag to move the ${kind} ${spec.anchor.key}`}
+							onChange={(x, y) =>
+								setAnchors((prev) => ({ ...prev, [kind]: { on: true, x, y } }))
+							}
+						/>
+					)}
 				</div>
-			</div>
 
-			<div className="flex w-full shrink-0 flex-col gap-3 lg:max-w-xs">
-				<ControlPanel title="DitherCanvas">
+				<ControlPanel
+					className={cn(
+						"shrink-0 rounded-none bg-transparent shadow-none ring-0 lg:w-72",
+						"border-t border-gray-200 lg:border-t-0 lg:border-l",
+					)}
+				>
+					<ControlSection label="canvas" />
 					<Select
 						label="effect"
 						value={kind}
 						options={EFFECTS}
-						onChange={setKind}
+						onChange={(next) => setKind(next as Kind)}
 					/>
 					<Toggle label="active" checked={active} onChange={setActive} />
 					<Slider
@@ -106,10 +166,42 @@ export function Playground() {
 						options={SURFACES}
 						onChange={setSurface}
 					/>
-				</ControlPanel>
 
-				<Snippet code={code} />
+					<ControlSection label={`${kind}()`} />
+					<Swatches
+						label={spec.colorLabel}
+						values={colors[kind]}
+						names={COLOR_NAMES[kind]}
+						onChange={(next) => setColors((prev) => ({ ...prev, [kind]: next }))}
+					/>
+					{spec.numbers.map((number) => (
+						<Slider
+							key={number.key}
+							label={number.label}
+							value={values[kind][number.key]}
+							min={number.min}
+							max={number.max}
+							step={number.step}
+							onChange={(value) => setValue(number.key, value)}
+						/>
+					))}
+					{spec.anchor && (
+						<Toggle
+							label={spec.anchor.key}
+							checked={anchor.on}
+							hint={anchor.on ? "drag it" : "default"}
+							onChange={(on) =>
+								setAnchors((prev) => ({
+									...prev,
+									[kind]: { ...prev[kind], on },
+								}))
+							}
+						/>
+					)}
+				</ControlPanel>
 			</div>
+
+			<Snippet code={code} lang="tsx" className="mt-1 rounded-lg" />
 		</div>
 	);
 }

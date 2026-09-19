@@ -56,7 +56,7 @@ export function Install() {
 				entry into your components.json itself. To pin it yourself, by hand or in
 				package.json — the CLI reads both:
 			</P>
-			<Snippet code={REGISTRY_CONFIG} />
+			<Snippet code={REGISTRY_CONFIG} lang="json" />
 			<P>
 				Files land under <Code>components/dither-fx/</Code> and{" "}
 				<Code>hooks/</Code>, following your components.json aliases.

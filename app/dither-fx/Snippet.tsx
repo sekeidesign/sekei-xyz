@@ -2,12 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@ui-kit/cn";
+import { Highlighted, type Lang } from "./highlight";
 
 export function Snippet({
 	code,
+	lang = "bash",
 	className,
 }: {
 	code: string;
+	lang?: Lang;
 	className?: string;
 }) {
 	const [copied, setCopied] = useState(false);
@@ -39,7 +42,9 @@ export function Snippet({
 			)}
 		>
 			<pre className="overflow-x-auto px-4 py-3 pr-20 font-mono text-[13px] leading-[1.6] text-gray-100">
-				<code>{code}</code>
+				<code>
+					<Highlighted code={code} lang={lang} />
+				</code>
 			</pre>
 			<button
 				type="button"
