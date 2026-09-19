@@ -11,9 +11,8 @@ import { Usage } from "./Usage";
 
 const REPO = "https://github.com/sekeidesign/dither-fx";
 
-// The striped gutters and the gray-100 panel are the site shell from
-// app/(site)/layout.tsx, rebuilt here rather than reused: this page sits
-// outside that group on purpose, so it carries no sidebar and no timeline.
+// The shell from app/(site)/layout.tsx, rebuilt because this page sits outside
+// that group on purpose: no sidebar, no timeline.
 const GUTTER =
 	"panel stripes hidden flex-1 shrink md:sticky md:top-px md:block md:h-[calc(100vh-2px)] md:self-start";
 

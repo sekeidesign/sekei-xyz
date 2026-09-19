@@ -59,8 +59,7 @@ export function Playground() {
 	const [seed, setSeed] = useState(1);
 	const [active, setActive] = useState(true);
 
-	// Kept per effect rather than reset on every switch, so going away to look
-	// at rings and coming back finds fire the way it was left.
+	// Per effect, so leaving fire for rings and coming back finds fire as it was.
 	const [values, setValues] = useState(() => ({ ...DEFAULTS }));
 	const [colors, setColors] = useState(initialColors);
 	const [anchors, setAnchors] = useState(initialAnchors);
@@ -69,10 +68,8 @@ export function Playground() {
 	const anchor = anchors[kind];
 	const stage = useRef<HTMLDivElement>(null);
 
-	// The effects read this every frame. Holding the position in a ref rather
-	// than in the dependency list is what lets the handle steer a running
-	// effect: a new `effect` reference would restart the simulation on every
-	// pointer move, and rings would lose whatever is in flight.
+	// A ref, not a dependency: a new `effect` reference restarts the simulation,
+	// so a dependency here would rebuild it on every pointer move.
 	const at = useRef<Anchor>([anchor.x, anchor.y]);
 	useEffect(() => {
 		at.current = [anchor.x, anchor.y];

@@ -12,11 +12,6 @@ const NUDGE: Record<string, [number, number]> = {
 	ArrowDown: [0, 1],
 };
 
-/**
- * The effect's anchor, as something you can pick up. The position it reports is
- * read by the running effect every frame, so dragging steers what is already on
- * screen rather than restarting it.
- */
 export function AnchorHandle({
 	box,
 	x,
@@ -29,7 +24,7 @@ export function AnchorHandle({
 	box: RefObject<HTMLDivElement | null>;
 	x: number;
 	y: number;
-	/** Beam only uses the column, so its handle stays on one rail. */
+	/** Beam only reads the column, so its handle stays on one rail. */
 	axis: "x" | "xy";
 	label: string;
 	onChange: (x: number, y: number) => void;
@@ -59,9 +54,8 @@ export function AnchorHandle({
 				ref={ref}
 				type="button"
 				aria-label={label}
-				// A two-axis handle is two values, which no single ARIA role covers.
-				// The label says what it does and the arrow keys do it, which is the
-				// part that matters for anyone not using a pointer.
+				// Two values, which no single ARIA role covers; the arrow keys below
+				// are what makes it reachable without a pointer.
 				onPointerDown={(event) => {
 					event.preventDefault();
 					ref.current?.setPointerCapture(event.pointerId);
@@ -86,7 +80,7 @@ export function AnchorHandle({
 				}}
 				style={{ left: `${x * 100}%`, top: `${(axis === "x" ? 0.5 : y) * 100}%` }}
 				className={cn(
-					"absolute z-10 size-5 -translate-x-1/2 -translate-y-1/2 touch-none rounded-full",
+					"absolute z-10 size-6 -translate-x-1/2 -translate-y-1/2 touch-none rounded-full",
 					// The site's white-chip treatment, the same as every other control.
 					"bg-white ring-1 ring-gray-500/10 shadow-md",
 					"focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500/40",
