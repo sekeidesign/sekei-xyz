@@ -10,6 +10,7 @@ import { Swatches } from "@ui-kit/controls/Swatches";
 import { Toggle } from "@ui-kit/controls/Toggle";
 import { SURFACE_INNER, SURFACE_OUTER } from "@ui-kit/post/surface";
 import { AnchorHandle } from "./AnchorHandle";
+import { EffectTabs } from "./EffectTabs";
 import {
 	type Anchor,
 	build,
@@ -20,8 +21,6 @@ import {
 	SPECS,
 } from "./playground-config";
 import { Snippet } from "./Snippet";
-
-const EFFECTS = KINDS.map((value) => ({ value, label: value }));
 
 const SURFACES = [
 	{ value: "light", label: "Light" },
@@ -98,6 +97,10 @@ export function Playground() {
 
 	return (
 		<div className={cn("rounded-xl", SURFACE_OUTER)}>
+			<div className="px-1 py-1.5">
+				<EffectTabs value={kind} onChange={setKind} />
+			</div>
+
 			<div className={cn("flex flex-col rounded-lg lg:flex-row", SURFACE_INNER)}>
 				<div
 					ref={stage}
@@ -133,12 +136,6 @@ export function Playground() {
 					)}
 				>
 					<ControlSection label="canvas" />
-					<Select
-						label="effect"
-						value={kind}
-						options={EFFECTS}
-						onChange={(next) => setKind(next as Kind)}
-					/>
 					<Toggle label="active" checked={active} onChange={setActive} />
 					<Slider
 						label="cell"
