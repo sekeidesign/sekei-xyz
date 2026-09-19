@@ -39,8 +39,9 @@ export function Effects() {
 			<P>
 				<Code>origin</Code> and <Code>target</Code> take an <Code>Anchor</Code>:
 				an <Code>[x, y]</Code> pair in 0–1 of the box, or a getter, which is
-				re-read on every resize so an effect can track something measured from
-				the DOM.
+				re-read every frame — so an effect can follow something that moves
+				without being rebuilt and losing what it has already simulated. Drag the
+				dot in the playground above to see it.
 			</P>
 		</Section>
 	);

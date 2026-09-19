@@ -73,7 +73,7 @@ export function Usage() {
 				The canvas fills its nearest positioned ancestor, so give the parent{" "}
 				<Code>relative</Code>.
 			</P>
-			<Snippet code={USAGE} />
+			<Snippet code={USAGE} lang="tsx" />
 			<P>
 				Build the effect once. A new <Code>effect</Code> reference restarts the
 				simulation — the canvas and its observer survive, but particles and heat

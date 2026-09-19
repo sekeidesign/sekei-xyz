@@ -172,6 +172,9 @@ export function bolt({
 		step(frame) {
 			const { dt, intensity, reduced } = frame;
 			lastReduced = reduced;
+			const [fx, fy] = resolveAnchor(target);
+			tx = cols * fx;
+			ty = rows * fy;
 			if (reduced) {
 				if (!staticBolt) {
 					flash.fill(0);

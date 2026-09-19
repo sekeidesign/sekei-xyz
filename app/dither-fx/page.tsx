@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BackLink } from "@ui-kit/BackLink";
+import { SparkleDivider } from "@ui-kit/SparkleDivider";
 import { Effects } from "./Effects";
 import { Install } from "./Install";
 import { Playground } from "./Playground";
@@ -58,11 +59,10 @@ export default function DitherFxDocs() {
 						<Snippet code="npx shadcn@latest add @sekei/dither-fx" />
 					</header>
 
-					<main className="mt-14 flex flex-col gap-14">
-						<section className="flex flex-col gap-4">
-							<Playground />
-						</section>
+					<SparkleDivider className="mt-10 mb-10" />
 
+					<main className="flex flex-col gap-14">
+						<Playground />
 						<Effects />
 						<Install />
 						<Usage />

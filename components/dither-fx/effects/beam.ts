@@ -94,6 +94,7 @@ export function beam({
 		},
 		step(frame) {
 			const { px, dt, t, intensity, reduced } = frame;
+			ox = resolveAnchor(origin)[0];
 			if (intensity <= 0.002) {
 				if (dark) return false;
 				px.clear();
