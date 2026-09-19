@@ -4,12 +4,22 @@ import {
 	type DitherEffect,
 	fire,
 	fluid,
+	rain,
 	rings,
+	snow,
 } from "@/components/dither-fx";
 
-export type Kind = "fire" | "bolt" | "rings" | "fluid" | "beam";
+export type Kind = "fire" | "bolt" | "rings" | "fluid" | "beam" | "rain" | "snow";
 
-export const KINDS: Kind[] = ["fire", "bolt", "rings", "fluid", "beam"];
+export const KINDS: Kind[] = [
+	"fire",
+	"bolt",
+	"rings",
+	"fluid",
+	"beam",
+	"rain",
+	"snow",
+];
 
 export interface NumberSpec {
 	key: string;
@@ -78,6 +88,26 @@ export const SPECS: Record<Kind, KindSpec> = {
 		colorLabel: "color",
 		anchor: { key: "origin", at: [0.5, 0.5], axis: "x" },
 	},
+	rain: {
+		numbers: [
+			{ key: "drops", label: "drops", min: 0, max: 120, step: 1 },
+			{ key: "speed", label: "speed", min: 0.4, max: 3, step: 0.1 },
+			{ key: "slant", label: "slant", min: -0.8, max: 0.8, step: 0.05 },
+			{ key: "length", label: "length", min: 1, max: 12, step: 1 },
+		],
+		colors: ["#bedbff"],
+		colorLabel: "color",
+	},
+	snow: {
+		numbers: [
+			{ key: "flakes", label: "flakes", min: 0, max: 120, step: 1 },
+			{ key: "speed", label: "speed", min: 0.03, max: 0.5, step: 0.01 },
+			{ key: "sway", label: "sway", min: 0, max: 1.5, step: 0.05 },
+			{ key: "settle", label: "settle", min: 0, max: 0.5, step: 0.01 },
+		],
+		colors: ["#d1d5dc"],
+		colorLabel: "color",
+	},
 };
 
 export const DEFAULTS: Record<Kind, Record<string, number>> = {
@@ -86,6 +116,8 @@ export const DEFAULTS: Record<Kind, Record<string, number>> = {
 	rings: { interval: 1.15, speed: 0.45, width: 2.6 },
 	fluid: { level: 0.2, slosh: 0.09, tempo: 0.15, bubbles: 12 },
 	beam: { spread: 0.5, motes: 16 },
+	rain: { drops: 64, speed: 1.4, slant: 0.25, length: 6 },
+	snow: { flakes: 40, speed: 0.12, sway: 0.6, settle: 0.12 },
 };
 
 export type Anchor = readonly [number, number];
@@ -142,6 +174,22 @@ export function build(
 				spread: values.spread,
 				motes: values.motes,
 				origin: anchor,
+			});
+		case "rain":
+			return rain({
+				color: a,
+				drops: values.drops,
+				speed: values.speed,
+				slant: values.slant,
+				length: values.length,
+			});
+		case "snow":
+			return snow({
+				color: a,
+				flakes: values.flakes,
+				speed: values.speed,
+				sway: values.sway,
+				settle: values.settle,
 			});
 	}
 }

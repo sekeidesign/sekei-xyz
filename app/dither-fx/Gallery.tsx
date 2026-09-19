@@ -8,7 +8,9 @@ import {
 	type DitherEffect,
 	fire,
 	fluid,
+	rain,
 	rings,
+	snow,
 } from "@/components/dither-fx";
 import { cn } from "@ui-kit/cn";
 import { SURFACE_INNER, SURFACE_OUTER } from "@ui-kit/post/surface";
@@ -38,6 +40,16 @@ const TILES = [
 		name: "beam",
 		build: () => beam(),
 		summary: "A cone of light with drifting motes.",
+	},
+	{
+		name: "rain",
+		build: () => rain(),
+		summary: "Slanted streaks, splashing on the floor.",
+	},
+	{
+		name: "snow",
+		build: () => snow(),
+		summary: "Drifting flakes that settle into a drift.",
 	},
 ];
 

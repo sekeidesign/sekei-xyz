@@ -32,6 +32,8 @@ const ITEMS = [
 	{ key: "beam", cells: [<Code key="n">dither-fx-beam</Code>, "Canvas"] },
 	{ key: "bolt", cells: [<Code key="n">dither-fx-bolt</Code>, "Canvas"] },
 	{ key: "fluid", cells: [<Code key="n">dither-fx-fluid</Code>, "Canvas"] },
+	{ key: "rain", cells: [<Code key="n">dither-fx-rain</Code>, "Canvas"] },
+	{ key: "snow", cells: [<Code key="n">dither-fx-snow</Code>, "Canvas"] },
 	{
 		key: "engine",
 		cells: [
