@@ -3,11 +3,6 @@
 import { useId } from "react";
 import { ControlRow } from "./ControlPanel";
 
-/**
- * One row of colours. The native picker is the control; the chip around it is
- * the swatch, so the row reads as part of the panel rather than as a browser
- * widget dropped into it.
- */
 export function Swatches({
 	label,
 	values,

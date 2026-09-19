@@ -29,11 +29,6 @@ export interface KindSpec {
 	anchor?: { key: "origin" | "target"; at: [number, number]; axis: "x" | "xy" };
 }
 
-/**
- * The library's own defaults, restated as control ranges. Everything here is
- * read twice: once to build the effect, and once to work out which options the
- * generated snippet has to mention.
- */
 export const SPECS: Record<Kind, KindSpec> = {
 	fire: {
 		numbers: [
@@ -96,10 +91,9 @@ export const DEFAULTS: Record<Kind, Record<string, number>> = {
 export type Anchor = readonly [number, number];
 
 /**
- * Builds the effect for one set of control values. The anchor arrives as a
- * getter rather than a pair: the effects re-read it every frame, so the drag
- * handle moves the live effect instead of rebuilding it and losing the rings
- * already in flight.
+ * The anchor is a getter rather than a pair because the effects re-read it
+ * every frame: dragging then steers the live effect instead of rebuilding it
+ * and losing the rings already in flight.
  */
 export function build(
 	kind: Kind,
@@ -154,7 +148,6 @@ export function build(
 
 const round = (value: number) => Number(value.toFixed(2));
 
-/** Only what differs from the library's defaults, so the snippet stays short. */
 function changed(kind: Kind, values: Record<string, number>, colors: string[]) {
 	const spec = SPECS[kind];
 	const out: string[] = [];

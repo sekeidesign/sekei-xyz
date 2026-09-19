@@ -28,6 +28,9 @@ why, without narrating the implementation.
 Never add `transition-colors`, or any other transition utility, unless asked
 for it explicitly.
 
+Geist Pixel ships one face, at 400. Anything between 400 and 599 renders
+identically to it — 600 is the first weight a browser will synthesise.
+
 ## dither-fx
 
 `components/dither-fx/` is vendored from

@@ -2,12 +2,8 @@ import type { ReactNode } from "react";
 
 export type Lang = "tsx" | "bash" | "json";
 
-/**
- * A tokeniser, not a parser. Every snippet on this page is either generated a
- * few lines at a time by the playground or written out in full above, so the
- * grammar it has to survive is known and small — which is worth a hundred
- * lines against pulling a real highlighter into the client bundle for it.
- */
+// A tokeniser, not a parser: the only snippets it sees are the ones on this
+// page, which is a small enough grammar to be worth not shipping a highlighter.
 const CLASS = {
 	comment: "text-gray-500",
 	keyword: "text-purple-300",
@@ -62,8 +58,6 @@ function tsx(code: string): Token[] {
 			push(out, tagName, "tag");
 		} else if (num !== undefined) push(out, num, "number");
 		else if (word !== undefined) {
-			// A word is a call when a paren follows, a prop when a colon or equals
-			// does, and otherwise just a word.
 			const next = code.slice(at).match(/^\s*([({:=])/);
 			const kind: Kind = KEYWORDS.test(word)
 				? "keyword"
@@ -86,8 +80,6 @@ function bash(code: string): Token[] {
 			push(out, line, "comment");
 			return;
 		}
-		// The first word of a line is the command; the rest are its arguments,
-		// with flags picked out so a long install line still has some shape.
 		const head = /^(\s*)([\w@./-]+)/.exec(line);
 		if (!head) {
 			push(out, line, "plain");
