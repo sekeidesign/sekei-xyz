@@ -17,6 +17,8 @@ export function AnchorHandle({
 	x,
 	y,
 	axis,
+	row = 0.5,
+	shape = "round",
 	label,
 	onChange,
 }: {
@@ -24,8 +26,12 @@ export function AnchorHandle({
 	box: RefObject<HTMLDivElement | null>;
 	x: number;
 	y: number;
-	/** Beam only reads the column, so its handle stays on one rail. */
+	/** Beam only reads the column, so its knob stays on one row. */
 	axis: "x" | "xy";
+	/** The row an x-only knob sits on, as a fraction of the height. */
+	row?: number;
+	/** A tall pill marks a knob that moves something else along, not a point. */
+	shape?: "round" | "tall";
 	label: string;
 	onChange: (x: number, y: number) => void;
 }) {
@@ -42,51 +48,43 @@ export function AnchorHandle({
 	}
 
 	return (
-		<>
-			{axis === "x" && (
-				<span
-					aria-hidden="true"
-					className="pointer-events-none absolute inset-y-0 w-px bg-gray-900/10"
-					style={{ left: `${x * 100}%` }}
-				/>
+		<button
+			ref={ref}
+			type="button"
+			aria-label={label}
+			// Two values, which no single ARIA role covers; the arrow keys below
+			// are what makes it reachable without a pointer.
+			onPointerDown={(event) => {
+				event.preventDefault();
+				ref.current?.setPointerCapture(event.pointerId);
+				setDragging(true);
+				move(event.clientX, event.clientY);
+			}}
+			onPointerMove={(event) => {
+				if (!dragging) return;
+				move(event.clientX, event.clientY);
+			}}
+			onPointerUp={() => setDragging(false)}
+			onPointerCancel={() => setDragging(false)}
+			onKeyDown={(event) => {
+				const step = NUDGE[event.key];
+				if (!step) return;
+				event.preventDefault();
+				const by = event.shiftKey ? 0.1 : 0.02;
+				onChange(
+					clamp(x + step[0] * by),
+					axis === "x" ? y : clamp(y + step[1] * by),
+				);
+			}}
+			style={{ left: `${x * 100}%`, top: `${(axis === "x" ? row : y) * 100}%` }}
+			className={cn(
+				"absolute z-10 -translate-x-1/2 -translate-y-1/2 touch-none rounded-full",
+				shape === "tall" ? "h-7 w-4" : "size-6",
+				// The site's white-chip treatment, the same as every other control.
+				"bg-white ring-1 ring-gray-500/10 shadow-md",
+				"focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500/40",
+				dragging ? "cursor-grabbing scale-110" : "cursor-grab",
 			)}
-			<button
-				ref={ref}
-				type="button"
-				aria-label={label}
-				// Two values, which no single ARIA role covers; the arrow keys below
-				// are what makes it reachable without a pointer.
-				onPointerDown={(event) => {
-					event.preventDefault();
-					ref.current?.setPointerCapture(event.pointerId);
-					setDragging(true);
-					move(event.clientX, event.clientY);
-				}}
-				onPointerMove={(event) => {
-					if (!dragging) return;
-					move(event.clientX, event.clientY);
-				}}
-				onPointerUp={() => setDragging(false)}
-				onPointerCancel={() => setDragging(false)}
-				onKeyDown={(event) => {
-					const step = NUDGE[event.key];
-					if (!step) return;
-					event.preventDefault();
-					const by = event.shiftKey ? 0.1 : 0.02;
-					onChange(
-						clamp(x + step[0] * by),
-						axis === "x" ? y : clamp(y + step[1] * by),
-					);
-				}}
-				style={{ left: `${x * 100}%`, top: `${(axis === "x" ? 0.5 : y) * 100}%` }}
-				className={cn(
-					"absolute z-10 size-6 -translate-x-1/2 -translate-y-1/2 touch-none rounded-full",
-					// The site's white-chip treatment, the same as every other control.
-					"bg-white ring-1 ring-gray-500/10 shadow-md",
-					"focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500/40",
-					dragging ? "cursor-grabbing scale-110" : "cursor-grab",
-				)}
-			/>
-		</>
+		/>
 	);
 }

@@ -11,8 +11,11 @@ export interface RainOptions {
 	drops?: number;
 	/** Fall speed of the nearest drops as a fraction of the height per second. */
 	speed?: number;
-	/** Cells drifted sideways per cell fallen; negative blows left. */
-	slant?: number;
+	/**
+	 * Cells drifted sideways per cell fallen; negative blows left. A getter is
+	 * re-read every frame, so the slant can be steered without rebuilding.
+	 */
+	slant?: number | (() => number);
 	/** Streak length of the nearest drops, in cells. */
 	length?: number;
 }
@@ -45,6 +48,7 @@ export function rain({
 	length = 6,
 }: RainOptions = {}): DitherEffect {
 	const color = toRgb(colorInput);
+	const slantNow = () => (typeof slant === "function" ? slant() : slant);
 	let cols = 0;
 	let rows = 0;
 	let rand: () => number = Math.random;
@@ -54,14 +58,14 @@ export function rain({
 	let lastReduced = false;
 	let still = false;
 
-	const wind = (t: number) => slant * (0.85 + 0.15 * Math.sin(t * 0.7));
+	const wind = (t: number) => slantNow() * (0.85 + 0.15 * Math.sin(t * 0.7));
 
 	const fallSpeed = (d: Drop) => speed * rows * (0.55 + 0.45 * d.depth);
 
 	function drop(y: number): Drop {
 		// Slanted rain enters from a side as well as the top, so the spawn span
 		// is widened upwind by how far a drop drifts on its way down.
-		const drift = slant * rows;
+		const drift = slantNow() * rows;
 		return {
 			x: Math.min(0, -drift) + rand() * (cols + Math.abs(drift)),
 			y,
@@ -107,7 +111,7 @@ export function rain({
 		px.clear();
 		alive = false;
 		const gain = reduced ? intensity : 1;
-		const w = reduced ? slant : wind(t);
+		const w = reduced ? slantNow() : wind(t);
 		const norm = Math.hypot(w, 1);
 		const sx = -w / norm;
 		const sy = -1 / norm;

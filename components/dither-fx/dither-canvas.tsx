@@ -26,7 +26,7 @@ export interface DitherCanvasProps {
 export function DitherCanvas({
 	effect,
 	active = true,
-	cell = 3,
+	cell = 2,
 	seed = 1,
 	maxCols,
 	maxRows,

@@ -36,7 +36,7 @@ const PROPS = [
 		key: "cell",
 		cells: [
 			<Code key="n">cell</Code>,
-			<Code key="v">3</Code>,
+			<Code key="v">2</Code>,
 			"CSS px per dither cell. Lower is finer and costlier.",
 		],
 	},

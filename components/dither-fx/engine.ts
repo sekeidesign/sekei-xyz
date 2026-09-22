@@ -190,7 +190,7 @@ export class DitherEngine {
 	constructor(
 		private readonly canvas: HTMLCanvasElement,
 		private effect: DitherEffect,
-		{ cell = 3, seed = 1, maxCols = 640, maxRows = 400 }: EngineOptions = {},
+		{ cell = 2, seed = 1, maxCols = 640, maxRows = 400 }: EngineOptions = {},
 	) {
 		const ctx = canvas.getContext("2d");
 		if (!ctx) throw new Error("DitherEngine: 2d context unavailable");

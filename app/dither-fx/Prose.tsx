@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 export function Section({
 	title,
@@ -27,9 +28,9 @@ export function P({ children }: { children: ReactNode }) {
 	);
 }
 
-export function Code({ children }: { children: ReactNode }) {
+export function Code({ children, className }: { children: ReactNode, className?: string }) {
 	return (
-		<code className="rounded bg-gray-200/70 px-1 py-0.5 font-mono text-[13px] text-gray-900">
+		<code className={cn("rounded bg-gray-200/70 px-1 py-0.5 whitespace-nowrap font-mono text-[13px] text-gray-900", className)}>
 			{children}
 		</code>
 	);
@@ -48,10 +49,32 @@ interface Row {
 	cells: ReactNode[];
 }
 
-export function Table({ head, rows }: { head: string[]; rows: Row[] }) {
+export function Table({
+	head,
+	rows,
+	widths,
+}: {
+	head: string[];
+	rows: Row[];
+	/** Column widths. Given, the table is fixed-layout so a run of tables lines up. */
+	widths?: string[];
+}) {
 	return (
 		<div className="overflow-x-auto">
-			<table className="w-full border-collapse text-left">
+			<table
+				className={
+					widths
+						? "w-full min-w-[40rem] table-fixed border-collapse text-left"
+						: "w-full border-collapse text-left"
+				}
+			>
+				{widths && (
+					<colgroup>
+						{head.map((cell, column) => (
+							<col key={cell} style={{ width: widths[column] }} />
+						))}
+					</colgroup>
+				)}
 				<thead>
 					<tr className="border-b border-gray-300/70">
 						{head.map((cell) => (

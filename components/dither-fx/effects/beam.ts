@@ -10,8 +10,13 @@ import { arms, type Particle, twinkle } from "./particles";
 
 export interface BeamOptions {
 	color?: RgbInput;
-	/** Only the x of the anchor is used: the column the light falls along. */
+	/** Only the x is used: where the light enters at the top edge. */
 	origin?: Anchor;
+	/**
+	 * Only the x is used: where the axis meets the bottom edge. Unset, the beam
+	 * falls straight down from `origin`; set, it leans toward this point.
+	 */
+	target?: Anchor;
 	/** Half-width at the bottom edge as a fraction of the width. */
 	spread?: number;
 	/** Dust motes drifting in the light. */
@@ -26,6 +31,7 @@ export interface BeamOptions {
 export function beam({
 	color: colorInput = [48, 128, 255],
 	origin = [0.5, 0.5],
+	target,
 	spread = 0.5,
 	motes = 16,
 }: BeamOptions = {}): DitherEffect {
@@ -34,15 +40,24 @@ export function beam({
 	let rows = 0;
 	let rand: () => number = Math.random;
 	let ox = 0.5;
+	let tx = 0.5;
 	let dust: Particle[] = [];
 	let dark = true;
 
 	const halfWidth = (y: number) => ((y + rows * 0.2) / (rows * 1.2)) * spread * cols;
 
+	/** The axis column at row `y`: `origin` at the top edge, `target` at the floor. */
+	const axisX = (y: number) => cols * (ox + (tx - ox) * (y / Math.max(1, rows - 1)));
+
+	function aim() {
+		ox = resolveAnchor(origin)[0];
+		tx = target ? resolveAnchor(target)[0] : ox;
+	}
+
 	function mote(y: number): Particle {
 		const hw = halfWidth(y);
 		return {
-			x: cols * ox + (rand() * 2 - 1) * hw * 0.9,
+			x: axisX(y) + (rand() * 2 - 1) * hw * 0.9,
 			y,
 			vx: 0,
 			vy: rows * (0.02 + rand() * 0.035),
@@ -55,8 +70,9 @@ export function beam({
 	function paint({ px, t, intensity, reduced }: DitherFrame) {
 		px.clear();
 		const time = reduced ? 0 : t;
-		const cx = cols * ox + Math.sin(time * 0.5) * cols * 0.02;
+		const sway = Math.sin(time * 0.5) * cols * 0.02;
 		for (let y = 0; y < rows; y++) {
+			const cx = axisX(y) + sway;
 			const hw = halfWidth(y);
 			const fall = (1 - y / rows) ** 1.1;
 			const x0 = Math.max(0, Math.floor(cx - hw));
@@ -88,13 +104,13 @@ export function beam({
 			cols = c;
 			rows = r;
 			rand = random;
-			ox = resolveAnchor(origin)[0];
+			aim();
 			dust = Array.from({ length: motes }, () => mote(rand() * r));
 			dark = true;
 		},
 		step(frame) {
 			const { px, dt, t, intensity, reduced } = frame;
-			ox = resolveAnchor(origin)[0];
+			aim();
 			if (intensity <= 0.002) {
 				if (dark) return false;
 				px.clear();
@@ -103,12 +119,13 @@ export function beam({
 			}
 			dark = false;
 			if (!reduced) {
-				const cx = cols * ox;
 				for (let i = 0; i < dust.length; i++) {
 					const m = dust[i];
 					m.y += m.vy * dt;
 					m.x += Math.sin(t * 0.8 + m.phase) * rows * 0.01 * dt;
-					if (m.y > rows || Math.abs(m.x - cx) > halfWidth(m.y)) dust[i] = mote(-1);
+					if (m.y > rows || Math.abs(m.x - axisX(m.y)) > halfWidth(m.y)) {
+						dust[i] = mote(-1);
+					}
 				}
 			}
 			paint(frame);

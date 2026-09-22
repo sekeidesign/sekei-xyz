@@ -8,8 +8,11 @@ import { arms, type Particle, twinkle } from "./particles";
 
 export interface FluidOptions {
 	color?: RgbInput;
-	/** Resting depth as a fraction of the height, at full intensity. */
-	level?: number;
+	/**
+	 * Resting depth as a fraction of the height, at full intensity. A getter is
+	 * re-read every frame, so the level can be steered without rebuilding.
+	 */
+	level?: number | (() => number);
 	/** How far the surface tilts at either edge, as a fraction of the height. */
 	slosh?: number;
 	/** Slosh cycles per second. */
@@ -42,6 +45,8 @@ export function fluid({
 	let glints: Particle[] = [];
 	let dark = true;
 
+	const levelNow = () => (typeof level === "function" ? level() : level);
+
 	function bubble(): Particle {
 		return {
 			x: rand() * cols,
@@ -55,7 +60,7 @@ export function fluid({
 	}
 
 	function shape(t: number, intensity: number, reduced: boolean) {
-		const depth = level * rows * intensity;
+		const depth = levelNow() * rows * intensity;
 		const phase = t * tempo * TAU;
 		const tilt = reduced ? 0 : Math.sin(phase) * slosh * rows;
 		for (let x = 0; x < cols; x++) {

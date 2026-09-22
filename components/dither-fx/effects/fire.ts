@@ -11,8 +11,11 @@ import { arms, type Particle, twinkle } from "./particles";
 export interface FireOptions {
 	/** Cold → hot: the tips, the body, the base. */
 	colors?: readonly [RgbInput, RgbInput, RgbInput];
-	/** Fraction of the height the flames reach at full intensity. */
-	height?: number;
+	/**
+	 * Fraction of the height the flames reach at full intensity. A getter is
+	 * re-read every frame, so the height can be steered without rebuilding.
+	 */
+	height?: number | (() => number);
 	/** Simulation steps per second; lower reads chunkier. */
 	rate?: number;
 	/** Embers aloft at once, at full intensity. */
@@ -48,11 +51,13 @@ export function fire({
 	let sparks: Particle[] = [];
 	let lastReduced = false;
 
+	const heightNow = () => (typeof height === "function" ? height() : height);
+
 	const ramp = (h: number): Rgb =>
 		h < 0.45 ? mix(cold, warm, h / 0.45) : mix(warm, hot, (h - 0.45) / 0.55);
 
 	function simulate(intensity: number, t: number) {
-		const loss = 1 / (rows * height);
+		const loss = 1 / (rows * heightNow());
 		const base = (rows - 1) * cols;
 		for (let x = 0; x < cols; x++) {
 			const flicker =

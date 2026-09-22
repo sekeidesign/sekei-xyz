@@ -29,14 +29,36 @@ export interface NumberSpec {
 	step: number;
 }
 
+export type AnchorKey = "origin" | "target";
+
+export interface AnchorSpec {
+	key: AnchorKey;
+	/** The library's default, which the snippet compares against. */
+	at: [number, number];
+	/** Beam reads only the column, so its knobs each keep to one row. */
+	axis: "x" | "xy";
+	/** The row an x-only knob sits on, as a fraction of the height. */
+	row?: number;
+	/** The effect trails the knob on a spring instead of snapping to it. */
+	spring?: boolean;
+}
+
+export interface HandleSpec {
+	/** The option a stage handle steers; its NumberSpec sets the range. */
+	key: string;
+	shape: "arc" | "level";
+	/** The effect trails the handle on a spring instead of snapping to it. */
+	spring?: boolean;
+}
+
 export interface KindSpec {
 	/** Sliders, in the order the effect's own options are documented. */
 	numbers: NumberSpec[];
 	/** One per colour the factory takes; fire takes three, cold to hot. */
 	colors: string[];
 	colorLabel: string;
-	/** The option name for the anchor, when the effect has one. */
-	anchor?: { key: "origin" | "target"; at: [number, number]; axis: "x" | "xy" };
+	anchors?: AnchorSpec[];
+	handle?: HandleSpec;
 }
 
 export const SPECS: Record<Kind, KindSpec> = {
@@ -48,6 +70,7 @@ export const SPECS: Record<Kind, KindSpec> = {
 		],
 		colors: ["#e5343a", "#f05100", "#fcbb00"],
 		colorLabel: "colors",
+		handle: { key: "height", shape: "level" },
 	},
 	bolt: {
 		numbers: [
@@ -57,7 +80,7 @@ export const SPECS: Record<Kind, KindSpec> = {
 		],
 		colors: ["#fcbb00"],
 		colorLabel: "color",
-		anchor: { key: "target", at: [0.5, 0.43], axis: "xy" },
+		anchors: [{ key: "target", at: [0.5, 0.43], axis: "xy" }],
 	},
 	rings: {
 		numbers: [
@@ -67,7 +90,7 @@ export const SPECS: Record<Kind, KindSpec> = {
 		],
 		colors: ["#ac4bff"],
 		colorLabel: "color",
-		anchor: { key: "origin", at: [0.5, 0.42], axis: "xy" },
+		anchors: [{ key: "origin", at: [0.5, 0.42], axis: "xy", spring: true }],
 	},
 	fluid: {
 		numbers: [
@@ -78,6 +101,7 @@ export const SPECS: Record<Kind, KindSpec> = {
 		],
 		colors: ["#3080ff"],
 		colorLabel: "color",
+		handle: { key: "level", shape: "level", spring: true },
 	},
 	beam: {
 		numbers: [
@@ -86,7 +110,10 @@ export const SPECS: Record<Kind, KindSpec> = {
 		],
 		colors: ["#3080ff"],
 		colorLabel: "color",
-		anchor: { key: "origin", at: [0.5, 0.5], axis: "x" },
+		anchors: [
+			{ key: "origin", at: [0.5, 0.5], axis: "x", row: 0.1 },
+			{ key: "target", at: [0.5, 0.5], axis: "x", row: 0.9 },
+		],
 	},
 	rain: {
 		numbers: [
@@ -97,6 +124,7 @@ export const SPECS: Record<Kind, KindSpec> = {
 		],
 		colors: ["#bedbff"],
 		colorLabel: "color",
+		handle: { key: "slant", shape: "arc" },
 	},
 	snow: {
 		numbers: [
@@ -121,24 +149,39 @@ export const DEFAULTS: Record<Kind, Record<string, number>> = {
 };
 
 export type Anchor = readonly [number, number];
+export type AnchorGetters = Partial<Record<AnchorKey, () => Anchor>>;
+
+export interface AnchorState {
+	on: boolean;
+	at: Partial<Record<AnchorKey, { x: number; y: number }>>;
+}
+
+/** The stage handle's option and range for an effect, when it has one. */
+export function handleOf(kind: Kind): (HandleSpec & NumberSpec) | undefined {
+	const spec = SPECS[kind];
+	if (!spec.handle) return undefined;
+	const number = spec.numbers.find((n) => n.key === spec.handle?.key);
+	return number ? { ...spec.handle, ...number } : undefined;
+}
 
 /**
- * The anchor is a getter rather than a pair because the effects re-read it
- * every frame: dragging then steers the live effect instead of rebuilding it
- * and losing the rings already in flight.
+ * Anchors and the live option are getters rather than values because the
+ * effects re-read them every frame: dragging then steers the live effect
+ * instead of rebuilding it and losing the rings already in flight.
  */
 export function build(
 	kind: Kind,
 	values: Record<string, number>,
 	colors: string[],
-	anchor: (() => Anchor) | undefined,
+	anchors: AnchorGetters,
+	live?: () => number,
 ): DitherEffect {
 	const [a, b, c] = colors;
 	switch (kind) {
 		case "fire":
 			return fire({
 				colors: [a, b, c],
-				height: values.height,
+				height: live ?? values.height,
 				rate: values.rate,
 				embers: values.embers,
 			});
@@ -150,7 +193,7 @@ export function build(
 					Math.max(values.every, values.upTo),
 				],
 				rate: values.rate,
-				target: anchor,
+				target: anchors.target,
 			});
 		case "rings":
 			return rings({
@@ -158,12 +201,12 @@ export function build(
 				interval: values.interval,
 				speed: values.speed,
 				width: values.width,
-				origin: anchor,
+				origin: anchors.origin,
 			});
 		case "fluid":
 			return fluid({
 				color: a,
-				level: values.level,
+				level: live ?? values.level,
 				slosh: values.slosh,
 				tempo: values.tempo,
 				bubbles: values.bubbles,
@@ -173,14 +216,15 @@ export function build(
 				color: a,
 				spread: values.spread,
 				motes: values.motes,
-				origin: anchor,
+				origin: anchors.origin,
+				target: anchors.target,
 			});
 		case "rain":
 			return rain({
 				color: a,
 				drops: values.drops,
 				speed: values.speed,
-				slant: values.slant,
+				slant: live ?? values.slant,
 				length: values.length,
 			});
 		case "snow":
@@ -232,17 +276,24 @@ export function snippet(
 	kind: Kind,
 	values: Record<string, number>,
 	colors: string[],
-	anchor: { on: boolean; x: number; y: number },
+	anchors: AnchorState,
 	canvas: CanvasProps,
 ): string {
 	const spec = SPECS[kind];
 	const options = changed(kind, values, colors);
-	if (spec.anchor && anchor.on) {
-		const at: [number, number] = spec.anchor.axis === "x"
-			? [round(anchor.x), spec.anchor.at[1]]
-			: [round(anchor.x), round(anchor.y)];
-		if (at[0] !== spec.anchor.at[0] || at[1] !== spec.anchor.at[1]) {
-			options.push(`${spec.anchor.key}: [${at[0]}, ${at[1]}]`);
+	if (spec.anchors && anchors.on) {
+		for (const a of spec.anchors) {
+			const p = anchors.at[a.key];
+			if (!p) continue;
+			const x = round(p.x);
+			const y = a.axis === "x" ? a.at[1] : round(p.y);
+			// Beam's target defaults to the origin's column, so it has changed
+			// once it leaves that column, not the spec's number.
+			const baseX =
+				kind === "beam" && a.key === "target"
+					? round(anchors.at.origin?.x ?? a.at[0])
+					: a.at[0];
+			if (x !== baseX || y !== a.at[1]) options.push(`${a.key}: [${x}, ${y}]`);
 		}
 	}
 
@@ -252,7 +303,7 @@ export function snippet(
 
 	const props = ["effect={effect}"];
 	if (!canvas.active) props.push("active={false}");
-	if (canvas.cell !== 3) props.push(`cell={${canvas.cell}}`);
+	if (canvas.cell !== 2) props.push(`cell={${canvas.cell}}`);
 	if (canvas.seed !== 1) props.push(`seed={${canvas.seed}}`);
 
 	return [
