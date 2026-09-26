@@ -2,8 +2,8 @@
 
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { cn } from "./cn";
-import { usePrefersReducedMotion } from "./use-prefers-reduced-motion";
 
 const OPEN_MS = 420;
 const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";

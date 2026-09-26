@@ -197,7 +197,6 @@ body {
 
 body {
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 .panel {
@@ -713,6 +712,22 @@ body {
   border-radius: 9999px;
   background: #fff;
   box-shadow: 0 0 0 1px #6a72821a, 0 1px 3px #36415312;
+}
+
+/* Ring the thumb, not the whole track. The white spread is the gap an
+   outline-offset would leave. */
+.control-slider:focus {
+  outline: none;
+}
+
+.control-slider:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 1px #6a72821a, 0 1px 3px #36415312, 0 0 0 2px #fff,
+    0 0 0 4px color-mix(in oklab, var(--color-gray-900) 40%, transparent);
+}
+
+.control-slider:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 1px #6a72821a, 0 1px 3px #36415312, 0 0 0 2px #fff,
+    0 0 0 4px color-mix(in oklab, var(--color-gray-900) 40%, transparent);
 }
 
 .control-slider::-moz-range-track {

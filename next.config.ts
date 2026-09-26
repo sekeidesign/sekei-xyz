@@ -18,21 +18,42 @@ const nextConfig: NextConfig = {
     "/p/**": ["./lib/og/fonts/*.ttf"],
   },
 
+  // @sekei resolves through this domain rather than straight at GitHub, so the
+  // namespace survives a repo rename and can pick up a second library later
+  // without every consumer re-running `shadcn registry add`. The source of
+  // truth is r/ in sekeidesign/shad-fx; nothing is copied back here.
+  async rewrites() {
+    return [
+      {
+        source: "/registry/:path*",
+        destination:
+          "https://raw.githubusercontent.com/sekeidesign/shad-fx/main/r/:path*",
+      },
+    ];
+  },
+
   async redirects() {
     return [
       // Filters moved from route segments to a query param, so several can be
       // active at once.
       { source: "/timeline", destination: "/", permanent: true },
-      ...["apps", "books", "experiments", "work", "writing", "photos"].flatMap(
-        (slug) => [
-          { source: `/${slug}`, destination: `/?kind=${slug}`, permanent: true },
-          {
-            source: `/timeline/${slug}`,
-            destination: `/?kind=${slug}`,
-            permanent: true,
-          },
-        ],
-      ),
+      ...[
+        ["apps", "launch"],
+        ["books", "book"],
+        ["experiments", "craft"],
+        ["work", "work"],
+        ["writing", "essay"],
+      ].flatMap(([path, slug]) => [
+        { source: `/${path}`, destination: `/?kind=${slug}`, permanent: true },
+        {
+          source: `/timeline/${path}`,
+          destination: `/?kind=${slug}`,
+          permanent: true,
+        },
+      ]),
+      { source: "/photos", destination: "/", permanent: true },
+      { source: "/timeline/photos", destination: "/", permanent: true },
+      { source: "/dither-fx", destination: "/shad-fx", permanent: true },
       // Case studies moved from route folders into content/, served by /p/<slug>.
       { source: "/case-studies/tato", destination: "/p/tato", permanent: true },
       {

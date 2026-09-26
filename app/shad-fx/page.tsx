@@ -1,0 +1,152 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { BackLink } from "@ui-kit/BackLink";
+import { Button } from "@ui-kit/Button";
+import { GithubIcon } from "@ui-kit/icons/GithubIcon";
+import { SparkleDivider } from "@ui-kit/SparkleDivider";
+import { siteUrl } from "@/lib/site";
+import { AGENTS_PATH, agentPrompt } from "./agents";
+import { REPO, SUMMARY } from "./content";
+import { CopyAgentPrompt } from "./CopyAgentPrompt";
+import { Effects } from "./Effects";
+import { Install } from "./Install";
+import { Playground } from "./Playground";
+import { A, Code, P, Section } from "./Prose";
+import { Snippet } from "./Snippet";
+import { Usage } from "./Usage";
+
+// The shell from app/(site)/layout.tsx, rebuilt because this page sits outside
+// that group on purpose: no sidebar, no timeline.
+const GUTTER =
+	"panel stripes hidden flex-1 shrink md:sticky md:top-px md:block md:h-[calc(100vh-2px)] md:self-start";
+
+export const metadata: Metadata = {
+	title: "shad-fx",
+	description: SUMMARY,
+	openGraph: {
+		title: "shad-fx",
+		description: "Canvas effects for React, installed with the shadcn CLI",
+		type: "article",
+	},
+	alternates: {
+		canonical: "/shad-fx",
+		types: { "text/markdown": AGENTS_PATH },
+	},
+};
+
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@type": "SoftwareSourceCode",
+	name: "shad-fx",
+	description: SUMMARY,
+	url: `${siteUrl}/shad-fx`,
+	codeRepository: REPO,
+	programmingLanguage: ["TypeScript", "React"],
+	runtimePlatform: "Web browser",
+	license: `${REPO}/blob/main/LICENSE`,
+	author: { "@type": "Person", name: "PG Gonni", url: siteUrl },
+};
+
+export default function ShadFxDocs() {
+	return (
+		<div className="mx-auto box-border flex min-h-screen w-full flex-col justify-center gap-px p-px md:flex-row">
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+			/>
+			<div aria-hidden="true" className={GUTTER} />
+
+			<div className="panel flex w-full min-w-0 flex-col md:max-w-screen-md">
+				<div className="flex flex-col p-4 md:p-6">
+					<header className="flex flex-col gap-6">
+						<div className="flex items-center justify-between gap-3">
+							<BackLink label="Back to sekei.xyz" iconOnly />
+							<div className="flex items-center gap-2">
+								<CopyAgentPrompt prompt={agentPrompt()} />
+								<Button
+									render={
+										<a href={REPO} target="_blank" rel="noopener noreferrer" />
+									}
+								>
+									<GithubIcon size={14} />
+									GitHub
+								</Button>
+							</div>
+						</div>
+						<div className="flex flex-col gap-3">
+							<h1 className="font-pixel text-5xl leading-[1.1] text-gray-900 md:text-6xl">
+								shad-fx
+							</h1>
+							<p className="max-w-xl text-base leading-[1.55] font-[420] text-gray-500">
+								Canvas effects for React, starting with Bayer dithered environmental effects. Rendered on a tiny canvas, using a single <Code>ImageData</Code> instance per frame, and upscaled with CSS <Code>image-rendering: pixelated</Code> to keep each frame fast and GPU accelerated.
+							</p>
+						</div>
+						<Snippet code="npx shadcn@latest add @sekei/shad-fx" />
+						<Playground />
+					<SparkleDivider className="mt-10 mb-10" />
+					</header>
+
+
+					<main className="flex flex-col gap-14">
+						<Install />
+						<Usage />
+						<Effects />
+
+						<Section title="Reduced motion" id="reduced-motion">
+							<P>
+								The canvas reads <Code>prefers-reduced-motion</Code> through{" "}
+								<Code>useSyncExternalStore</Code>, so it is correct on the server
+								and updates when the setting changes. Under reduce, each effect
+								paints one settled frame and stops: fire is pre-warmed and still,
+								rings sit at three fixed radii, rain and snow hang mid-fall,
+								particles are dropped. Nothing
+								animates and the frame loop parks.
+							</P>
+						</Section>
+
+						<Section title="Cost" id="cost">
+							<P>
+								The engine runs <Code>requestAnimationFrame</Code> only while
+								something is changing, and stops once the eased intensity has
+								settled and the effect reports <Code>idle()</Code>. An inactive
+								effect costs nothing. Each frame is one <Code>putImageData</Code>{" "}
+								over a grid capped at 640×400 cells, not a <Code>fillRect</Code>{" "}
+								per cell.
+							</P>
+						</Section>
+
+						<Section title="Credit" id="credit">
+							<P>
+								The ordered-dither rendering here, meaning the low-resolution
+								backing canvas scaled up pixelated, the Bayer threshold matrix, and
+								filling every cell at one of two alpha tiers rather than leaving
+								holes, derives from{" "}
+								<A href="https://github.com/Boring-Software-Inc/dither-kit">
+									dither-kit
+								</A>{" "}
+								under the MIT licence. The effects, the painter, the frame loop and
+								the reduced-motion handling are not.
+							</P>
+						</Section>
+					</main>
+
+					<footer className="mt-16 border-t border-gray-200 pt-6">
+						<p className="text-[13px] leading-[1.5] font-[420] text-gray-400">
+							Built by{" "}
+							<Link href="/" className="text-gray-500 hover:text-gray-900">
+								PG Gonni
+							</Link>
+							.{" "}
+							<a href={REPO} className="text-gray-500 hover:text-gray-900">
+								Source on GitHub
+							</a>
+							.
+						</p>
+					</footer>
+				</div>
+			</div>
+
+			<div aria-hidden="true" className={GUTTER} />
+		</div>
+	);
+}

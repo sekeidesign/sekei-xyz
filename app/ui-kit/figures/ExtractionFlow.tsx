@@ -2,11 +2,11 @@
 
 import { useInView } from "motion/react";
 import { type CSSProperties, useId, useRef, useState } from "react";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { cn } from "../cn";
 import { KIND } from "../covers/raid-log";
 import { TatoMark } from "../icons/TatoMark";
 import { SURFACE_INNER, SURFACE_OUTER } from "../post/surface";
-import { usePrefersReducedMotion } from "../use-prefers-reduced-motion";
 import { Disc } from "./Disc";
 import { RAID_KINDS } from "./kinds";
 import { SourceIcon } from "./SourceIcon";
