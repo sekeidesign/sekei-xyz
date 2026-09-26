@@ -15,8 +15,7 @@ export type EntryKind =
 	/** An app or project going live. Carries artwork and an outbound link. */
 	| "launch"
 	/** A book finished. Cover thumbnail, author, rating; prose optional. */
-	| "book"
-	| "photo";
+	| "book";
 
 /**
  * How much a live preview costs to leave running offscreen.
@@ -88,7 +87,6 @@ const KINDS: EntryKind[] = [
 	"note",
 	"launch",
 	"book",
-	"photo",
 ];
 const PREVIEW_MODES: PreviewMode[] = ["live", "cover", "none"];
 const PREVIEW_COSTS: PreviewCost[] = ["light", "heavy"];
