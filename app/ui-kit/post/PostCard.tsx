@@ -1,6 +1,7 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { type PointerEvent, type ReactNode, useState } from "react";
+import { BOOKS } from "../book-shelf/books";
 import { CODE_COVERS } from "../covers";
 import { LivePreview } from "../LivePreview";
 import { OutboundLink } from "../OutboundLink";
@@ -35,20 +36,40 @@ export function PostCard({
 	children,
 }: PostCardProps) {
 	const href = linked && entry.hasPage ? `/p/${entry.slug}` : undefined;
+	const [hovered, setHovered] = useState(false);
+	// Mouse only: a tap fires pointerenter too, and on touch there's no leave to
+	// turn the book back.
+	const onHover = (next: boolean) => (event: PointerEvent<HTMLElement>) => {
+		if (event.pointerType === "mouse") setHovered(next);
+	};
 
-	// A case study's cover crops into the artwork column beside the copy, and
-	// runs full width on the post's own page, where it is the lead image. On a
-	// phone the card runs it full width too, so the feed and the page lead with
-	// the same cover at the same size rather than two crops of it.
-	const squareCover = entry.kind === "writing" && !lead;
-	const media = entryMedia(entry, eager, squareCover);
-	const stacked = squareCover ? entryMedia(entry, eager, false) : null;
-	const aside = entry.kind === "book" || entry.kind === "launch";
+	// An essay's or a book's cover crops into the artwork column beside the
+	// copy, and runs full width on the post's own page, where it is the lead
+	// image. On a phone the card runs it full width too, so the feed and the page
+	// lead with the same cover at the same size rather than two crops of it.
+	const squareCover =
+		(entry.kind === "writing" ||
+			entry.kind === "book" ||
+			(entry.kind === "launch" && entry.slug in CODE_COVERS)) &&
+		!lead;
+	const media = entryMedia(entry, eager, squareCover, hovered, lead);
+	const stacked = squareCover ? entryMedia(entry, eager, false, hovered) : null;
 	const layout =
-		media && squareCover ? "split" : media && aside ? "aside" : "column";
+		media && squareCover
+			? "split"
+			: media && entry.kind === "launch"
+				? "aside"
+				: "column";
 
 	return (
-		<Post as={as} id={entry.slug} href={href} layout={layout}>
+		<Post
+			as={as}
+			id={entry.slug}
+			href={href}
+			layout={layout}
+			onPointerEnter={href ? onHover(true) : undefined}
+			onPointerLeave={href ? onHover(false) : undefined}
+		>
 			<Post.Body>
 				{/* Entries without a page of their own show their whole body in place
 				    of the excerpt, already styled by mdx-components. */}
@@ -109,10 +130,12 @@ function entryMedia(
 	entry: TimelineEntry,
 	eager?: boolean,
 	squareCover?: boolean,
+	hovered?: boolean,
+	lead?: boolean,
 ) {
 	if (entry.kind === "book") {
 		if (!entry.cover) return null;
-		return (
+		const book = (
 			<Post.BookCover
 				book={{
 					id: entry.slug,
@@ -122,7 +145,24 @@ function entryMedia(
 					spineColor: entry.spineColor ?? "#4a5568",
 					rating: entry.rating ?? 0,
 				}}
+				width={squareCover ? 78 : 120}
+				turned={hovered}
+				neighbours={
+					lead
+						? BOOKS.filter(
+								// By cover as well as slug: a post can borrow another book's art.
+								(other) => other.id !== entry.slug && other.cover !== entry.cover,
+							)
+						: undefined
+				}
 			/>
+		);
+		return squareCover ? (
+			<Post.SquareMedia alt={entry.title}>{book}</Post.SquareMedia>
+		) : (
+			<Post.Media alt={entry.title} className="h-60">
+				{book}
+			</Post.Media>
 		);
 	}
 
@@ -196,8 +236,13 @@ function PostCardFooter({
 			<div className="flex items-center gap-2">
 				<SocialBar
 					slug={entry.slug}
-					// Notes have no page of their own, so their link points at the feed.
-					sharePath={href ?? `/timeline#${entry.slug}`}
+					// A launch shares the thing launched. Notes have no page of their
+					// own, so their link points at the feed.
+					sharePath={
+						(entry.kind === "launch" && entry.link) ||
+						href ||
+						`/timeline#${entry.slug}`
+					}
 				/>
 				{entry.kind === "launch" && entry.link && (
 					<OutboundLink href={entry.link} label={entry.linkLabel} />

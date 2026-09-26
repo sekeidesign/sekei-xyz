@@ -649,9 +649,7 @@ body {
 }
 
 
-/* The card's hover state: the background fill and the variable the phone's
-   bottom fade reads, so the fade tracks the card instead of being matched by
-   hand. Both live in one rule because they have to agree.
+/* The card's hover fill.
 
    Inside @media (hover: hover) on purpose. Tailwind gates its own hover:
    variant this way, but a hand-written :hover selector isn't gated — and on a
