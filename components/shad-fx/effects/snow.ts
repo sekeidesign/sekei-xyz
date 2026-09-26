@@ -1,6 +1,6 @@
 import {
-	type DitherEffect,
-	type DitherFrame,
+	type FxEffect,
+	type FxFrame,
 	type RgbInput,
 	toRgb,
 } from "../engine";
@@ -40,7 +40,7 @@ export function snow({
 	speed = 0.12,
 	sway = 0.6,
 	settle = 0.12,
-}: SnowOptions = {}): DitherEffect {
+}: SnowOptions = {}): FxEffect {
 	const color = toRgb(colorInput);
 	let cols = 0;
 	let rows = 0;
@@ -101,7 +101,7 @@ export function snow({
 		}
 	}
 
-	function paint({ px, t, intensity, reduced }: DitherFrame) {
+	function paint({ px, t, intensity, reduced }: FxFrame) {
 		px.clear();
 		for (let x = 0; x < cols; x++) {
 			const h = ground[x];

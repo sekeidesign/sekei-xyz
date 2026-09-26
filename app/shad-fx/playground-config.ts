@@ -1,7 +1,7 @@
 import {
 	beam,
 	bolt,
-	type DitherEffect,
+	type FxEffect,
 	fire,
 	fluid,
 	rain,
@@ -175,7 +175,7 @@ export function build(
 	colors: string[],
 	anchors: AnchorGetters,
 	live?: () => number,
-): DitherEffect {
+): FxEffect {
 	const [a, b, c] = colors;
 	switch (kind) {
 		case "fire":

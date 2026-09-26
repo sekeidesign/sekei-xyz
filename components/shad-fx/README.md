@@ -13,7 +13,7 @@ npx shadcn@latest add @sekei/shad-fx
 
 shadcn copies files rather than adding a dependency, so this copy is what the
 site actually renders — the RAID figure in `app/ui-kit/figures/` imports
-`@/components/shad-fx/dither/...` and is unaffected by where the library lives.
+`@/components/shad-fx/effects/...` and is unaffected by where the library lives.
 
 Docs, playground and the API tables: [sekei.xyz/shad-fx](https://www.sekei.xyz/shad-fx),
 built from `app/shad-fx/`.

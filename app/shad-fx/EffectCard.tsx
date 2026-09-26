@@ -5,7 +5,7 @@ import {
 	beam,
 	bolt,
 	DitherCanvas,
-	type DitherEffect,
+	type FxEffect,
 	fire,
 	fluid,
 	rain,
@@ -23,7 +23,7 @@ const FACTORIES = {
 	beam: () => beam(),
 	rain: () => rain(),
 	snow: () => snow(),
-} satisfies Record<string, () => DitherEffect>;
+} satisfies Record<string, () => FxEffect>;
 
 export type EffectName = keyof typeof FACTORIES;
 

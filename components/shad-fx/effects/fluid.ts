@@ -1,6 +1,6 @@
 import {
-	type DitherEffect,
-	type DitherFrame,
+	type FxEffect,
+	type FxFrame,
 	type RgbInput,
 	toRgb,
 } from "../engine";
@@ -35,7 +35,7 @@ export function fluid({
 	slosh = 0.09,
 	tempo = 0.15,
 	bubbles = 12,
-}: FluidOptions = {}): DitherEffect {
+}: FluidOptions = {}): FxEffect {
 	const color = toRgb(colorInput);
 	let cols = 0;
 	let rows = 0;
@@ -76,7 +76,7 @@ export function fluid({
 		return depth;
 	}
 
-	function paint({ px, t, intensity, reduced }: DitherFrame, depth: number) {
+	function paint({ px, t, intensity, reduced }: FxFrame, depth: number) {
 		px.clear();
 		for (let x = 0; x < cols; x++) {
 			const top = surface[x];

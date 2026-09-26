@@ -73,15 +73,19 @@ shadcn CLI copies the source into the project.
 
 ${code("bash", INSTALL)}
 
-The first installs everything, the second the dither renderer, the third one
-effect. Nothing to configure: the CLI resolves \`@sekei\` and writes the
+The first installs everything; the second, the dither renderer and one effect.
+An effect alone has nothing to draw on, so always install a renderer with it.
+Nothing to configure: the CLI resolves \`@sekei\` and writes the
 \`registries\` entry into \`components.json\` itself. To pin it by hand:
 
 ${code("json", REGISTRY_CONFIG)}
 
 If the namespace fails to resolve, prefix any item with \`sekeidesign/shad-fx/\`
 to read the GitHub repo directly. Files land under \`components/shad-fx/\` and
-\`hooks/\`, following the project's aliases.
+\`hooks/\`, following the project's aliases. With the full library, import from
+\`@/components/shad-fx\`; otherwise import \`DitherCanvas\` from
+\`@/components/shad-fx/dither\` and each effect from
+\`@/components/shad-fx/effects/<name>\`.
 
 ${table(
 	["Item", "Pulls in"],
@@ -121,9 +125,10 @@ the canvas, which throws the simulation away.
 
 ## Effects
 
-Every effect is a factory returning a \`DitherEffect\`, and every option is
-optional. \`RgbInput\` is a hex string or an \`[r, g, b]\` tuple; CSS variables
-do not work, because the painter writes raw bytes. Where a count is given at
+Every effect is a factory returning an \`FxEffect\`, and every option is
+optional. The same effect runs on any renderer. \`RgbInput\` is a hex string or
+an \`[r, g, b]\` tuple; CSS variables do not work, because the renderer writes
+raw bytes. Where a count is given at
 full intensity, it scales down as the effect eases out.
 
 \`origin\` and \`target\` take an \`Anchor\`: an \`[x, y]\` pair in 0–1 of the box,
@@ -150,7 +155,7 @@ small elements and \`3\` or \`4\` on a full-bleed hero.
 ${code("bash", SKILLS)}
 
 Installs two skills: \`use-shad-fx\` for setting effects up, and
-\`create-shad-fx\` for writing a new effect against the \`DitherEffect\`
+\`create-shad-fx\` for writing a new effect against the \`FxEffect\`
 contract. Install them when the project will keep working with shad-fx.
 `;
 }

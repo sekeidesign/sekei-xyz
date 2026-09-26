@@ -1,6 +1,6 @@
 import {
-	type DitherEffect,
-	type DitherFrame,
+	type FxEffect,
+	type FxFrame,
 	type RgbInput,
 	toRgb,
 } from "../engine";
@@ -46,7 +46,7 @@ export function rain({
 	speed = 1.4,
 	slant = 0.25,
 	length = 6,
-}: RainOptions = {}): DitherEffect {
+}: RainOptions = {}): FxEffect {
 	const color = toRgb(colorInput);
 	const slantNow = () => (typeof slant === "function" ? slant() : slant);
 	let cols = 0;
@@ -107,7 +107,7 @@ export function rain({
 		live = kept;
 	}
 
-	function paint({ px, t, intensity, reduced }: DitherFrame) {
+	function paint({ px, t, intensity, reduced }: FxFrame) {
 		px.clear();
 		alive = false;
 		const gain = reduced ? intensity : 1;

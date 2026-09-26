@@ -6,11 +6,10 @@ import type { EffectName } from "./EffectCard";
 export const REPO = "https://github.com/sekeidesign/shad-fx";
 
 export const SUMMARY =
-	"Canvas effects for React, installed with the shadcn CLI. The first renderer is ordered dither: fire, lightning, sonar rings, a light beam, a sloshing fluid, rain and snow.";
+	"Canvas effects for React, installed with the shadcn CLI. Effects (fire, lightning, sonar rings, a light beam, a sloshing fluid, rain and snow) are separate from the renderer that draws them; the first renderer is ordered dither.";
 
 export const INSTALL = `npx shadcn@latest add @sekei/shad-fx
-npx shadcn@latest add @sekei/shad-fx-dither
-npx shadcn@latest add @sekei/shad-fx-dither-fire`;
+npx shadcn@latest add @sekei/shad-fx-dither @sekei/shad-fx-fire`;
 
 export const SKILLS = "npx skills add sekeidesign/shad-fx";
 
@@ -40,15 +39,17 @@ export interface Item {
 }
 
 export const ITEMS: Item[] = [
-	{ name: "shad-fx", pullsIn: "Every renderer, plus an index.ts barrel" },
-	{ name: "shad-fx-dither", pullsIn: "The dither canvas and every dither effect" },
-	{ name: "shad-fx-dither-canvas", pullsIn: "Engine, the reduced-motion hook, utils" },
+	{ name: "shad-fx", pullsIn: "Every renderer and effect, plus an index.ts barrel" },
+	{
+		name: "shad-fx-dither",
+		pullsIn: "The dither renderer, DitherCanvas. Engine, the reduced-motion hook, utils",
+	},
 	...(["fire", "rings", "beam", "bolt", "fluid", "rain", "snow"] as const).map(
-		(effect) => ({ name: `shad-fx-dither-${effect}`, pullsIn: "Dither canvas" }),
+		(effect) => ({ name: `shad-fx-${effect}`, pullsIn: "Engine" }),
 	),
 	{
-		name: "shad-fx-dither-engine",
-		pullsIn: "Nothing — painter, seeded RNG, colour helpers",
+		name: "shad-fx-engine",
+		pullsIn: "Nothing — frame loop, the effect contract, seeded RNG, colour helpers",
 	},
 	{ name: "use-prefers-reduced-motion", pullsIn: "Nothing" },
 ];
@@ -82,7 +83,7 @@ export interface Effect {
 }
 
 // Types and defaults mirror the `<Name>Options` interfaces and factory
-// signatures in components/shad-fx/dither/effects. Colours default to tuples in the
+// signatures in components/shad-fx/effects. Colours default to tuples in the
 // source; shown here as the equivalent hex, since either form is accepted.
 export const EFFECTS: Effect[] = [
 	{
