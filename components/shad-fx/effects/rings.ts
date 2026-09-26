@@ -1,7 +1,7 @@
 import {
 	type Anchor,
-	type DitherEffect,
-	type DitherFrame,
+	type FxEffect,
+	type FxFrame,
 	resolveAnchor,
 	type RgbInput,
 	toRgb,
@@ -37,7 +37,7 @@ export function rings({
 	interval = 1.15,
 	speed = 0.45,
 	width = 2.6,
-}: RingsOptions = {}): DitherEffect {
+}: RingsOptions = {}): FxEffect {
 	const color = toRgb(colorInput);
 	let cols = 0;
 	let rows = 0;
@@ -74,7 +74,7 @@ export function rings({
 		reach *= 0.95;
 	}
 
-	function paint({ px, t, intensity, reduced }: DitherFrame, set: Ring[]) {
+	function paint({ px, t, intensity, reduced }: FxFrame, set: Ring[]) {
 		px.clear();
 		const gain = reduced ? intensity : 1;
 		for (let i = 0, y = 0; y < rows; y++) {

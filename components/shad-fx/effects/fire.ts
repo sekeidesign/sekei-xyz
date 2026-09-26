@@ -1,6 +1,6 @@
 import {
-	type DitherEffect,
-	type DitherFrame,
+	type FxEffect,
+	type FxFrame,
 	mix,
 	type Rgb,
 	type RgbInput,
@@ -37,7 +37,7 @@ export function fire({
 	height = 0.5,
 	rate = 36,
 	embers = 8,
-}: FireOptions = {}): DitherEffect {
+}: FireOptions = {}): FxEffect {
 	const cold = toRgb(colors[0]);
 	const warm = toRgb(colors[1]);
 	const hot = toRgb(colors[2]);
@@ -97,7 +97,7 @@ export function fire({
 		}
 	}
 
-	function paint({ px, t, intensity, reduced }: DitherFrame) {
+	function paint({ px, t, intensity, reduced }: FxFrame) {
 		px.clear();
 		alive = false;
 		const gain = reduced ? intensity : 1;

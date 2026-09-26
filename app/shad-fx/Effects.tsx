@@ -32,15 +32,15 @@ export function Effects() {
 		<Section title="Effects" id="effects">
 			<P>
 				To write an effect this set doesn&apos;t cover, have an agent do it
-				with the <A href="https://agentskills.io">agent skills</A>. They cover
+				with the <A href="#agent-skills">agent skills</A>. They cover
 				the{" "}
-				<Code>DitherEffect</Code> contract, the <Code>Painter</Code>, reduced
-				motion and parking.
+				<Code>FxEffect</Code> contract, the <Code>Surface</Code> an effect
+				paints into, reduced motion and parking.
 			</P>
 			<Snippet code={SKILLS} />
 			<P>
-				Every effect is a factory returning a <Code>DitherEffect</Code>, and
-				every option is optional. <Code>RgbInput</Code> is a hex string or an{" "}
+				Every effect is a factory returning an <Code>FxEffect</Code>, and
+				every option is optional. The same effect runs on any renderer. <Code>RgbInput</Code> is a hex string or an{" "}
 				<Code>[r, g, b]</Code> tuple. Where a count is given at full intensity,
 				it scales down as the effect eases out.
 			</P>

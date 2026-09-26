@@ -1,7 +1,7 @@
 import {
 	type Anchor,
-	type DitherEffect,
-	type DitherFrame,
+	type FxEffect,
+	type FxFrame,
 	resolveAnchor,
 	type RgbInput,
 	toRgb,
@@ -34,7 +34,7 @@ export function beam({
 	target,
 	spread = 0.5,
 	motes = 16,
-}: BeamOptions = {}): DitherEffect {
+}: BeamOptions = {}): FxEffect {
 	const color = toRgb(colorInput);
 	let cols = 0;
 	let rows = 0;
@@ -67,7 +67,7 @@ export function beam({
 		};
 	}
 
-	function paint({ px, t, intensity, reduced }: DitherFrame) {
+	function paint({ px, t, intensity, reduced }: FxFrame) {
 		px.clear();
 		const time = reduced ? 0 : t;
 		const sway = Math.sin(time * 0.5) * cols * 0.02;

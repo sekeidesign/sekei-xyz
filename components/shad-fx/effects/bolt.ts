@@ -1,7 +1,7 @@
 import {
 	type Anchor,
-	type DitherEffect,
-	type DitherFrame,
+	type FxEffect,
+	type FxFrame,
 	resolveAnchor,
 	type RgbInput,
 	toRgb,
@@ -28,7 +28,7 @@ export function bolt({
 	interval = [0.6, 1.4],
 	target = [0.5, 0.43],
 	rate = 30,
-}: BoltOptions = {}): DitherEffect {
+}: BoltOptions = {}): FxEffect {
 	const color = toRgb(colorInput);
 	let cols = 0;
 	let rows = 0;
@@ -119,7 +119,7 @@ export function bolt({
 		}
 	}
 
-	function paint({ px, t, intensity, reduced }: DitherFrame) {
+	function paint({ px, t, intensity, reduced }: FxFrame) {
 		px.clear();
 		alive = false;
 		const gain = reduced ? intensity : 1;

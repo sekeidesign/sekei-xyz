@@ -7,7 +7,7 @@ export function Usage() {
 		<Section title="Usage" id="usage">
 			<P>
 				To have an agent set effects up for you, install the{" "}
-				<A href="https://agentskills.io">agent skills</A>. One covers placement,
+				<A href="#agent-skills">agent skills</A>. One covers placement,
 				the stable-reference rule, anchors and cost; the other writes new
 				effects.
 			</P>

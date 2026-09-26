@@ -6,7 +6,7 @@ import {
 	beam,
 	bolt,
 	DitherCanvas,
-	type DitherEffect,
+	type FxEffect,
 	fire,
 	rain,
 } from "@/components/shad-fx";
@@ -27,7 +27,7 @@ const FilledFire: IconComponent = (props) => <FireIcon filled {...props} />;
 
 const EFFECTS: {
 	name: string;
-	make: () => DitherEffect;
+	make: () => FxEffect;
 	Icon: IconComponent;
 	tint: string;
 	wash: string;

@@ -1,9 +1,9 @@
-import { beam, type BeamOptions } from "@/components/shad-fx/dither/effects/beam";
-import { bolt, type BoltOptions } from "@/components/shad-fx/dither/effects/bolt";
-import { fire, type FireOptions } from "@/components/shad-fx/dither/effects/fire";
-import { fluid, type FluidOptions } from "@/components/shad-fx/dither/effects/fluid";
-import { rings, type RingsOptions } from "@/components/shad-fx/dither/effects/rings";
-import { type Anchor, type DitherEffect, hex } from "@/components/shad-fx/dither/engine";
+import { beam, type BeamOptions } from "@/components/shad-fx/effects/beam";
+import { bolt, type BoltOptions } from "@/components/shad-fx/effects/bolt";
+import { fire, type FireOptions } from "@/components/shad-fx/effects/fire";
+import { fluid, type FluidOptions } from "@/components/shad-fx/effects/fluid";
+import { rings, type RingsOptions } from "@/components/shad-fx/effects/rings";
+import { type Anchor, type FxEffect, hex } from "@/components/shad-fx/engine";
 import { KIND } from "../covers/raid-log";
 import type { RAID_KINDS } from "./kinds";
 
@@ -26,7 +26,7 @@ export function raidEffect(
 	kind: RaidKind,
 	anchor: Anchor,
 	tweaks: RaidEffectTweaks = {},
-): DitherEffect {
+): FxEffect {
 	switch (kind) {
 		case "risk":
 			return fire({
