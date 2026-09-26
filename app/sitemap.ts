@@ -13,7 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 			priority: 1,
 		},
 		{
-			url: `${siteUrl}/dither-fx`,
+			url: `${siteUrl}/shad-fx`,
 			changeFrequency: "monthly",
 			priority: 0.8,
 		},

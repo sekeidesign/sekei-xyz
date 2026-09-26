@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useMemo, useRef, useState } from "react";
-import { DitherCanvas } from "@/components/dither-fx/dither-canvas";
+import { DitherCanvas } from "@/components/shad-fx/dither/dither-canvas";
 import { cn } from "../cn";
 import { KIND } from "../covers/raid-log";
 import { SURFACE_INNER, SURFACE_OUTER } from "../post/surface";

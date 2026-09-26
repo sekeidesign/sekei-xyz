@@ -11,7 +11,7 @@ import {
 	rain,
 	rings,
 	snow,
-} from "@/components/dither-fx";
+} from "@/components/shad-fx";
 import { cn } from "@ui-kit/cn";
 import { SURFACE_INNER, SURFACE_OUTER } from "@ui-kit/post/surface";
 

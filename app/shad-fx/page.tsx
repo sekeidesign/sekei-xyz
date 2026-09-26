@@ -10,7 +10,7 @@ import { A, Code, P, Section } from "./Prose";
 import { Snippet } from "./Snippet";
 import { Usage } from "./Usage";
 
-const REPO = "https://github.com/sekeidesign/dither-fx";
+const REPO = "https://github.com/sekeidesign/shad-fx";
 
 // The shell from app/(site)/layout.tsx, rebuilt because this page sits outside
 // that group on purpose: no sidebar, no timeline.
@@ -18,18 +18,18 @@ const GUTTER =
 	"panel stripes hidden flex-1 shrink md:sticky md:top-px md:block md:h-[calc(100vh-2px)] md:self-start";
 
 export const metadata: Metadata = {
-	title: "dither-fx",
+	title: "shad-fx",
 	description:
-		"Dither environmental canvas effects for React — fire, lightning, sonar rings, a light beam, a sloshing fluid, rain and snow. Installed with the shadcn CLI.",
+		"Canvas effects for React, installed with the shadcn CLI. The first renderer is ordered dither: fire, lightning, sonar rings, a light beam, a sloshing fluid, rain and snow.",
 	openGraph: {
-		title: "dither-fx",
-		description: "Dither environmental canvas effects for React",
+		title: "shad-fx",
+		description: "Canvas effects for React, installed with the shadcn CLI",
 		type: "article",
 	},
-	alternates: { canonical: "/dither-fx" },
+	alternates: { canonical: "/shad-fx" },
 };
 
-export default function DitherFxDocs() {
+export default function ShadFxDocs() {
 	return (
 		<div className="mx-auto box-border flex min-h-screen w-full flex-col justify-center gap-px p-px md:flex-row">
 			<div aria-hidden="true" className={GUTTER} />
@@ -52,13 +52,13 @@ export default function DitherFxDocs() {
 						</div>
 						<div className="flex flex-col gap-3">
 							<h1 className="font-pixel text-5xl leading-[1.1] text-gray-900 md:text-6xl">
-								dither-fx
+								shad-fx
 							</h1>
 							<p className="max-w-xl text-base leading-[1.55] font-[420] text-gray-500">
-								Bayer dithered environmental effects for React. Rendered on a tiny canvas, using a single <Code>ImageData</Code> instance per frame, and upscaled with CSS <Code>image-rendering: pixelated</Code> to keep each frame fast and GPU accelerated.
+								Canvas effects for React, starting with Bayer dithered environmental effects. Rendered on a tiny canvas, using a single <Code>ImageData</Code> instance per frame, and upscaled with CSS <Code>image-rendering: pixelated</Code> to keep each frame fast and GPU accelerated.
 							</p>
 						</div>
-						<Snippet code="npx shadcn@latest add @sekei/dither-fx" />
+						<Snippet code="npx shadcn@latest add @sekei/shad-fx" />
 						<Playground />
 					<SparkleDivider className="mt-10 mb-10" />
 					</header>

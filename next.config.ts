@@ -21,13 +21,13 @@ const nextConfig: NextConfig = {
   // @sekei resolves through this domain rather than straight at GitHub, so the
   // namespace survives a repo rename and can pick up a second library later
   // without every consumer re-running `shadcn registry add`. The source of
-  // truth is r/ in sekeidesign/dither-fx; nothing is copied back here.
+  // truth is r/ in sekeidesign/shad-fx; nothing is copied back here.
   async rewrites() {
     return [
       {
         source: "/registry/:path*",
         destination:
-          "https://raw.githubusercontent.com/sekeidesign/dither-fx/main/r/:path*",
+          "https://raw.githubusercontent.com/sekeidesign/shad-fx/main/r/:path*",
       },
     ];
   },
@@ -47,6 +47,7 @@ const nextConfig: NextConfig = {
           },
         ],
       ),
+      { source: "/dither-fx", destination: "/shad-fx", permanent: true },
       // Case studies moved from route folders into content/, served by /p/<slug>.
       { source: "/case-studies/tato", destination: "/p/tato", permanent: true },
       {

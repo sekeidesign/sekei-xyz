@@ -31,11 +31,11 @@ for it explicitly.
 Geist Pixel ships one face, at 400. Anything between 400 and 599 renders
 identically to it — 600 is the first weight a browser will synthesise.
 
-## dither-fx
+## shad-fx
 
-`components/dither-fx/` is vendored from
-[sekeidesign/dither-fx](https://github.com/sekeidesign/dither-fx). Fix bugs
-upstream and re-add with `npx shadcn@latest add @sekei/dither-fx`; do not edit
+`components/shad-fx/` is vendored from
+[sekeidesign/shad-fx](https://github.com/sekeidesign/shad-fx). Fix bugs
+upstream and re-add with `npx shadcn@latest add @sekei/shad-fx`; do not edit
 the copy in place. `/registry/*` is a rewrite onto that repo, not a real
 directory under `public/`.
 

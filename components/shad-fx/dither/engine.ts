@@ -7,7 +7,7 @@ export type Rgb = readonly [number, number, number];
  * canvas scaled up pixelated, and the two-alpha-tier fill — derives from
  * dither-kit (MIT, https://github.com/Boring-Software-Inc/dither-kit). The shadcn
  * CLI drops a file's leading comment on install, so the notice lives here.
- * Full attribution: https://github.com/sekeidesign/dither-fx/blob/main/NOTICE.md
+ * Full attribution: https://github.com/sekeidesign/shad-fx/blob/main/NOTICE.md
  */
 export const BAYER4: readonly number[] = [
 	0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5,

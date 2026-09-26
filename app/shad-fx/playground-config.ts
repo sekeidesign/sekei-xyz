@@ -7,7 +7,7 @@ import {
 	rain,
 	rings,
 	snow,
-} from "@/components/dither-fx";
+} from "@/components/shad-fx";
 
 export type Kind = "fire" | "bolt" | "rings" | "fluid" | "beam" | "rain" | "snow";
 
@@ -307,7 +307,7 @@ export function snippet(
 	if (canvas.seed !== 1) props.push(`seed={${canvas.seed}}`);
 
 	return [
-		`import { DitherCanvas, ${kind} } from "@/components/dither-fx";`,
+		`import { DitherCanvas, ${kind} } from "@/components/shad-fx";`,
 		"",
 		`const effect = ${call};`,
 		"",

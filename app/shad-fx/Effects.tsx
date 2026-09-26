@@ -16,7 +16,7 @@ interface Effect {
 }
 
 // Types and defaults mirror the `<Name>Options` interfaces and factory
-// signatures in components/dither-fx/effects. Colours default to tuples in the
+// signatures in components/shad-fx/dither/effects. Colours default to tuples in the
 // source; shown here as the equivalent hex, since either form is accepted.
 const EFFECTS: Effect[] = [
 	{

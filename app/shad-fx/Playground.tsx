@@ -2,7 +2,7 @@
 
 import { useSpring } from "motion/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { DitherCanvas } from "@/components/dither-fx";
+import { DitherCanvas } from "@/components/shad-fx";
 import { cn } from "@ui-kit/cn";
 import { ControlPanel, ControlSection } from "@ui-kit/controls/ControlPanel";
 import { Select } from "@ui-kit/controls/Select";

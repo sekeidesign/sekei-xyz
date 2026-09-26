@@ -1,7 +1,7 @@
 import { Code, P, Section, Table } from "./Prose";
 import { Snippet } from "./Snippet";
 
-const USAGE = `import { DitherCanvas, fire } from "@/components/dither-fx";
+const USAGE = `import { DitherCanvas, fire } from "@/components/shad-fx";
 import { useMemo } from "react";
 
 export function Card() {
