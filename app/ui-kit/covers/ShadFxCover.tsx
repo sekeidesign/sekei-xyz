@@ -11,17 +11,12 @@ import {
 	rain,
 } from "@/components/shad-fx";
 import { cn } from "../cn";
-import {
-	GLYPH,
-	GLYPH_HERE,
-	GLYPH_LEAVING,
-	GLYPH_WAITING,
-	WASH,
-} from "../figures/Disc";
+import { WASH } from "../figures/Disc";
 import { ActionIcon } from "../icons/ActionIcon";
 import { FireIcon } from "../icons/FireIcon";
 import { LampIcon } from "../icons/LampIcon";
 import { RainIcon } from "../icons/RainIcon";
+import { DitherReveal } from "./DitherReveal";
 
 type IconComponent = ComponentType<{ size?: number; className?: string }>;
 
@@ -67,13 +62,14 @@ const EFFECTS: {
 	},
 ];
 
-const HOLD_MS = 1500;
+const HOLD_MS = 2000;
 
 /**
  * Every effect keeps its own canvas, stacked, and only one is active at a
  * time. `active` eases an engine's intensity in and out, so the handoff is a
  * crossfade rather than a cut, and an inactive engine stops its frame loop once
- * it has faded out. The disc in front swaps in step, as in the RAID flow.
+ * it has faded out. The disc in front swaps in step: its wash crossfades as in
+ * the RAID flow, and its icon dithers through.
  */
 export function ShadFxCover(_: { variant?: "card" | "page" }) {
 	const ref = useRef<HTMLDivElement>(null);
@@ -81,7 +77,6 @@ export function ShadFxCover(_: { variant?: "card" | "page" }) {
 	const effects = useMemo(() => EFFECTS.map(({ make }) => make()), []);
 	const [tick, setTick] = useState(0);
 	const current = tick % EFFECTS.length;
-	const leaving = tick > 0 ? (tick - 1) % EFFECTS.length : null;
 
 	useEffect(() => {
 		if (!inView) return;
@@ -101,34 +96,27 @@ export function ShadFxCover(_: { variant?: "card" | "page" }) {
 			<div className="absolute inset-0 flex items-center justify-center">
 				<span className="flex rounded-full bg-white p-1 ring-1 ring-gray-500/10 shadow-sm">
 					<span className="relative size-10">
-						{EFFECTS.map(({ name, Icon, tint, wash }, index) => {
-							const here = index === current;
-							return (
-								<span
-									key={name}
-									className={cn(
-										"absolute inset-0 flex items-center justify-center rounded-full bg-linear-to-b from-white to-transparent ring-1 ring-gray-500/10 shadow-sm",
-										wash,
-										WASH,
-										here ? "opacity-100" : "opacity-0",
-									)}
-								>
-									{/* Mirrored from the RAID flow: in from the right, out to the left. */}
-									<Icon
-										size={24}
-										className={cn(
-											tint,
-											GLYPH,
-											here
-												? GLYPH_HERE
-												: index === leaving
-													? GLYPH_WAITING
-													: GLYPH_LEAVING,
-										)}
-									/>
-								</span>
-							);
-						})}
+						{EFFECTS.map(({ name, wash }, index) => (
+							<span
+								key={name}
+								className={cn(
+									"absolute inset-0 rounded-full bg-linear-to-b from-white to-transparent ring-1 ring-gray-500/10 shadow-sm",
+									wash,
+									WASH,
+									index === current ? "opacity-100" : "opacity-0",
+								)}
+							/>
+						))}
+						{EFFECTS.map(({ name, Icon, tint }, index) => (
+							<span
+								key={name}
+								className="absolute inset-0 flex items-center justify-center"
+							>
+								<DitherReveal visible={index === current}>
+									<Icon size={24} className={tint} />
+								</DitherReveal>
+							</span>
+						))}
 					</span>
 				</span>
 			</div>
