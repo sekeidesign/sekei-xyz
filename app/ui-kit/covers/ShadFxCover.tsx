@@ -71,7 +71,7 @@ const HOLD_MS = 2000;
  * it has faded out. The disc in front swaps in step: its wash crossfades as in
  * the RAID flow, and its icon dithers through.
  */
-export function ShadFxCover(_: { variant?: "card" | "page" }) {
+export function ShadFxCover() {
 	const ref = useRef<HTMLDivElement>(null);
 	const inView = useInView(ref, { amount: 0.3 });
 	const effects = useMemo(() => EFFECTS.map(({ make }) => make()), []);
