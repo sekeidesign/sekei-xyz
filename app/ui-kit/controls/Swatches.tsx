@@ -2,6 +2,7 @@
 
 import { useId } from "react";
 import { ControlRow } from "./ControlPanel";
+import { cn } from "../cn";
 
 export function Swatches({
 	label,
@@ -23,7 +24,11 @@ export function Swatches({
 				{values.map((value, index) => (
 					<span
 						key={`${id}:${names[index]}`}
-						className="relative size-6 overflow-hidden rounded-md bg-white ring ring-gray-500/15 shadow-skew"
+						className={cn(
+							"relative size-6 overflow-hidden rounded-md bg-white ring ring-gray-500/15 shadow-skew",
+							// The input is invisible, so its wrapper shows the ring.
+							"has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-gray-900/40",
+						)}
 						style={{ backgroundColor: value }}
 					>
 						<input

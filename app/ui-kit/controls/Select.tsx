@@ -27,7 +27,7 @@ export function Select({
 				value={value}
 				aria-labelledby={labelId}
 				onChange={(event) => onChange(event.target.value)}
-				className="w-full cursor-pointer rounded-md bg-white px-2 py-1 text-[13px] leading-[1.43] font-[420] text-gray-900 ring ring-gray-500/15 shadow-skew focus:outline-none focus:ring-gray-500/40"
+				className="w-full cursor-pointer rounded-md bg-white px-2 py-1 text-[13px] leading-[1.43] font-[420] text-gray-900 ring ring-gray-500/15 shadow-skew focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900/40"
 			>
 				{options.map((option) => (
 					<option key={option.value} value={option.value}>

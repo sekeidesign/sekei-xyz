@@ -2,6 +2,7 @@
 
 import { type RefObject, useRef, useState } from "react";
 import { cn } from "@ui-kit/cn";
+import { FOCUS_RING } from "@ui-kit/focus";
 
 const clamp = (value: number) => Math.min(1, Math.max(0, value));
 
@@ -51,9 +52,13 @@ export function AnchorHandle({
 		<button
 			ref={ref}
 			type="button"
-			aria-label={label}
-			// Two values, which no single ARIA role covers; the arrow keys below
-			// are what makes it reachable without a pointer.
+			// Two values, which no single ARIA role covers, so the label carries
+			// them; the arrow keys below make it reachable without a pointer.
+			aria-label={
+				axis === "x"
+					? `${label}: ${x.toFixed(2)}`
+					: `${label}: ${x.toFixed(2)}, ${y.toFixed(2)}`
+			}
 			onPointerDown={(event) => {
 				event.preventDefault();
 				ref.current?.setPointerCapture(event.pointerId);
@@ -82,7 +87,7 @@ export function AnchorHandle({
 				shape === "tall" ? "h-7 w-4" : "size-6",
 				// The site's white-chip treatment, the same as every other control.
 				"bg-white ring-1 ring-gray-500/10 shadow-md",
-				"focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500/40",
+				FOCUS_RING,
 				dragging ? "cursor-grabbing scale-110" : "cursor-grab",
 			)}
 		/>

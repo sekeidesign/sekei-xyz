@@ -2,10 +2,17 @@
 
 import { BackIcon } from "@/app/ui-kit/icons/BackIcon";
 import Link from "next/link";
+import { Button } from "./Button";
 import { usePathname, useRouter } from "next/navigation";
 import { canGoBack } from "./nav-history";
 
-export function BackLink({ label = "Back" }: { label?: string }) {
+export function BackLink({
+	label = "Back",
+	iconOnly = false,
+}: {
+	label?: string;
+	iconOnly?: boolean;
+}) {
 	const pathname = usePathname();
 	const router = useRouter();
 	const segments = pathname.split("/").filter(Boolean);
@@ -15,8 +22,9 @@ export function BackLink({ label = "Back" }: { label?: string }) {
 		segments.length > 2 ? `/${segments.slice(0, -1).join("/")}` : "/";
 
 	return (
-		<Link
-			href={href}
+		<Button
+			iconOnly={iconOnly}
+			render={<Link href={href} />}
 			onClick={(event) => {
 				// A modified click is the browser's to handle, and the href is what
 				// it opens in the new tab.
@@ -32,10 +40,10 @@ export function BackLink({ label = "Back" }: { label?: string }) {
 				event.preventDefault();
 				router.back();
 			}}
-			className="inline-flex items-center gap-1 h-6.5 w-fit rounded-full pl-1.5 pr-2 bg-white ring-1 ring-gray-500/10 shadow-skew text-[14px] font-[500] text-gray-500 hover:bg-gray-50"
+			aria-label={iconOnly ? label : undefined}
 		>
 			<BackIcon size={16} />
-			{label}
-		</Link>
+			{!iconOnly && label}
+		</Button>
 	);
 }

@@ -2,6 +2,7 @@
 
 import { type RefObject, useRef, useState } from "react";
 import { cn } from "@ui-kit/cn";
+import { FOCUS_RING } from "@ui-kit/focus";
 
 // The rail, as fractions of the stage: a shallow smile from X0 to X1 at Y,
 // dipping by SAG in the middle. A quadratic curve with its control point on
@@ -126,7 +127,7 @@ export function SlantHandle({
 					"absolute z-10 size-6 -translate-x-1/2 -translate-y-1/2 touch-none rounded-full",
 					// The site's white-chip treatment, the same as the anchor handle.
 					"bg-white ring-1 ring-gray-500/10 shadow-md",
-					"focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500/40",
+					FOCUS_RING,
 					dragging ? "cursor-grabbing scale-110" : "cursor-grab",
 				)}
 			/>

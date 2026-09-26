@@ -1,74 +1,17 @@
-import { Code, P, Section, Table } from "./Prose";
+import { PROPS, SKILLS, USAGE } from "./content";
+import { A, Code, P, Section, Table } from "./Prose";
 import { Snippet } from "./Snippet";
-
-const USAGE = `import { DitherCanvas, fire } from "@/components/shad-fx";
-import { useMemo } from "react";
-
-export function Card() {
-  const effect = useMemo(() => fire({ colors: ["#e5343a", "#f05100", "#fcbb00"] }), []);
-
-  return (
-    <div className="relative overflow-hidden rounded-lg">
-      <DitherCanvas effect={effect} />
-      <p className="relative">Burning</p>
-    </div>
-  );
-}`;
-
-const PROPS = [
-	{
-		key: "effect",
-		cells: [
-			<Code key="n">effect</Code>,
-			"—",
-			"The effect to run. Keep the reference stable.",
-		],
-	},
-	{
-		key: "active",
-		cells: [
-			<Code key="n">active</Code>,
-			<Code key="v">true</Code>,
-			"Eases in and out. Drive it from hover for a reveal.",
-		],
-	},
-	{
-		key: "cell",
-		cells: [
-			<Code key="n">cell</Code>,
-			<Code key="v">2</Code>,
-			"CSS px per dither cell. Lower is finer and costlier.",
-		],
-	},
-	{
-		key: "seed",
-		cells: [
-			<Code key="n">seed</Code>,
-			<Code key="v">1</Code>,
-			"Seeds the RNG, so a given seed replays identically.",
-		],
-	},
-	{
-		key: "max",
-		cells: [
-			<Code key="n">maxCols / maxRows</Code>,
-			<Code key="v">640 / 400</Code>,
-			"Ceiling on the backing grid.",
-		],
-	},
-	{
-		key: "className",
-		cells: [
-			<Code key="n">className</Code>,
-			"—",
-			"Merged onto the wrapper.",
-		],
-	},
-];
 
 export function Usage() {
 	return (
 		<Section title="Usage" id="usage">
+			<P>
+				To have an agent set effects up for you, install the{" "}
+				<A href="https://agentskills.io">agent skills</A>. One covers placement,
+				the stable-reference rule, anchors and cost; the other writes new
+				effects.
+			</P>
+			<Snippet code={SKILLS} />
 			<P>
 				The canvas fills its nearest positioned ancestor, so give the parent{" "}
 				<Code>relative</Code>.
@@ -80,7 +23,17 @@ export function Usage() {
 				fields reset. Use <Code>useMemo</Code> with the options in the dependency
 				array, or module scope when the options are constant.
 			</P>
-			<Table head={["Prop", "Default", "Notes"]} rows={PROPS} />
+			<Table
+				head={["Prop", "Default", "Notes"]}
+				rows={PROPS.map((prop) => ({
+					key: prop.name,
+					cells: [
+						<Code key="n">{prop.name}</Code>,
+						prop.fallback === "—" ? "—" : <Code key="v">{prop.fallback}</Code>,
+						prop.notes,
+					],
+				}))}
+			/>
 			<P>
 				The element is <Code>aria-hidden</Code> and{" "}
 				<Code>pointer-events-none</Code>: it is decoration, and never the only

@@ -3,6 +3,7 @@
 import { useId } from "react";
 import { cn } from "../cn";
 import { ControlRow } from "./ControlPanel";
+import { FOCUS_RING } from "../focus";
 
 export function Toggle({
 	label,
@@ -27,6 +28,7 @@ export function Toggle({
 				onClick={() => onChange(!checked)}
 				className={cn(
 					"relative h-5 w-9 shrink-0 rounded-full ring-1 ring-gray-500/10 shadow-skew cursor-pointer",
+					FOCUS_RING,
 					checked ? "bg-gray-900" : "bg-gray-200",
 				)}
 			>

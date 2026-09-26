@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { FOCUS_RING } from "@ui-kit/focus";
 
 export function Section({
 	title,
@@ -38,7 +39,7 @@ export function Code({ children, className }: { children: ReactNode, className?:
 
 export function A({ href, children }: { href: string; children: ReactNode }) {
 	return (
-		<a href={href} className="text-gray-900 underline underline-offset-2">
+		<a href={href} className={cn("rounded-sm text-gray-900 underline underline-offset-2", FOCUS_RING)}>
 			{children}
 		</a>
 	);
@@ -104,4 +105,12 @@ export function Table({
 			</table>
 		</div>
 	);
+}
+
+export function Inline({ text }: { text: string }) {
+	return text
+		.split("`")
+		.map((part, index) =>
+			index % 2 ? <Code key={`${index}:${part}`}>{part}</Code> : part,
+		);
 }

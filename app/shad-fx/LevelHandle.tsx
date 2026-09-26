@@ -2,6 +2,7 @@
 
 import { type RefObject, useRef, useState } from "react";
 import { cn } from "@ui-kit/cn";
+import { FOCUS_RING } from "@ui-kit/focus";
 
 const clamp01 = (value: number) => Math.min(1, Math.max(0, value));
 
@@ -100,7 +101,7 @@ export function LevelHandle({
 					// Two units shorter and one wider than the round handles: a pill.
 					"absolute z-10 h-4 w-7 -translate-x-1/2 -translate-y-1/2 touch-none rounded-full",
 					"bg-white ring-1 ring-gray-500/10 shadow-md",
-					"focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500/40",
+					FOCUS_RING,
 					dragging ? "cursor-grabbing scale-110" : "cursor-grab",
 				)}
 			/>

@@ -1,16 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BackLink } from "@ui-kit/BackLink";
+import { Button } from "@ui-kit/Button";
 import { GithubIcon } from "@ui-kit/icons/GithubIcon";
 import { SparkleDivider } from "@ui-kit/SparkleDivider";
+import { siteUrl } from "@/lib/site";
+import { AGENTS_PATH, agentPrompt } from "./agents";
+import { REPO, SUMMARY } from "./content";
+import { CopyAgentPrompt } from "./CopyAgentPrompt";
 import { Effects } from "./Effects";
 import { Install } from "./Install";
 import { Playground } from "./Playground";
 import { A, Code, P, Section } from "./Prose";
 import { Snippet } from "./Snippet";
 import { Usage } from "./Usage";
-
-const REPO = "https://github.com/sekeidesign/shad-fx";
 
 // The shell from app/(site)/layout.tsx, rebuilt because this page sits outside
 // that group on purpose: no sidebar, no timeline.
@@ -19,36 +22,56 @@ const GUTTER =
 
 export const metadata: Metadata = {
 	title: "shad-fx",
-	description:
-		"Canvas effects for React, installed with the shadcn CLI. The first renderer is ordered dither: fire, lightning, sonar rings, a light beam, a sloshing fluid, rain and snow.",
+	description: SUMMARY,
 	openGraph: {
 		title: "shad-fx",
 		description: "Canvas effects for React, installed with the shadcn CLI",
 		type: "article",
 	},
-	alternates: { canonical: "/shad-fx" },
+	alternates: {
+		canonical: "/shad-fx",
+		types: { "text/markdown": AGENTS_PATH },
+	},
+};
+
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@type": "SoftwareSourceCode",
+	name: "shad-fx",
+	description: SUMMARY,
+	url: `${siteUrl}/shad-fx`,
+	codeRepository: REPO,
+	programmingLanguage: ["TypeScript", "React"],
+	runtimePlatform: "Web browser",
+	license: `${REPO}/blob/main/LICENSE`,
+	author: { "@type": "Person", name: "PG Gonni", url: siteUrl },
 };
 
 export default function ShadFxDocs() {
 	return (
 		<div className="mx-auto box-border flex min-h-screen w-full flex-col justify-center gap-px p-px md:flex-row">
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+			/>
 			<div aria-hidden="true" className={GUTTER} />
 
 			<div className="panel flex w-full min-w-0 flex-col md:max-w-screen-md">
 				<div className="flex flex-col p-4 md:p-6">
 					<header className="flex flex-col gap-6">
 						<div className="flex items-center justify-between gap-3">
-							<BackLink label="sekei.xyz" />
-							<a
-								href={REPO}
-								target="_blank"
-								rel="noopener noreferrer"
-								// The back link's chip, mirrored on the right.
-								className="inline-flex h-6.5 w-fit items-center gap-1 rounded-full bg-white pr-2 pl-1.5 text-[14px] font-[500] text-gray-500 shadow-skew ring-1 ring-gray-500/10 hover:bg-gray-50"
-							>
-								<GithubIcon size={14} />
-								GitHub
-							</a>
+							<BackLink label="Back to sekei.xyz" iconOnly />
+							<div className="flex items-center gap-2">
+								<CopyAgentPrompt prompt={agentPrompt()} />
+								<Button
+									render={
+										<a href={REPO} target="_blank" rel="noopener noreferrer" />
+									}
+								>
+									<GithubIcon size={14} />
+									GitHub
+								</Button>
+							</div>
 						</div>
 						<div className="flex flex-col gap-3">
 							<h1 className="font-pixel text-5xl leading-[1.1] text-gray-900 md:text-6xl">
