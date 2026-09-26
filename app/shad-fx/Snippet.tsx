@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { cn } from "@ui-kit/cn";
 import { CheckCircleIcon } from "@ui-kit/icons/CheckCircleIcon";
 import { CopyIcon } from "@ui-kit/icons/CopyIcon";
@@ -15,6 +15,7 @@ export function Snippet({
 	code,
 	lang = "bash",
 	framed = true,
+	footer,
 	className,
 }: {
 	code: string;
@@ -24,6 +25,8 @@ export function Snippet({
 	 * caller already provides the outer frame, as the playground does.
 	 */
 	framed?: boolean;
+	/** A white panel under the code, inside the same frame. Framed only. */
+	footer?: ReactNode;
 	className?: string;
 }) {
 	const [copied, setCopied] = useState(false);
@@ -98,6 +101,11 @@ export function Snippet({
 	if (!framed) return block;
 
 	return (
-		<div className={cn("rounded-xl", SURFACE_OUTER, className)}>{block}</div>
+		<div className={cn("rounded-xl", SURFACE_OUTER, className)}>
+			{block}
+			{footer && (
+				<div className={cn("mt-1 rounded-lg", SURFACE_INNER)}>{footer}</div>
+			)}
+		</div>
 	);
 }

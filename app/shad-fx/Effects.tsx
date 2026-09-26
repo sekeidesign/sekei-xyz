@@ -32,7 +32,7 @@ export function Effects() {
 		<Section title="Effects" id="effects">
 			<P>
 				To write an effect this set doesn&apos;t cover, have an agent do it
-				with the <A href="https://agentskills.io">agent skills</A>. They cover
+				with the <A href="#agent-skills">agent skills</A>. They cover
 				the{" "}
 				<Code>FxEffect</Code> contract, the <Code>Surface</Code> an effect
 				paints into, reduced motion and parking.

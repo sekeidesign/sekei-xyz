@@ -6,6 +6,7 @@ import {
 	PROPS,
 	REGISTRY_CONFIG,
 	REPO,
+	SKILL_LIST,
 	SKILLS,
 	SUMMARY,
 	USAGE,
@@ -154,8 +155,8 @@ small elements and \`3\` or \`4\` on a full-bleed hero.
 
 ${code("bash", SKILLS)}
 
-Installs two skills: \`use-shad-fx\` for setting effects up, and
-\`create-shad-fx\` for writing a new effect against the \`FxEffect\`
-contract. Install them when the project will keep working with shad-fx.
+Install them when the project will keep working with shad-fx.
+
+${SKILL_LIST.map((skill) => `- \`${skill.name}\`: ${skill.use} Covers ${skill.covers.charAt(0).toLowerCase()}${skill.covers.slice(1)}`).join("\n")}
 `;
 }

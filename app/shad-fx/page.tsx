@@ -8,10 +8,12 @@ import { siteUrl } from "@/lib/site";
 import { AGENTS_PATH, agentPrompt } from "./agents";
 import { REPO, SUMMARY } from "./content";
 import { CopyAgentPrompt } from "./CopyAgentPrompt";
+import { Counts } from "./Counts";
 import { Effects } from "./Effects";
 import { Install } from "./Install";
 import { Playground } from "./Playground";
 import { A, Code, P, Section } from "./Prose";
+import { Skills } from "./Skills";
 import { Snippet } from "./Snippet";
 import { Usage } from "./Usage";
 
@@ -81,7 +83,10 @@ export default function ShadFxDocs() {
 								Canvas effects for React, starting with Bayer dithered environmental effects. Rendered on a tiny canvas, using a single <Code>ImageData</Code> instance per frame, and upscaled with CSS <Code>image-rendering: pixelated</Code> to keep each frame fast and GPU accelerated.
 							</p>
 						</div>
-						<Snippet code="npx shadcn@latest add @sekei/shad-fx" />
+						<Snippet
+							code="npx shadcn@latest add @sekei/shad-fx"
+							footer={<Counts />}
+						/>
 						<Playground />
 					<SparkleDivider className="mt-10 mb-10" />
 					</header>
@@ -91,6 +96,7 @@ export default function ShadFxDocs() {
 						<Install />
 						<Usage />
 						<Effects />
+						<Skills />
 
 						<Section title="Reduced motion" id="reduced-motion">
 							<P>

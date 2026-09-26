@@ -13,6 +13,25 @@ npx shadcn@latest add @sekei/shad-fx-dither @sekei/shad-fx-fire`;
 
 export const SKILLS = "npx skills add sekeidesign/shad-fx";
 
+export interface Skill {
+	name: string;
+	use: string;
+	covers: string;
+}
+
+export const SKILL_LIST: Skill[] = [
+	{
+		name: "use-shad-fx",
+		use: "Put an effect on a card, hero, button or section, or fix one that restarts, flickers, hides the content or costs too much.",
+		covers: "Placement, keeping the `effect` reference stable, anchors, colours and cost.",
+	},
+	{
+		name: "create-shad-fx",
+		use: "Write an effect the shipped set doesn't cover, like smoke, sparks or static, or change how one simulates.",
+		covers: "The `FxEffect` contract, the `Surface` it paints into, reduced motion and parking.",
+	},
+];
+
 export const REGISTRY_CONFIG = `{
   "registries": {
     "@sekei": "https://www.sekei.xyz/registry/{name}.json"
