@@ -7,7 +7,14 @@ import { cn } from "../cn";
 import { KIND } from "../covers/raid-log";
 import { TatoMark } from "../icons/TatoMark";
 import { SURFACE_INNER, SURFACE_OUTER } from "../post/surface";
-import { Disc } from "./Disc";
+import {
+	Disc,
+	GLYPH,
+	GLYPH_HERE,
+	GLYPH_LEAVING,
+	GLYPH_WAITING,
+	WASH,
+} from "./Disc";
 import { RAID_KINDS } from "./kinds";
 import { SourceIcon } from "./SourceIcon";
 import { SOURCES } from "./sources";
@@ -81,11 +88,6 @@ const TRACE_PERIOD = TRACE_DASH + 2;
 const TRACE_FROM = round(TRACE_PERIOD + TRACE_DASH);
 const TRACE_TO = round(TRACE_PERIOD - 1.05);
 
-const WASH = "transition-opacity duration-300 ease-out";
-const GLYPH = "transition-[translate,filter,opacity] duration-300 ease-out";
-const GLYPH_HERE = "translate-x-0 opacity-100 blur-none";
-const GLYPH_LEAVING = "translate-x-2 opacity-0 blur-xs";
-const GLYPH_WAITING = "-translate-x-2 opacity-0 blur-xs";
 
 export function ExtractionFlow() {
 	const ref = useRef<HTMLDivElement>(null);

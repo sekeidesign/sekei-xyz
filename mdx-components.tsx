@@ -28,14 +28,14 @@ function BackToQuote() {
 			className="ml-0.5 inline-block size-4 shrink-0 align-[-0.3em] text-gray-400 group-hover:text-gray-900 group-focus-visible:text-gray-900"
 		>
 			<path
-				d="M11.1387 8.44305L14.5817 5L18.0248 8.44305"
+				d="M11.14 8.44L14.58 5L18.02 8.44"
 				stroke="currentColor"
 				strokeWidth="1.5"
 				strokeLinecap="round"
 				strokeLinejoin="round"
 			/>
 			<path
-				d="M14.5817 5.19922V13.3753C14.5817 16.4826 12.0628 19.0015 8.95558 19.0015H5.97461"
+				d="M14.58 5.2V13.38C14.58 16.48 12.06 19 8.96 19H5.97"
 				stroke="currentColor"
 				strokeWidth="1.5"
 				strokeLinecap="round"

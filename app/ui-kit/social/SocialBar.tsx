@@ -63,7 +63,7 @@ const SEGMENT =
 
 export function SocialBar({
 	slug,
-	/** Path to the post, resolved against the current origin when copied. */
+	/** Path to the post, resolved against the current origin when copied; an absolute URL passes through. */
 	sharePath,
 	className,
 }: {

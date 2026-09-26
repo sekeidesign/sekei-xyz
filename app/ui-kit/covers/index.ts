@@ -1,5 +1,6 @@
 import type { ComponentType } from "react";
 import { RaidLogCover } from "./RaidLogCover";
+import { ShadFxCover } from "./ShadFxCover";
 import { WikiTreeCover } from "./WikiTreeCover";
 
 interface CodeCover {
@@ -12,4 +13,5 @@ interface CodeCover {
 export const CODE_COVERS: Record<string, CodeCover> = {
 	"raid-2-0": { Cover: RaidLogCover, aspect: "2 / 1" },
 	"customer-knowledge-base": { Cover: WikiTreeCover, aspect: "2 / 1" },
+	"shad-fx": { Cover: ShadFxCover, aspect: "2 / 1" },
 };

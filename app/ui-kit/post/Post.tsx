@@ -19,12 +19,12 @@ import { PostRow } from "./PostRow";
 /**
  * How a card arranges its copy and its artwork.
  *
- * `aside` — artwork beside the copy at every width, for a book cover or a phone.
- * `column` — one column at every width; a screenshot runs full width inside
- *   it, in the slot a live demo occupies on an experiment.
- * `split` — a case study: the square cover sits beside the copy at md and up,
- *   and stacks under it on a phone, where the card carries the post page's own
- *   full-width cover instead.
+ * `aside` — artwork beside the copy at every width, for a launch's phone.
+ * `column` — one column at every width; a cover runs full width inside it, in
+ *   the slot a live demo occupies on an experiment. Every post page uses it.
+ * `split` — an essay or a book in the feed: the square cover sits beside the
+ *   copy at md and up, and stacks under it on a phone, where the card carries
+ *   the post page's own full-width cover instead.
  */
 export type PostLayout = "aside" | "column" | "split";
 

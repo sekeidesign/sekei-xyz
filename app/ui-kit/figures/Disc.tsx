@@ -1,6 +1,16 @@
 import type { ReactNode } from "react";
 import { cn } from "../cn";
 
+/**
+ * Swapping what a disc holds: the ring stays put, the wash crossfades under it
+ * and the glyph passes through left to right.
+ */
+export const WASH = "transition-opacity duration-300 ease-out";
+export const GLYPH = "transition-[translate,filter,opacity] duration-300 ease-out";
+export const GLYPH_HERE = "translate-x-0 opacity-100 blur-none";
+export const GLYPH_LEAVING = "translate-x-2 opacity-0 blur-xs";
+export const GLYPH_WAITING = "-translate-x-2 opacity-0 blur-xs";
+
 export function Disc({
 	wash,
 	className,
