@@ -44,7 +44,7 @@ function wrap(
 							d={d}
 							fill="none"
 							stroke="currentColor"
-							strokeWidth={1.5}
+							strokeWidth={4 / 3}
 							strokeLinecap="round"
 							strokeLinejoin="round"
 						/>

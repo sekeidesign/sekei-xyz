@@ -85,6 +85,19 @@ export default async function EntryPage({
 					<p className="max-w-xl text-[15px] leading-relaxed font-[420] text-gray-500">
 						{entry.description}
 					</p>
+					{entry.credit && (
+						<p className="text-[13px] font-[420] text-gray-400">
+							{entry.credit.lead}{" "}
+							<Link
+								href={entry.credit.href}
+								target="_blank"
+								rel="noopener noreferrer"
+								className="rounded-sm font-[500] text-gray-600 underline decoration-gray-300 underline-offset-2 hover:text-gray-900"
+							>
+								{entry.credit.name}
+							</Link>
+						</p>
+					)}
 				</div>
 				{entry.exports && (
 					<CodeBlock

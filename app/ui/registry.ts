@@ -26,6 +26,8 @@ export interface Entry {
 	examples: Example[];
 	/** The overview card's preview, when the first example is too big for it. */
 	Thumb?: ComponentType;
+	/** Where the entry's artwork comes from, shown under its description. */
+	credit?: { lead: string; name: string; href: string };
 }
 
 export const GROUPS = ["Basics", "Content", "Controls", "Showcase"] as const;
@@ -75,8 +77,9 @@ const UNSORTED: Entry[] = [
 		slug: "icons",
 		name: "Icons",
 		group: "Basics",
-		description: "Custom 16px glyphs drawn in currentColor, plus tool marks.",
+		description: "16px glyphs drawn in currentColor, plus tool marks.",
 		source: "icons",
+		credit: { lead: "Glyphs from", name: "Iconly Pro", href: "https://iconly.pro" },
 		Thumb: Icons.IconThumb,
 		examples: [
 			{ name: "Glyphs", Component: Icons.IconGrid, bleed: true },

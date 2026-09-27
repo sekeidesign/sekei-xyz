@@ -33,7 +33,7 @@ export const FireIcon = ({
 					d="M12.369 5.899C13.987 9.046 12.686 13.261 8.971 13.874 4.107 14.939 0.862 9.001 4.516 5.519 4.711 5.326 5.249 4.827 5.473 4.667 5.473 5.001 5.768 7.583 6.229 7.387 8.123 7.387 8.632 4.001 8.371 2 10.076 2.891 11.52 4.133 12.369 5.899Z"
 					fill="none"
 					stroke="currentColor"
-					strokeWidth={1.5}
+					strokeWidth={4 / 3}
 					strokeLinecap="round"
 					strokeLinejoin="round"
 				/>
