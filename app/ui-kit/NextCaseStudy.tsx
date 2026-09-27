@@ -17,7 +17,7 @@ export function NextCaseStudy({ href, title }: NextCaseStudyProps) {
 			>
 				<div className="flex items-center justify-between rounded-lg ring ring-gray-500/10 bg-white shadow-skew px-5 py-4">
 					<div>
-						<p className="text-sm font-[500] text-gray-400">Next case study</p>
+						<p className="text-sm font-[500] text-gray-500">Next case study</p>
 						<p className="font-[550] text-gray-900">{title}</p>
 					</div>
 					<ArrowRightIcon className="w-4 h-4 shrink-0 text-gray-300 transition-[transform,color] group-hover:translate-x-0.5 group-hover:text-gray-500" />

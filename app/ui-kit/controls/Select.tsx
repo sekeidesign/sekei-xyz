@@ -20,14 +20,14 @@ export function Select({
 	options: SelectOption[];
 	onChange: (value: string) => void;
 }) {
-	const labelId = useId();
+	const selectId = useId();
 
 	return (
-		<ControlRow label={label} labelId={labelId}>
+		<ControlRow label={label} htmlFor={selectId}>
 			<div className="relative w-full">
 				<select
+					id={selectId}
 					value={value}
-					aria-labelledby={labelId}
 					onChange={(event) => onChange(event.target.value)}
 					className="w-full cursor-pointer appearance-none rounded-md bg-white py-1 pr-7 pl-2 text-[13px] leading-[1.43] font-[420] text-gray-900 ring ring-gray-500/15 shadow-skew focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
 				>

@@ -17,10 +17,11 @@ export function Swatches({
 	onChange: (values: string[]) => void;
 }) {
 	const id = useId();
+	const labelId = useId();
 
 	return (
-		<ControlRow label={label}>
-			<div className="flex items-center gap-1.5">
+		<ControlRow label={label} labelId={labelId}>
+			<fieldset aria-labelledby={labelId} className="flex min-w-0 items-center gap-1.5">
 				{values.map((value, index) => (
 					<span
 						key={`${id}:${names[index]}`}
@@ -44,7 +45,7 @@ export function Swatches({
 						/>
 					</span>
 				))}
-			</div>
+			</fieldset>
 		</ControlRow>
 	);
 }

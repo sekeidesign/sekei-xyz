@@ -10,6 +10,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { cn } from "./cn";
 
 const MAX_TILT = 10;
@@ -34,6 +35,7 @@ const MotionLink = m.create(Link);
  */
 export function ProfileCard({ className }: { className?: string }) {
 	const cardRef = useRef<HTMLAnchorElement>(null);
+	const reduced = usePrefersReducedMotion();
 	const z = useSpring(0);
 	const rotateX = useSpring(0, SPRING);
 	const rotateY = useSpring(0, SPRING);
@@ -62,7 +64,7 @@ export function ProfileCard({ className }: { className?: string }) {
 			href="/timeline"
 			style={{ transformPerspective: 500, z, rotateX, rotateY }}
 			onPointerMove={(event) => {
-				if (event.pointerType !== "mouse" || !cardRef.current) return;
+				if (event.pointerType !== "mouse" || reduced || !cardRef.current) return;
 
 				const rect = cardRef.current.getBoundingClientRect();
 				const xPercent = (event.clientX - rect.left) / rect.width;
@@ -77,17 +79,17 @@ export function ProfileCard({ className }: { className?: string }) {
 				sealY.set(yPercent * 100);
 			}}
 			onPointerEnter={(event) => {
-				if (event.pointerType !== "mouse") return;
+				if (event.pointerType !== "mouse" || reduced) return;
 				z.set(10);
 				sheen.set(1);
 			}}
 			onPointerLeave={settle}
 			onPointerCancel={settle}
 			onPointerDown={(event) => {
-				if (event.pointerType === "mouse") z.set(-10);
+				if (event.pointerType === "mouse" && !reduced) z.set(-10);
 			}}
 			onPointerUp={(event) => {
-				if (event.pointerType === "mouse") z.set(10);
+				if (event.pointerType === "mouse" && !reduced) z.set(10);
 			}}
 			className={cn(
 				"bg-gray-100 p-4 flex flex-col gap-4 relative overflow-hidden hover:will-change-transform",
@@ -220,7 +222,7 @@ function Portrait({
 			/>
 			<Image
 				src="/avatar-cutout.webp"
-				alt="PG Gonni"
+				alt=""
 				width={332}
 				height={365}
 				className="relative z-30 size-full object-cover -scale-x-100"

@@ -3,6 +3,7 @@
 import createGlobe from "cobe";
 import { animate } from "motion";
 import { useEffect, useRef, useState } from "react";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 
 interface GlobeProps {
 	location?: [number, number];
@@ -45,6 +46,7 @@ export const Globe = ({ location = MONTREAL, className }: GlobeProps) => {
 	const globeRef = useRef<ReturnType<typeof createGlobe> | null>(null);
 	const angleRef = useRef({ phi: 0, theta: 0 });
 	const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+	const reduced = usePrefersReducedMotion();
 
 	useEffect(() => {
 		const wrapper = wrapperRef.current;
@@ -122,6 +124,16 @@ export const Globe = ({ location = MONTREAL, className }: GlobeProps) => {
 		const deltaPhi = shortestDelta(fromPhi, targetPhi);
 		const deltaTheta = targetTheta - fromTheta;
 
+		if (reduced) {
+			angleRef.current = { phi: targetPhi, theta: targetTheta };
+			globe.update({
+				phi: targetPhi,
+				theta: targetTheta,
+				markers: [{ location, size: 0.045 }],
+			});
+			return;
+		}
+
 		const controls = animate(0, 1, {
 			type: "spring",
 			bounce: 0.15,
@@ -135,7 +147,7 @@ export const Globe = ({ location = MONTREAL, className }: GlobeProps) => {
 		});
 
 		return () => controls.stop();
-	}, [location, width, height]);
+	}, [location, width, height, reduced]);
 
 	return (
 		<div ref={wrapperRef} className={className}>

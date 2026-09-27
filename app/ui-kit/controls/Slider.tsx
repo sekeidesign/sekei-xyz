@@ -51,7 +51,7 @@ export function Slider({
 	// layout work of its own. Both are laid out against the input's 12px thumb,
 	// which travels 100% - 12px, so the drawn handle stays under the pointer.
 	const fraction = (value - min) / (max - min);
-	const labelId = useId();
+	const inputId = useId();
 	const trackRef = useRef<HTMLDivElement>(null);
 	const valueRef = useRef<HTMLSpanElement>(null);
 	const [split, setSplit] = useState(false);
@@ -91,7 +91,7 @@ export function Slider({
 	}, [measure]);
 
 	return (
-		<ControlRow label={label} labelId={labelId}>
+		<ControlRow label={label} htmlFor={inputId}>
 			<div
 				ref={trackRef}
 				style={{ "--f": fraction } as CSSProperties}
@@ -136,12 +136,12 @@ export function Slider({
 					</span>
 				</span>
 				<input
+					id={inputId}
 					type="range"
 					min={min}
 					max={max}
 					step={step}
 					value={value}
-					aria-labelledby={labelId}
 					aria-valuetext={`${value}${unit}`}
 					onChange={(event) => onChange(Number(event.target.value))}
 					className="control-slider-hit absolute inset-0 size-full"

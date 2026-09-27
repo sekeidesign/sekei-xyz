@@ -76,6 +76,7 @@ export function SocialBar({
 }) {
 	const { counts, mine, bump } = useSocial(slug);
 	const [copied, setCopied] = useState(false);
+	const [status, setStatus] = useState("");
 	// Bumped per click; keying the ripple on it remounts the element so the CSS
 	// animation replays even on rapid repeats.
 	const [pulse, setPulse] = useState({ fire: 0, link: 0 });
@@ -94,10 +95,15 @@ export function SocialBar({
 				new URL(sharePath, window.location.origin).toString(),
 			);
 			setCopied(true);
+			setStatus("Link copied");
 			clearTimeout(copiedTimer.current);
-			copiedTimer.current = setTimeout(() => setCopied(false), 1000);
+			copiedTimer.current = setTimeout(() => {
+				setCopied(false);
+				setStatus("");
+			}, 1000);
 		} catch {
 			// Clipboard can be blocked; the count still went up.
+			setStatus("Couldn't copy the link");
 		}
 	};
 
@@ -175,6 +181,7 @@ export function SocialBar({
 							className={COUNT_CLASS}
 						/>
 					</TooltipTrigger>
+				<output className="sr-only">{status}</output>
 			</div>
 	);
 }

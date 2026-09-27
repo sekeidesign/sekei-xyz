@@ -348,66 +348,68 @@ export function Playground() {
 						"border-t border-gray-200 lg:border-t-0 lg:border-l",
 					)}
 				>
-					<ControlSection label="canvas" />
-					<Toggle label="active" checked={active} onChange={setActive} />
-					<Slider
-						label="cell"
-						value={cell}
-						min={1}
-						max={8}
-						step={1}
-						showSteps
-						unit="px"
-						onChange={setCell}
-					/>
-					<Slider
-						label="seed"
-						value={seed}
-						min={1}
-						max={12}
-						step={1}
-						showSteps
-						onChange={setSeed}
-					/>
-					<Select
-						label="surface"
-						value={surface}
-						options={SURFACES}
-						onChange={setSurface}
-					/>
-
-					<ControlSection label={`${kind}()`} />
-					<Swatches
-						label={spec.colorLabel}
-						values={colors[kind]}
-						names={COLOR_NAMES[kind]}
-						onChange={(next) => setColors((prev) => ({ ...prev, [kind]: next }))}
-					/>
-					{spec.numbers.map((number) => (
+					<ControlSection label="canvas">
+						<Toggle label="active" checked={active} onChange={setActive} />
 						<Slider
-							key={number.key}
-							label={number.label}
-							value={valueOf(number.key)}
-							min={number.min}
-							max={number.max}
-							step={number.step}
-							showSteps={(number.max - number.min) / number.step <= MAX_TICKS}
-							onChange={(value) => setValue(number.key, value)}
+							label="cell"
+							value={cell}
+							min={1}
+							max={8}
+							step={1}
+							showSteps
+							unit="px"
+							onChange={setCell}
 						/>
-					))}
-					{spec.anchors && (
-						<Toggle
-							label={spec.anchors.map((a) => a.key).join(" & ")}
-							checked={anchor.on}
-							hint={anchor.on ? "drag it" : "default"}
-							onChange={(on) =>
-								setAnchors((prev) => ({
-									...prev,
-									[kind]: { ...prev[kind], on },
-								}))
-							}
+						<Slider
+							label="seed"
+							value={seed}
+							min={1}
+							max={12}
+							step={1}
+							showSteps
+							onChange={setSeed}
 						/>
-					)}
+						<Select
+							label="surface"
+							value={surface}
+							options={SURFACES}
+							onChange={setSurface}
+						/>
+					</ControlSection>
+
+					<ControlSection label={`${kind}()`}>
+						<Swatches
+							label={spec.colorLabel}
+							values={colors[kind]}
+							names={COLOR_NAMES[kind]}
+							onChange={(next) => setColors((prev) => ({ ...prev, [kind]: next }))}
+						/>
+						{spec.numbers.map((number) => (
+							<Slider
+								key={number.key}
+								label={number.label}
+								value={valueOf(number.key)}
+								min={number.min}
+								max={number.max}
+								step={number.step}
+								showSteps={(number.max - number.min) / number.step <= MAX_TICKS}
+								onChange={(value) => setValue(number.key, value)}
+							/>
+						))}
+						{spec.anchors && (
+							<Toggle
+								label={spec.anchors.map((a) => a.key).join(" & ")}
+								checked={anchor.on}
+								hint={anchor.on ? "drag it" : "default"}
+								onChange={(on) =>
+									setAnchors((prev) => ({
+										...prev,
+										[kind]: { ...prev[kind], on },
+									}))
+								}
+							/>
+						)}
+					</ControlSection>
 				</ControlPanel>
 			</div>
 

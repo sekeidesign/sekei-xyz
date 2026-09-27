@@ -6,6 +6,7 @@ import { CheckCircleIcon } from "@ui-kit/icons/CheckCircleIcon";
 import { CopyIcon } from "@ui-kit/icons/CopyIcon";
 import { SURFACE_INNER, SURFACE_OUTER } from "@ui-kit/post/surface";
 import { ICON_SWAP, ICON_SWAP_IN, ICON_SWAP_OUT } from "@ui-kit/press";
+import { TooltipTrigger } from "@ui-kit/Tooltip";
 import { Highlighted, type Lang } from "./highlight";
 
 // The social bar's link blue, so a copied state matches the rest of the site.
@@ -30,6 +31,7 @@ export function CodeBlock({
 	className?: string;
 }) {
 	const [copied, setCopied] = useState(false);
+	const [status, setStatus] = useState("");
 	const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	useEffect(
@@ -43,11 +45,16 @@ export function CodeBlock({
 		try {
 			await navigator.clipboard.writeText(code);
 		} catch {
+			setStatus("Couldn't copy the code");
 			return;
 		}
 		setCopied(true);
+		setStatus("Copied to clipboard");
 		if (timer.current) clearTimeout(timer.current);
-		timer.current = setTimeout(() => setCopied(false), 1600);
+		timer.current = setTimeout(() => {
+			setCopied(false);
+			setStatus("");
+		}, 1600);
 	}
 
 	const block = (
@@ -64,10 +71,10 @@ export function CodeBlock({
 					<Highlighted code={code} lang={lang} />
 				</code>
 			</pre>
-			<button
-				type="button"
+			<TooltipTrigger
+				payload="Copy code"
 				onClick={copy}
-				aria-label={copied ? "Copied" : "Copy code"}
+				aria-label="Copy code"
 				className="absolute top-2 right-2 flex size-7 cursor-pointer items-center justify-center rounded-md bg-white/10 text-gray-300 ring ring-white/10 transition-transform duration-150 ease-out hover:bg-white/20 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent active:scale-[0.97] active:duration-75"
 			>
 				<span className="relative flex size-4">
@@ -91,10 +98,8 @@ export function CodeBlock({
 						<CopyIcon />
 					</span>
 				</span>
-				<span className="sr-only" aria-live="polite">
-					{copied ? "Copied to clipboard" : ""}
-				</span>
-			</button>
+			</TooltipTrigger>
+			<output className="sr-only">{status}</output>
 		</div>
 	);
 

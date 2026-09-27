@@ -28,13 +28,15 @@ export function FullPanel() {
 	return (
 		<Frame>
 			<ControlPanel title="Playground">
-				<ControlSection label="Shape" />
-				<Slider label="Scale" value={scale} min={1} max={12} step={1} unit="px" onChange={setScale} />
-				<Select label="Pattern" value={pattern} options={PATTERNS} onChange={setPattern} />
-				<ControlSection label="Look" />
-				<Swatches label="Colors" values={colors} names={["Ink", "Paper"]} onChange={setColors} />
-				<Toggle label="Animate" checked={animate} onChange={setAnimate} />
-				<TextField label="Label" value={label} onChange={setLabel} />
+				<ControlSection label="Shape">
+					<Slider label="Scale" value={scale} min={1} max={12} step={1} unit="px" onChange={setScale} />
+					<Select label="Pattern" value={pattern} options={PATTERNS} onChange={setPattern} />
+				</ControlSection>
+				<ControlSection label="Look">
+					<Swatches label="Colors" values={colors} names={["Ink", "Paper"]} onChange={setColors} />
+					<Toggle label="Animate" checked={animate} onChange={setAnimate} />
+					<TextField label="Label" value={label} onChange={setLabel} />
+				</ControlSection>
 			</ControlPanel>
 		</Frame>
 	);
