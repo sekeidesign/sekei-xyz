@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@ui-kit/Button";
-import { Globe } from "@ui-kit/Globe";
+import { Globe, SPHERE } from "@ui-kit/Globe";
 import { ProfileCard } from "@ui-kit/ProfileCard";
 
 export function ProfileThumb() {
@@ -15,12 +15,24 @@ export function ProfileThumb() {
 	);
 }
 
+/** The sphere's width as a share of the card's. */
+const THUMB_GLOBE = 0.9;
+
 export function GlobeThumb() {
+	const box = THUMB_GLOBE / SPHERE.diameter;
+	const rise = 1 - SPHERE.diameter / 2;
+
 	return (
-		// The globe centres its sphere on its box's bottom-right corner, drawn at
-		// twice the box's size. A box this small lands that centre mid-card.
-		<div className="relative h-24 w-36">
-			<Globe className="absolute inset-0" />
+		<div className="relative -m-4 flex-1 self-stretch">
+			<div
+				className="absolute top-4 left-1/2 aspect-square"
+				style={{
+					width: `${box * 100}%`,
+					translate: `calc(${SPHERE.offset.x}px - 100%) calc(${SPHERE.offset.y}px - ${rise * 100}%)`,
+				}}
+			>
+				<Globe className="absolute inset-0" />
+			</div>
 		</div>
 	);
 }
