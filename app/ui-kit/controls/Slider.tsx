@@ -27,31 +27,46 @@ const POP: Transition = { duration: 0.42, times: [0, 0.4, 0.7, 1], ease: "easeOu
 const HALF =
 	"absolute inset-x-0 rounded-full bg-gray-300 transition-[height] duration-150 ease-out group-hover:bg-gray-400 group-has-[:active]:bg-gray-500";
 
-export function Slider({
-	label,
-	value,
-	min,
-	max,
-	step,
-	unit = "",
-	showSteps = false,
-	onChange,
-}: {
-	label: string;
+interface SliderTrackProps {
 	value: number;
 	min: number;
 	max: number;
 	step: number;
 	unit?: string;
+	/** Names the value shown in the middle, in place of the number and unit. */
+	format?: (value: number) => string;
 	/** Draws a tick at every step, bar the two ends and any behind the value. */
 	showSteps?: boolean;
 	onChange: (value: number) => void;
-}) {
+}
+
+export function Slider({ label, ...track }: SliderTrackProps & { label: string }) {
+	const inputId = useId();
+	return (
+		<ControlRow label={label} htmlFor={inputId}>
+			<SliderTrack id={inputId} {...track} />
+		</ControlRow>
+	);
+}
+
+/** The slider on its own, for a caller that labels it some other way. */
+export function SliderTrack({
+	id,
+	"aria-label": ariaLabel,
+	value,
+	min,
+	max,
+	step,
+	unit = "",
+	format,
+	showSteps = false,
+	onChange,
+}: SliderTrackProps & { id?: string; "aria-label"?: string }) {
 	// --f drives the fill and the handle in CSS, so dragging does no per-frame
 	// layout work of its own. Both are laid out against the input's 12px thumb,
 	// which travels 100% - 12px, so the drawn handle stays under the pointer.
 	const fraction = (value - min) / (max - min);
-	const inputId = useId();
+	const shown = format ? format(value) : `${value}${unit}`;
 	const trackRef = useRef<HTMLDivElement>(null);
 	const valueRef = useRef<HTMLSpanElement>(null);
 	const [split, setSplit] = useState(false);
@@ -91,63 +106,61 @@ export function Slider({
 	}, [measure]);
 
 	return (
-		<ControlRow label={label} htmlFor={inputId}>
-			<div
-				ref={trackRef}
-				style={{ "--f": fraction } as CSSProperties}
-				className="group relative h-7 w-full overflow-hidden rounded-md bg-white ring ring-gray-500/15 shadow-skew has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent"
+		<div
+			ref={trackRef}
+			style={{ "--f": fraction } as CSSProperties}
+			className="group relative h-7 w-full overflow-hidden rounded-md bg-white ring ring-gray-500/15 shadow-skew has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent"
+		>
+			<span className="absolute inset-y-0 left-0 w-[calc(12px+(100%-12px)*var(--f))] rounded-md bg-gray-100 ring ring-gray-200" />
+			{showSteps &&
+				stepFractions(min, max, step)
+					.filter((t) => t < cover[0] || t > cover[1])
+					.map((t) => (
+						<span
+							key={t}
+							aria-hidden="true"
+							style={{ "--t": t } as CSSProperties}
+							className="absolute top-1/2 left-[calc(6px+(100%-12px)*var(--t))] h-2.5 w-px -translate-x-1/2 -translate-y-1/2 rounded-full bg-gray-500/20"
+						/>
+					))}
+			<span
+				aria-hidden="true"
+				className="absolute inset-y-0 left-[calc(6px+(100%-12px)*var(--f))] w-1 -translate-x-1/2"
 			>
-				<span className="absolute inset-y-0 left-0 w-[calc(12px+(100%-12px)*var(--f))] rounded-md bg-gray-100 ring ring-gray-200" />
-				{showSteps &&
-					stepFractions(min, max, step)
-						.filter((t) => t < cover[0] || t > cover[1])
-						.map((t) => (
-							<span
-								key={t}
-								aria-hidden="true"
-								style={{ "--t": t } as CSSProperties}
-								className="absolute top-1/2 left-[calc(6px+(100%-12px)*var(--t))] h-2.5 w-px -translate-x-1/2 -translate-y-1/2 rounded-full bg-gray-500/20"
-							/>
-						))}
-				<span
-					aria-hidden="true"
-					className="absolute inset-y-0 left-[calc(6px+(100%-12px)*var(--f))] w-1 -translate-x-1/2"
-				>
-					<m.span
-						initial={false}
-						animate={pop(-1)}
-						transition={POP}
-						className={cn(HALF, "top-[3px]", split ? "h-1" : "h-[13px]")}
-					/>
-					<m.span
-						initial={false}
-						animate={pop(1)}
-						transition={POP}
-						className={cn(HALF, "bottom-[3px]", split ? "h-1" : "h-[13px]")}
-					/>
-				</span>
-				<span
-					aria-hidden="true"
-					className="pointer-events-none absolute inset-0 flex items-center justify-center font-mono text-[12px] leading-none font-[450] tabular-nums"
-				>
-					<span ref={valueRef} className="text-gray-900">
-						{value}
-						{unit}
-					</span>
-				</span>
-				<input
-					id={inputId}
-					type="range"
-					min={min}
-					max={max}
-					step={step}
-					value={value}
-					aria-valuetext={`${value}${unit}`}
-					onChange={(event) => onChange(Number(event.target.value))}
-					className="control-slider-hit absolute inset-0 size-full"
+				<m.span
+					initial={false}
+					animate={pop(-1)}
+					transition={POP}
+					className={cn(HALF, "top-[3px]", split ? "h-1" : "h-[13px]")}
 				/>
-			</div>
-		</ControlRow>
+				<m.span
+					initial={false}
+					animate={pop(1)}
+					transition={POP}
+					className={cn(HALF, "bottom-[3px]", split ? "h-1" : "h-[13px]")}
+				/>
+			</span>
+			<span
+				aria-hidden="true"
+				className="pointer-events-none absolute inset-0 flex items-center justify-center font-mono text-[12px] leading-none font-[450] tabular-nums"
+			>
+				<span ref={valueRef} className="text-gray-900">
+					{shown}
+				</span>
+			</span>
+			<input
+				id={id}
+				aria-label={ariaLabel}
+				type="range"
+				min={min}
+				max={max}
+				step={step}
+				value={value}
+				aria-valuetext={shown}
+				onChange={(event) => onChange(Number(event.target.value))}
+				className="control-slider-hit absolute inset-0 size-full"
+			/>
+		</div>
 	);
 }
 

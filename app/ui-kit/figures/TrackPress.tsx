@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, m, useInView } from "motion/react";
+import { AnimatePresence, arc, m, useInView } from "motion/react";
 import { type CSSProperties, useEffect, useId, useRef, useState } from "react";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { CursorIcon, DismissIcon, FLAME, TrackIcon } from "./review-icons";
@@ -29,6 +29,14 @@ const SPRING_LONG = { type: "spring", bounce: 0, duration: 0.6 } as const;
  */
 const AWAY = { x: -76, y: 54 };
 const ON = { x: 8, y: 7 };
+
+/**
+ * A hand reaches in a curve rather than a line. The side is fixed to the
+ * direction of travel, so it bows the other way on the way back and the round
+ * trip draws a loop. Made once: the path carries what it needs to pick up an
+ * interrupted move from where it was.
+ */
+const REACH = arc({ strength: 0.3, direction: "ccw" });
 
 /** Seconds the flame lags the release, in step with the ripple's own delay. */
 const FILL_DELAY = 0.075;
@@ -189,7 +197,11 @@ export function TrackPress() {
 								...(onButton ? ON : AWAY),
 								scale: pressed ? 0.88 : 1,
 							}}
-							transition={{ ...SPRING_LONG, scale: { duration: 0.12 } }}
+							transition={{
+								...SPRING_LONG,
+								path: REACH,
+								scale: { duration: 0.12 },
+							}}
 							className="absolute top-1/2 left-1/2 text-gray-900 drop-shadow-md drop-shadow-black/25"
 						>
 							<CursorIcon />

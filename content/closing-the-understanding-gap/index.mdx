@@ -9,7 +9,7 @@ cover: "/casestudies/q2-reset/journey-map.webp"
 draft: true
 ---
 
-import { CaseStudyLink } from "@ui-kit/CaseStudyLink";
+import { TimelinePosts } from "@ui-kit/TimelinePosts";
 import { Figure } from "@ui-kit/Figure";
 import { NextCaseStudy } from "@ui-kit/NextCaseStudy";
 import { Problems } from "@ui-kit/Problems";
@@ -101,23 +101,7 @@ scattered assumptions, and became the foundation for how we built product
 for the rest of the year, not just that quarter. A few of the projects it
 shaped:
 
-<CaseStudyLink
-	href="/p/automation-routines"
-	title="Automation routines"
-	description="Turning skills and reports from something you run into something that arrives on its own."
-/>
-
-<CaseStudyLink
-	href="/p/raid-2-0"
-	title="RAID 2.0"
-	description="Cutting meeting extraction noise in half and putting a human in the loop."
-/>
-
-{/* <CaseStudyLink
-	href="/p/meeting-taxonomy"
-	title="Meeting taxonomy"
-	description="Making meeting summaries match the shape of the meeting they came from."
-/> */}
+<TimelinePosts slugs={["automation-routines", "raid-2-0"]} />
 
 
 <NextCaseStudy
