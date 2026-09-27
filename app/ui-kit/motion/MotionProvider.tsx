@@ -1,6 +1,6 @@
 "use client";
 
-import { LazyMotion } from "motion/react";
+import { LazyMotion, MotionConfig } from "motion/react";
 import type { ReactNode } from "react";
 
 const loadFeatures = () => import("./features").then((mod) => mod.default);
@@ -11,5 +11,9 @@ const loadFeatures = () => import("./features").then((mod) => mod.default);
  * own rather than in the initial bundle.
  */
 export function MotionProvider({ children }: { children: ReactNode }) {
-	return <LazyMotion features={loadFeatures}>{children}</LazyMotion>;
+	return (
+		<MotionConfig reducedMotion="user">
+			<LazyMotion features={loadFeatures}>{children}</LazyMotion>
+		</MotionConfig>
+	);
 }

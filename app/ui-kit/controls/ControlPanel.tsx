@@ -43,7 +43,7 @@ export function ControlPanel({
 export function ControlSection({ label }: { label: string }) {
 	return (
 		<div className="px-3 py-1.5 bg-gray-50">
-			<span className="text-[11px] leading-[1.3] font-mono font-[450] uppercase tracking-wide text-gray-400">
+			<span className="text-[11px] leading-[1.3] font-mono font-[450] uppercase tracking-wide text-gray-500">
 				{label}
 			</span>
 		</div>
@@ -72,7 +72,7 @@ export function ControlRow({
 			</span>
 			<div className="flex-1 min-w-0 flex items-center">{children}</div>
 			{value !== undefined && (
-				<span className="w-12 shrink-0 text-right text-[12px] leading-[1.33] font-mono font-[450] text-gray-400 tabular-nums">
+				<span className="w-12 shrink-0 text-right text-[12px] leading-[1.33] font-mono font-[450] text-gray-500 tabular-nums">
 					{value}
 				</span>
 			)}

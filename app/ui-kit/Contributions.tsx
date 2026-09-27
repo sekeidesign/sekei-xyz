@@ -51,7 +51,7 @@ export function Contributions({
 	return (
 		<Surface className="my-6 w-full" inner={{ className: "flex flex-col" }}>
 			<div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 p-3">
-				<span className="font-mono text-xs text-gray-400">My work</span>
+				<span className="font-mono text-xs text-gray-500">My work</span>
 				<div className="flex items-center gap-3">
 					<span className="flex items-center gap-1.5 text-xs font-[500] text-gray-600">
 						<span className="tabular-nums">{COUNT.format(prs)}</span>

@@ -40,7 +40,7 @@ export function Toggle({
 				/>
 			</button>
 			{hint && (
-				<span className="ml-3 text-[12px] leading-[1.33] font-[420] text-gray-400">
+				<span className="ml-3 text-[12px] leading-[1.33] font-[420] text-gray-500">
 					{hint}
 				</span>
 			)}

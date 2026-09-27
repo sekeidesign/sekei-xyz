@@ -50,7 +50,7 @@ const OpenGraphPreview = ({
 		};
 	}, [url]);
 
-	if (error) return <span>Error: {error}</span>;
+	if (error) return children;
 	if (!og?.title && !og?.description && !og?.image) return children;
 
 	return (

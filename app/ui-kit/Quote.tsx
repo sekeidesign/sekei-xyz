@@ -26,7 +26,7 @@ export function Quote({ children, cite }: QuoteProps) {
 					{children}
 				</blockquote>
 				{cite && (
-					<figcaption className="mt-4 text-xs font-[450] text-gray-400">
+					<figcaption className="mt-4 text-xs font-[450] text-gray-500">
 						{cite}
 					</figcaption>
 				)}
