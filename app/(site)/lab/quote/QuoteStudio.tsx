@@ -245,6 +245,7 @@ export function QuoteStudio({ books }: { books: BookOption[] }) {
 					min={0}
 					max={5}
 					step={1}
+					showSteps
 					onChange={(rating) => dispatchBook({ type: "edited", patch: { rating } })}
 				/>
 				<TextField

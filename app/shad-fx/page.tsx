@@ -14,7 +14,7 @@ import { Install } from "./Install";
 import { Playground } from "./Playground";
 import { A, Code, P, Section } from "./Prose";
 import { Skills } from "./Skills";
-import { Snippet } from "./Snippet";
+import { CodeBlock } from "@ui-kit/code/CodeBlock";
 import { Usage } from "./Usage";
 
 // The shell from app/(site)/layout.tsx, rebuilt because this page sits outside
@@ -83,7 +83,7 @@ export default function ShadFxDocs() {
 								Canvas effects for React, starting with Bayer dithered environmental effects. Rendered on a tiny canvas, using a single <Code>ImageData</Code> instance per frame, and upscaled with CSS <Code>image-rendering: pixelated</Code> to keep each frame fast and GPU accelerated.
 							</p>
 						</div>
-						<Snippet
+						<CodeBlock
 							code="npx shadcn@latest add @sekei/shad-fx"
 							footer={<Counts />}
 						/>

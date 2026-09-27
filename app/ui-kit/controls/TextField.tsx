@@ -4,7 +4,7 @@ import { useId } from "react";
 import { ControlRow } from "./ControlPanel";
 
 const FIELD =
-	"w-full rounded-md bg-white px-2 py-1 text-[13px] leading-[1.43] font-[420] text-gray-900 ring ring-gray-500/15 shadow-skew placeholder:text-gray-400 focus:outline-none focus:ring-gray-500/40";
+	"w-full rounded-md bg-white px-2 py-1 text-[13px] leading-[1.43] font-[420] text-gray-900 ring ring-gray-500/15 shadow-skew placeholder:text-gray-400 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
 export function TextField({
 	label,

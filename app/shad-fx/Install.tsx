@@ -1,12 +1,12 @@
 import { INSTALL, ITEMS, REGISTRY_CONFIG, REPO } from "./content";
 import { A, Code, P, Section, Table } from "./Prose";
-import { Snippet } from "./Snippet";
+import { CodeBlock } from "@ui-kit/code/CodeBlock";
 
 export function Install() {
 	return (
 		<Section title="Install" id="install">
 			<P>Take the whole library, or a renderer and the effects you want:</P>
-			<Snippet code={INSTALL} />
+			<CodeBlock code={INSTALL} />
 			<P>
 				An effect on its own has nothing to draw on, so always take a renderer
 				with it.
@@ -17,7 +17,7 @@ export function Install() {
 				entry into your components.json itself. To pin it yourself, by hand or in
 				package.json — the CLI reads both:
 			</P>
-			<Snippet code={REGISTRY_CONFIG} lang="json" />
+			<CodeBlock code={REGISTRY_CONFIG} lang="json" />
 			<P>
 				Files land under <Code>components/shad-fx/</Code> and{" "}
 				<Code>hooks/</Code>, following your components.json aliases: renderers

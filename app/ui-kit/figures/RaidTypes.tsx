@@ -2,12 +2,11 @@
 
 import { Fragment, useMemo, useRef, useState } from "react";
 import { DitherCanvas } from "@/components/shad-fx/dither/dither-canvas";
-import { cn } from "../cn";
 import { KIND } from "../covers/raid-log";
-import { SURFACE_INNER, SURFACE_OUTER } from "../post/surface";
 import { Disc } from "./Disc";
 import { RAID_KINDS } from "./kinds";
 import { type RaidEffectTweaks, type RaidKind, raidEffect } from "./raid-effects";
+import { Surface } from "../Surface";
 
 export interface RaidTypesTweaks extends RaidEffectTweaks {
 	cell?: number;
@@ -20,33 +19,28 @@ export function RaidTypes({ tweaks }: { tweaks?: RaidTypesTweaks }) {
 	const { cell = 2, active = "hover" } = tweaks ?? {};
 
 	return (
-		<div className={cn("my-6 w-full cursor-default rounded-xl", SURFACE_OUTER)}>
-			<div
-				className={cn(
-					"flex h-48 sm:h-60 items-stretch rounded-lg",
-					SURFACE_INNER,
-					"bg-gray-50",
-				)}
-			>
-				{RAID_KINDS.map(({ kind }, index) => (
-					<Fragment key={kind}>
-						{index > 0 && <span className="w-px shrink-0 bg-gray-500/10" />}
-						<RaidCell
-							kind={kind}
-							seed={index + 1}
-							cell={cell}
-							tweaks={tweaks}
-							active={active === "all" || active === kind || hovered === kind}
-							onHover={(over) =>
-								setHovered((current) =>
-									over ? kind : current === kind ? null : current,
-								)
-							}
-						/>
-					</Fragment>
-				))}
-			</div>
-		</div>
+		<Surface
+			className="my-6 w-full cursor-default"
+			inner={{ className: "flex h-48 sm:h-60 items-stretch bg-gray-50" }}
+		>
+			{RAID_KINDS.map(({ kind }, index) => (
+				<Fragment key={kind}>
+					{index > 0 && <span className="w-px shrink-0 bg-gray-500/10" />}
+					<RaidCell
+						kind={kind}
+						seed={index + 1}
+						cell={cell}
+						tweaks={tweaks}
+						active={active === "all" || active === kind || hovered === kind}
+						onHover={(over) =>
+							setHovered((current) =>
+								over ? kind : current === kind ? null : current,
+							)
+						}
+					/>
+				</Fragment>
+			))}
+		</Surface>
 	);
 }
 

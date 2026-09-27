@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import "slot-text/style.css";
 import { SlotText } from "slot-text/react";
 import { cn } from "../cn";
+import { FOCUS_RING } from "../focus";
 import { ICON_PRESS, ICON_SWAP, ICON_SWAP_IN, ICON_SWAP_OUT } from "../press";
 import { TooltipTrigger } from "../Tooltip";
 import { ChainLinkIcon } from "../icons/ChainLinkIcon";
@@ -58,8 +59,10 @@ const COUNT_CLASS =
 	"inline-block min-w-[1ch] text-[14px] font-[500] text-gray-500/75 tabular-nums";
 
 // #6A72821A ring + the theme's own shadow-skew, straight from the design.
-const SEGMENT =
-	"dot-matrix group relative overflow-clip flex items-center justify-center gap-1 h-6.5 w-fit bg-white ring-1 ring-gray-500/10 shadow-skew text-gray-500 hover:bg-gray-50 cursor-pointer";
+const SEGMENT = cn(
+	"dot-matrix group relative overflow-clip flex items-center justify-center gap-1 h-6.5 w-fit bg-white ring-1 ring-gray-500/10 shadow-skew text-gray-500 hover:bg-gray-50 cursor-pointer focus-visible:z-10",
+	FOCUS_RING,
+);
 
 export function SocialBar({
 	slug,

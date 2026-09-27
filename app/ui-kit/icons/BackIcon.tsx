@@ -12,14 +12,14 @@ export const BackIcon = ({ size = 16 }) => {
 			<path
 				d="M7.49 13C6.13 11.64 5.36 10.87 4 9.51C5.36 8.15 6.13 7.38 7.49 6.02"
 				stroke="currentColor"
-				strokeWidth="1.5"
+				strokeWidth="2"
 				strokeLinecap="round"
 				strokeLinejoin="round"
 			></path>
 			<path
 				d="M4 9.51H15.77C18.1 9.51 20 11.41 20 13.74C20 16.08 18.1 17.98 15.77 17.98H12.28"
 				stroke="currentColor"
-				strokeWidth="1.5"
+				strokeWidth="2"
 				strokeLinecap="round"
 				strokeLinejoin="round"
 			></path>

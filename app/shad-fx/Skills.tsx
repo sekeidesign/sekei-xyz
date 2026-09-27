@@ -1,6 +1,6 @@
 import { SKILL_LIST, SKILLS } from "./content";
 import { Code, Inline, P, Section, Table } from "./Prose";
-import { Snippet } from "./Snippet";
+import { CodeBlock } from "@ui-kit/code/CodeBlock";
 
 export function Skills() {
 	return (
@@ -9,7 +9,7 @@ export function Skills() {
 				Two skills, installed together, for an agent working in a project that
 				uses shad-fx.
 			</P>
-			<Snippet code={SKILLS} />
+			<CodeBlock code={SKILLS} />
 			<Table
 				head={["Skill", "Use it to", "Covers"]}
 				rows={SKILL_LIST.map((skill) => ({

@@ -10,9 +10,8 @@ import { FramedIcon } from "./FramedIcon";
 import {
 	COLUMN_INNER,
 	MEDIA_SIZE,
-	SURFACE_INNER,
-	SURFACE_OUTER,
 } from "./surface";
+import { Surface } from "../Surface";
 
 /**
  * The artwork slots a post card can fill: a full-width image, a square one, a
@@ -44,37 +43,34 @@ export function Media({
 	children?: ReactNode;
 }) {
 	return (
-		<div className={cn("self-stretch w-full rounded-xl my-2", SURFACE_OUTER)}>
-			<div
-				style={{ aspectRatio: aspect }}
+		<Surface
+			className="self-stretch w-full my-2"
+			inner={{
+				style: { aspectRatio: aspect },
 				// Named container: a drawn cover sizes itself off this box, which the
 				// sidebar leaves narrow at md as well as on a phone.
-				className={cn(
-					"@container/media relative w-full rounded-lg",
-					SURFACE_INNER,
-					className,
-				)}
-			>
-				{children}
-				{!children && src && (
-					<Image
-						src={src}
-						alt={alt}
-						fill
-						// The column caps at screen-md and the card spends 64px of it on
-						// padding, so a cover never needs more than what is left.
-						sizes={`(min-width: 768px) ${COLUMN_INNER}px, 100vw`}
-						priority={priority}
-						className="object-cover"
-					/>
-				)}
-				{badge && (
-					<div className="absolute top-[5px] right-[5px]">
-						<FramedIcon src={badge} alt={badgeAlt ?? ""} size={24} />
-					</div>
-				)}
-			</div>
-		</div>
+				className: cn("@container/media relative w-full", className),
+			}}
+		>
+			{children}
+			{!children && src && (
+				<Image
+					src={src}
+					alt={alt}
+					fill
+					// The column caps at screen-md and the card spends 64px of it on
+					// padding, so a cover never needs more than what is left.
+					sizes={`(min-width: 768px) ${COLUMN_INNER}px, 100vw`}
+					priority={priority}
+					className="object-cover"
+				/>
+			)}
+			{badge && (
+				<div className="absolute top-[5px] right-[5px]">
+					<FramedIcon src={badge} alt={badgeAlt ?? ""} size={24} />
+				</div>
+			)}
+		</Surface>
 	);
 }
 
@@ -99,29 +95,28 @@ export function SquareMedia({
 	children?: ReactNode;
 }) {
 	return (
-		<div
+		<Surface
 			style={{ width: MEDIA_SIZE, height: MEDIA_SIZE }}
-			className={cn("shrink-0 rounded-xl", SURFACE_OUTER)}
+			className="shrink-0"
+			inner={{ className: "relative size-full" }}
 		>
-			<div className={cn("relative size-full rounded-lg", SURFACE_INNER)}>
-				{children}
-				{!children && src && (
-					<Image
-						src={src}
-						alt={alt}
-						fill
-						sizes={`${MEDIA_INNER}px`}
-						priority={priority}
-						className="object-cover"
-					/>
-				)}
-				{badge && (
-					<div className="absolute top-[5px] right-[5px]">
-						<FramedIcon src={badge} alt={badgeAlt ?? ""} size={24} />
-					</div>
-				)}
-			</div>
-		</div>
+			{children}
+			{!children && src && (
+				<Image
+					src={src}
+					alt={alt}
+					fill
+					sizes={`${MEDIA_INNER}px`}
+					priority={priority}
+					className="object-cover"
+				/>
+			)}
+			{badge && (
+				<div className="absolute top-[5px] right-[5px]">
+					<FramedIcon src={badge} alt={badgeAlt ?? ""} size={24} />
+				</div>
+			)}
+		</Surface>
 	);
 }
 
@@ -141,45 +136,44 @@ export function PhoneMedia({
 	priority?: boolean;
 }) {
 	return (
-		<div
+		<Surface
 			style={{ width: MEDIA_SIZE, height: MEDIA_SIZE }}
-			className={cn("shrink-0 rounded-xl", SURFACE_OUTER)}
+			className="shrink-0"
+			inner={{ className: "relative size-full" }}
 		>
-			<div className={cn("relative size-full rounded-lg", SURFACE_INNER)}>
-				<div
-					style={{
-						width: PHONE.width,
-						height: PHONE.height,
-						top: PHONE.top,
-						boxShadow:
-							"0 8px 24px #99a1af1a, 0 4px 12px #99a1af1a, 0 2px 3px #99a1af1a",
-					}}
-					className="absolute left-1/2 -translate-x-1/2 overflow-clip rounded-xl outline outline-1 outline-gray-400/15 bg-white"
-				>
-					<Image
-						src={src}
-						alt={alt}
-						fill
-						sizes={`${PHONE.width}px`}
-						priority={priority}
-						className="object-cover"
-					/>
-				</div>
-
-				{/* A layer over the top, not a mask on the device: a mask applies to the
-				    element's whole rendering, box-shadow included. The cost is being
-				    colour-coupled to the surface behind, hence white. */}
-				<div
-					style={{
-						height: PHONE.fade,
-						bottom: 0,
-						backgroundImage:
-							"linear-gradient(to bottom, transparent, var(--color-white))",
-					}}
-					className="absolute inset-x-0"
+			<div
+				style={{
+					width: PHONE.width,
+					height: PHONE.height,
+					top: PHONE.top,
+					boxShadow:
+						"0 8px 24px #99a1af1a, 0 4px 12px #99a1af1a, 0 2px 3px #99a1af1a",
+				}}
+				className="absolute left-1/2 -translate-x-1/2 overflow-clip rounded-xl outline outline-1 outline-gray-400/15 bg-white"
+			>
+				<Image
+					src={src}
+					alt={alt}
+					fill
+					sizes={`${PHONE.width}px`}
+					priority={priority}
+					className="object-cover"
 				/>
 			</div>
-		</div>
+
+			{/* A layer over the top, not a mask on the device: a mask applies to the
+			    element's whole rendering, box-shadow included. The cost is being
+			    colour-coupled to the surface behind, hence white. */}
+			<div
+				style={{
+					height: PHONE.fade,
+					bottom: 0,
+					backgroundImage:
+						"linear-gradient(to bottom, transparent, var(--color-white))",
+				}}
+				className="absolute inset-x-0"
+			/>
+		</Surface>
 	);
 }
 

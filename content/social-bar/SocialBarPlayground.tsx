@@ -50,8 +50,8 @@ export function SocialBarPlayground() {
 
 			<ControlPanel className="w-full md:w-2/5 shrink-0 rounded-none ring-0 shadow-none border-t md:border-t-0 md:border-l border-gray-200">
 				<ControlSection label="Lattice" />
-				<Slider label="Spacing" value={gap} min={2} max={8} step={1} unit="px" onChange={setGap} />
-				<Slider label="Dot size" value={dot} min={0.5} max={1.5} step={0.25} unit="px" onChange={setDot} />
+				<Slider label="Spacing" value={gap} min={2} max={8} step={1} showSteps unit="px" onChange={setGap} />
+				<Slider label="Dot size" value={dot} min={0.5} max={1.5} step={0.25} showSteps unit="px" onChange={setDot} />
 				<Toggle label="Visibility" checked={lattice} onChange={setLattice} />
 
 				<ControlSection label="Wave" />
@@ -59,7 +59,7 @@ export function SocialBarPlayground() {
 				<Slider label="Delay" value={rippleDelay} min={0} max={600} step={20} unit="ms" onChange={setRippleDelay} />
 
 				<ControlSection label="Press" />
-				<Slider label="Depth" value={pressScale} min={0.5} max={1} step={0.05} unit="×" onChange={setPressScale} />
+				<Slider label="Depth" value={pressScale} min={0.5} max={1} step={0.05} showSteps unit="×" onChange={setPressScale} />
 				<Slider label="Spring back" value={pressReturn} min={60} max={600} step={20} unit="ms" onChange={setPressReturn} />
 			</ControlPanel>
 		</div>

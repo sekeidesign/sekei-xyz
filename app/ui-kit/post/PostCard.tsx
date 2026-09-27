@@ -1,10 +1,13 @@
 "use client";
 
+import { ArrowUpRightIcon } from "@heroicons/react/16/solid";
+import Link from "next/link";
 import { type PointerEvent, type ReactNode, useState } from "react";
 import { BOOKS } from "../book-shelf/books";
+import { Button } from "../Button";
 import { CODE_COVERS } from "../covers";
 import { LivePreview } from "../LivePreview";
-import { OutboundLink } from "../OutboundLink";
+import { ICON_PRESS } from "../press";
 import { SocialBar } from "../social/SocialBar";
 import { Post } from "./Post";
 import { PostHeader } from "./PostHeader";
@@ -245,7 +248,16 @@ function PostCardFooter({
 					}
 				/>
 				{entry.kind === "launch" && entry.link && (
-					<OutboundLink href={entry.link} label={entry.linkLabel} />
+					<Button
+						variant="primary"
+						render={
+							<Link href={entry.link} target="_blank" rel="noopener noreferrer" />
+						}
+						className="group pl-2.5"
+					>
+						{entry.linkLabel ?? "Download"}
+						<ArrowUpRightIcon className={`size-3.5 ${ICON_PRESS}`} />
+					</Button>
 				)}
 			</div>
 			{entry.kind === "experiment" && entry.sourceUrl && (

@@ -27,7 +27,7 @@ import {
 	SPECS,
 } from "./playground-config";
 import { SlantHandle } from "./SlantHandle";
-import { Snippet } from "./Snippet";
+import { CodeBlock } from "@ui-kit/code/CodeBlock";
 
 const SURFACES = [
 	{ value: "light", label: "Light" },
@@ -46,6 +46,9 @@ const COLOR_NAMES: Record<Kind, string[]> = {
 
 // What a sprung anchor or handle trails its knob on: a little give, no wobble.
 const HANDLE_SPRING = { stiffness: 180, damping: 20 };
+
+/** Past this many steps a slider's ticks turn into a comb, so it goes without. */
+const MAX_TICKS = 12;
 
 const clamp01 = (value: number) => Math.min(1, Math.max(0, value));
 
@@ -353,6 +356,7 @@ export function Playground() {
 						min={1}
 						max={8}
 						step={1}
+						showSteps
 						unit="px"
 						onChange={setCell}
 					/>
@@ -362,6 +366,7 @@ export function Playground() {
 						min={1}
 						max={12}
 						step={1}
+						showSteps
 						onChange={setSeed}
 					/>
 					<Select
@@ -386,6 +391,7 @@ export function Playground() {
 							min={number.min}
 							max={number.max}
 							step={number.step}
+							showSteps={(number.max - number.min) / number.step <= MAX_TICKS}
 							onChange={(value) => setValue(number.key, value)}
 						/>
 					))}
@@ -405,7 +411,7 @@ export function Playground() {
 				</ControlPanel>
 			</div>
 
-			<Snippet code={code} lang="tsx" framed={false} className="mt-1" />
+			<CodeBlock code={code} lang="tsx" framed={false} className="mt-1" />
 		</div>
 	);
 }

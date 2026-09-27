@@ -13,7 +13,7 @@ export default function SiteLayout({
 		<FilterProvider>
 			<a
 				href="#main"
-				className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-[500] focus:text-gray-900 focus:ring focus:ring-gray-500/20 focus:shadow-skew"
+				className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-[500] focus:text-gray-900 focus:outline-2 focus:outline-offset-2 focus:outline-accent focus:shadow-skew"
 			>
 				Skip to content
 			</a>

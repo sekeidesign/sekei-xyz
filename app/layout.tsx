@@ -5,6 +5,7 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { TooltipProvider, TooltipSurface } from "./ui-kit/Tooltip";
 import { MotionProvider } from "./ui-kit/motion/MotionProvider";
+import { InputModality } from "./ui-kit/InputModality";
 import { NavigationTracker } from "./ui-kit/NavigationTracker";
 import { siteUrl } from "@/lib/site";
 
@@ -79,6 +80,7 @@ export default function RootLayout({
 				className={`${geistSans.variable} ${geistMono.variable} ${geistPixel.variable} font-[family-name:var(--font-geist-sans)] text-[15px] antialiased`}
 			>
 				<NavigationTracker />
+				<InputModality />
 				<MotionProvider>
 					<TooltipProvider delay={200} closeDelay={0} timeout={400}>
 						<TooltipSurface />

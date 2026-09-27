@@ -17,14 +17,14 @@ export const ArrowIcon = ({ size = 16, rotate = 0 }) => {
 				x2="12"
 				y2="4.25"
 				stroke="currentColor"
-				strokeWidth="1.5"
+				strokeWidth="2"
 				strokeLinecap="round"
 				strokeLinejoin="round"
 			/>
 			<polyline
 				points="5.975,10.3 12,4.25 18.025,10.3"
 				stroke="currentColor"
-				strokeWidth="1.5"
+				strokeWidth="2"
 				strokeLinecap="round"
 				strokeLinejoin="round"
 			/>

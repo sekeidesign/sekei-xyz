@@ -27,7 +27,7 @@ export function Swatches({
 						className={cn(
 							"relative size-6 overflow-hidden rounded-md bg-white ring ring-gray-500/15 shadow-skew",
 							// The input is invisible, so its wrapper shows the ring.
-							"has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-gray-900/40",
+							"has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent",
 						)}
 						style={{ backgroundColor: value }}
 					>

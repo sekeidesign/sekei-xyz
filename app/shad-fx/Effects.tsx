@@ -1,7 +1,7 @@
 import { EFFECTS, type Effect, SKILLS } from "./content";
 import { EffectCard } from "./EffectCard";
 import { A, Code, Inline, P, Section, Table } from "./Prose";
-import { Snippet } from "./Snippet";
+import { CodeBlock } from "@ui-kit/code/CodeBlock";
 
 const HEAD = ["Option", "Type", "Default", "Description"];
 const WIDTHS = ["6rem", "11rem", "10rem", "auto"];
@@ -37,7 +37,7 @@ export function Effects() {
 				<Code>FxEffect</Code> contract, the <Code>Surface</Code> an effect
 				paints into, reduced motion and parking.
 			</P>
-			<Snippet code={SKILLS} />
+			<CodeBlock code={SKILLS} />
 			<P>
 				Every effect is a factory returning an <Code>FxEffect</Code>, and
 				every option is optional. The same effect runs on any renderer. <Code>RgbInput</Code> is a hex string or an{" "}
