@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, m } from "motion/react";
+import { m } from "motion/react";
 import { useId, useState } from "react";
 import { Surface } from "../Surface";
 import { SliderTrack } from "../controls/Slider";
@@ -116,11 +116,10 @@ const BARS_TOP = (16 - BAR_HEIGHT) / 2;
 const WARNING =
 	"M9.4 3c1.16-2 4.04-2 5.2 0l7.36 12.75c1.15 2-0.29 4.5-2.6 4.5H4.64c-2.31 0-3.75-2.5-2.6-4.5L9.4 3ZM12 8.25a0.75 0.75 0 0 1 0.75 0.75v3.75a0.75 0.75 0 0 1-1.5 0V9a0.75 0.75 0 0 1 0.75-0.75Zm0 8.25a0.75 0.75 0 1 0 0-1.5 0.75 0.75 0 0 0 0 1.5Z";
 
-const GLYPH = {
-	initial: { scale: 0, opacity: 0 },
-	animate: { scale: 1, opacity: 1 },
-	exit: { scale: 0.3, opacity: 0 },
-};
+/** The bars and the certain glyph trade places through the same two states. */
+const SHOWN = { scale: 1, opacity: 1 };
+const HIDDEN = { scale: 0.5, opacity: 0 };
+const SWAP = { type: "spring", bounce: 0, duration: 0.2 } as const;
 
 /** Transforms on SVG children pivot on their own box, not the canvas's corner. */
 const OWN_BOX = { transformBox: "fill-box", originX: 0.5 } as const;
@@ -149,8 +148,9 @@ function LikelihoodBars({ level }: { level: number }) {
 		>
 			<m.g
 				initial={false}
-				animate={{ opacity: certain ? 0 : 1 }}
-				transition={{ duration: 0.15, delay: certain ? 0.1 : 0 }}
+				animate={certain ? HIDDEN : SHOWN}
+				transition={SWAP}
+				style={{ ...OWN_BOX, originY: 0.5 }}
 			>
 				{BARS.map((bar) => {
 					const x = BARS_LEFT + (bar - 1) * (BAR_WIDTH + BAR_GAP);
@@ -178,7 +178,7 @@ function LikelihoodBars({ level }: { level: number }) {
 							<g clipPath={`url(#${clipId}-${bar})`}>
 								<m.g
 									initial={false}
-									animate={{ y: !certain && level >= bar ? 0 : height }}
+									animate={{ y: level >= bar ? 0 : height }}
 									transition={{
 										type: "spring",
 										bounce: 0,
@@ -202,27 +202,20 @@ function LikelihoodBars({ level }: { level: number }) {
 					);
 				})}
 			</m.g>
-			<AnimatePresence initial={false}>
-				{certain && (
-					<m.g
-						key="certain"
-						variants={GLYPH}
-						initial="initial"
-						animate="animate"
-						exit="exit"
-						transition={{ duration: 0.25 }}
-						style={{ ...OWN_BOX, originY: 0.5 }}
-					>
-						<path
-							d={WARNING}
-							fill={tone(4)}
-							fillRule="evenodd"
-							clipRule="evenodd"
-							transform="translate(0 0.5) scale(0.6667)"
-						/>
-					</m.g>
-				)}
-			</AnimatePresence>
+			<m.g
+				initial={false}
+				animate={certain ? SHOWN : HIDDEN}
+				transition={SWAP}
+				style={{ ...OWN_BOX, originY: 0.5 }}
+			>
+				<path
+					d={WARNING}
+					fill={tone(4)}
+					fillRule="evenodd"
+					clipRule="evenodd"
+					transform="translate(0 0.5) scale(0.6667)"
+				/>
+			</m.g>
 		</m.svg>
 	);
 }
