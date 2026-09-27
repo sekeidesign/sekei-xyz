@@ -1,6 +1,6 @@
 "use client";
 
-import { m, useInView } from "motion/react";
+import { m } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { cn } from "../cn";
@@ -87,6 +87,46 @@ function useLayout(source: string, spacing: LayoutSpacing) {
 	return { ref, layout, error };
 }
 
+// motion's useInView measures area, and a diagram wider than its Pan never
+// has half its area on screen, so only the vertical extent counts here.
+function useInViewY(ref: React.RefObject<Element | null>, amount: number) {
+	const [inView, setInView] = useState(false);
+
+	useEffect(() => {
+		const element = ref.current;
+		if (!element || inView) return;
+
+		const check = () => {
+			const { top, bottom, height } = element.getBoundingClientRect();
+			const visible = Math.min(bottom, window.innerHeight) - Math.max(top, 0);
+			if (height > 0 && visible / height >= amount) setInView(true);
+		};
+
+		const stop = () => {
+			window.removeEventListener("scroll", check);
+			window.removeEventListener("resize", check);
+		};
+
+		const observer = new IntersectionObserver(([entry]) => {
+			if (entry?.isIntersecting) {
+				window.addEventListener("scroll", check, { passive: true });
+				window.addEventListener("resize", check);
+				check();
+			} else {
+				stop();
+			}
+		});
+
+		observer.observe(element);
+		return () => {
+			observer.disconnect();
+			stop();
+		};
+	}, [ref, amount, inView]);
+
+	return inView;
+}
+
 export function Flow({
 	source,
 	animate = true,
@@ -102,7 +142,7 @@ export function Flow({
 	/** Mermaid-style lines: `a[Label] --- b`, `-->` for an arrow, `a:T --> T:b` to pick sides. */
 	source: string;
 	animate?: boolean;
-	/** How much of the diagram has to be on screen before it draws in, from 0 to 1. */
+	/** How much of the diagram's height has to be on screen before it draws in, from 0 to 1. */
 	threshold?: number;
 	/** How fast the lines draw in, in px per second. */
 	speed?: number;
@@ -116,7 +156,7 @@ export function Flow({
 	const { ref, layout, error } = useLayout(source, { padding, rows, columns, clearance });
 	const reduced = usePrefersReducedMotion();
 	const still = !animate || reduced;
-	const inView = useInView(ref, { once: true, amount: threshold });
+	const inView = useInViewY(ref, threshold);
 	const state = still || inView ? "shown" : "hidden";
 	const time = useMemo(
 		() => (layout ? arrivals(layout, speed) : new Map<string, number>()),
