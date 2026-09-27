@@ -16,7 +16,7 @@ const tone = (fraction: number) =>
 	fraction === 0 ? "#d1d5dc" : fraction === 1 ? "#2b7fff" : "#ffb900";
 
 export function ProgressDemo() {
-	const [fraction, setFraction] = useState(0.3);
+	const [fraction, setFraction] = useState(0);
 
 	return (
 		<Surface
@@ -43,7 +43,7 @@ export function ProgressDemo() {
 			</m.div>
 
 			<div className="flex w-full max-w-80 flex-col gap-3">
-				<label className="relative flex h-6 items-center">
+				<label className="group relative flex h-6 items-center">
 					<span className="absolute inset-x-0 h-1.5 rounded-full bg-gray-500/15" />
 					<m.span
 						style={{ width: `${fraction * 100}%` }}
@@ -53,7 +53,7 @@ export function ProgressDemo() {
 					/>
 					<span
 						style={{ left: `${fraction * 100}%` }}
-						className="pointer-events-none absolute size-5 -translate-x-1/2 rounded-full bg-white ring-1 ring-gray-500/20 shadow-skew"
+						className="pointer-events-none absolute size-5 -translate-x-1/2 rounded-full bg-white ring-1 ring-gray-500/20 shadow-skew group-has-[:focus-visible]:outline-2 group-has-[:focus-visible]:outline-offset-2 group-has-[:focus-visible]:outline-accent"
 					/>
 					<input
 						type="range"

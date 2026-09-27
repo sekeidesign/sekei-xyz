@@ -61,7 +61,9 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
 				<h2 {...props}>{children}</h2>
 			) : (
 				<>
-					<SparkleDivider className="mt-10 mb-10" />
+					{/* A `.post-lead` block already closes the intro, so the heading
+					    straight after it goes without the ornament. */}
+					<SparkleDivider className="mt-10 mb-10 [.post-lead+&]:hidden" />
 					<h2
 						className="text-xl font-[550] text-gray-900 leading-snug mb-3"
 						{...props}
