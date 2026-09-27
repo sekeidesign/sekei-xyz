@@ -122,13 +122,7 @@ interface ExperimentTagsProps {
 
 const ExperimentTags = ({ children }: ExperimentTagsProps) => {
 	return (
-		<ul
-			className="flex items-center gap-2 w-full overflow-x-auto -ml-3 pl-3"
-			style={{
-				maskImage:
-					"linear-gradient(to right, transparent 0px, black 12px, black calc(100% - 12px), transparent 100%)",
-			}}
-		>
+		<ul className="flex flex-wrap items-center gap-2 w-full">
 			{children}
 		</ul>
 	);

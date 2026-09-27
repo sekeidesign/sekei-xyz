@@ -112,14 +112,16 @@ export function DitherStudio() {
 					<Slider label="Width" value={ringWidth} min={0.6} max={5} step={0.2} onChange={setRingWidth} />
 				</ControlPanel>
 				<ControlPanel title="Decisions">
-					<ControlSection label="fluid" />
-					<Slider label="Level" value={level} min={0.05} max={0.8} step={0.05} onChange={setLevel} />
-					<Slider label="Slosh" value={slosh} min={0} max={0.4} step={0.01} onChange={setSlosh} />
-					<Slider label="Tempo" value={tempo} min={0.05} max={1.5} step={0.05} unit="hz" onChange={setTempo} />
-					<Slider label="Bubbles" value={bubbles} min={0} max={20} step={1} onChange={setBubbles} />
-					<ControlSection label="beam" />
-					<Slider label="Spread" value={spread} min={0.1} max={1} step={0.05} onChange={setSpread} />
-					<Slider label="Motes" value={motes} min={0} max={40} step={1} onChange={setMotes} />
+					<ControlSection label="fluid">
+						<Slider label="Level" value={level} min={0.05} max={0.8} step={0.05} onChange={setLevel} />
+						<Slider label="Slosh" value={slosh} min={0} max={0.4} step={0.01} onChange={setSlosh} />
+						<Slider label="Tempo" value={tempo} min={0.05} max={1.5} step={0.05} unit="hz" onChange={setTempo} />
+						<Slider label="Bubbles" value={bubbles} min={0} max={20} step={1} onChange={setBubbles} />
+					</ControlSection>
+					<ControlSection label="beam">
+						<Slider label="Spread" value={spread} min={0.1} max={1} step={0.05} onChange={setSpread} />
+						<Slider label="Motes" value={motes} min={0} max={40} step={1} onChange={setMotes} />
+					</ControlSection>
 				</ControlPanel>
 				<ControlPanel title="Values">
 					<pre className="overflow-x-auto px-3 py-2 font-mono text-[12px] leading-[1.5] text-gray-600">

@@ -16,15 +16,17 @@ export function Toggle({
 	hint?: string;
 	onChange: (checked: boolean) => void;
 }) {
-	const labelId = useId();
+	const switchId = useId();
+	const hintId = useId();
 
 	return (
-		<ControlRow label={label} labelId={labelId} value={checked ? "on" : "off"}>
+		<ControlRow label={label} htmlFor={switchId} value={checked ? "on" : "off"}>
 			<button
+				id={switchId}
 				type="button"
 				role="switch"
 				aria-checked={checked}
-				aria-labelledby={labelId}
+				aria-describedby={hint ? hintId : undefined}
 				onClick={() => onChange(!checked)}
 				className={cn(
 					"relative h-5 w-9 shrink-0 rounded-full ring-1 ring-gray-500/10 shadow-skew cursor-pointer",
@@ -40,7 +42,7 @@ export function Toggle({
 				/>
 			</button>
 			{hint && (
-				<span className="ml-3 text-[12px] leading-[1.33] font-[420] text-gray-500">
+				<span id={hintId} className="ml-3 text-[12px] leading-[1.33] font-[420] text-gray-500">
 					{hint}
 				</span>
 			)}

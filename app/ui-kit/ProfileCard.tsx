@@ -222,7 +222,7 @@ function Portrait({
 			/>
 			<Image
 				src="/avatar-cutout.webp"
-				alt="PG Gonni"
+				alt=""
 				width={332}
 				height={365}
 				className="relative z-30 size-full object-cover -scale-x-100"

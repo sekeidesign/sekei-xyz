@@ -65,6 +65,7 @@ export const TextLink = ({
 					/>
 				)}
 				{children}
+				{target === "_blank" && <span className="sr-only"> (opens in new tab)</span>}
 			</Link>
 		</OpenGraphPreview>
 	);

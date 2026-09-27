@@ -17,15 +17,15 @@ export function TextField({
 	placeholder?: string;
 	onChange: (value: string) => void;
 }) {
-	const labelId = useId();
+	const fieldId = useId();
 
 	return (
-		<ControlRow label={label} labelId={labelId}>
+		<ControlRow label={label} htmlFor={fieldId}>
 			<input
 				type="text"
 				value={value}
 				placeholder={placeholder}
-				aria-labelledby={labelId}
+				id={fieldId}
 				onChange={(event) => onChange(event.target.value)}
 				className={FIELD}
 			/>
@@ -48,16 +48,16 @@ export function TextAreaField({
 	onChange: (value: string) => void;
 	ref?: React.Ref<HTMLTextAreaElement>;
 }) {
-	const labelId = useId();
+	const fieldId = useId();
 
 	return (
-		<ControlRow label={label} labelId={labelId}>
+		<ControlRow label={label} htmlFor={fieldId}>
 			<textarea
 				ref={ref}
 				value={value}
 				rows={rows}
 				placeholder={placeholder}
-				aria-labelledby={labelId}
+				id={fieldId}
 				onChange={(event) => onChange(event.target.value)}
 				className={`${FIELD} resize-y leading-[1.6]`}
 			/>

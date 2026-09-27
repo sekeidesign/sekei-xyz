@@ -202,149 +202,152 @@ export function QuoteStudio({ books }: { books: BookOption[] }) {
 			</div>
 
 			<ControlPanel title="Quote card">
-				<ControlSection label="Content" />
-				<Select
-					label="Book"
-					value={book.slug}
-					options={books.map((entry) => ({
-						value: entry.slug,
-						label: entry.title,
-					}))}
-					onChange={selectBook}
-				/>
-				<TextAreaField
-					label="Quote"
-					value={quote}
-					rows={5}
-					placeholder="Paste the passage. Wrap a phrase in == to run the pen over it."
-					onChange={setQuote}
-					ref={quoteRef}
-				/>
-				<ControlRow label="Pen">
-					<button
-						type="button"
-						onClick={markSelection}
-						className="rounded-md bg-white px-2.5 py-1 text-[13px] leading-[1.43] font-[450] text-gray-900 ring ring-gray-500/15 shadow-skew cursor-pointer hover:bg-gray-50"
-					>
-						Highlight selection
-					</button>
-				</ControlRow>
-				<TextField
-					label="Title"
-					value={book.title}
-					onChange={(title) => dispatchBook({ type: "edited", patch: { title } })}
-				/>
-				<TextField
-					label="Author"
-					value={book.author}
-					onChange={(author) => dispatchBook({ type: "edited", patch: { author } })}
-				/>
-				<Slider
-					label="Rating"
-					value={book.rating}
-					min={0}
-					max={5}
-					step={1}
-					showSteps
-					onChange={(rating) => dispatchBook({ type: "edited", patch: { rating } })}
-				/>
-				<TextField
-					label="Cover"
-					value={book.cover}
-					placeholder="/covers/x.png or an absolute URL"
-					onChange={(cover) => dispatchBook({ type: "edited", patch: { cover } })}
-				/>
-
-				<ControlSection label="Look" />
-				<Slider
-					label="Quote size"
-					value={quoteSize}
-					min={14}
-					max={44}
-					step={1}
-					unit="px"
-					onChange={setQuoteSize}
-				/>
-				<Select
-					label="Palette"
-					value={palette}
-					options={PALETTES.map((name) => ({ value: name, label: name }))}
-					onChange={(value) => setPalette(value as PaletteName)}
-				/>
-				<Select
-					label="Ink"
-					value={swatch}
-					options={SWATCHES.map((name) => ({ value: name, label: name }))}
-					onChange={setSwatch}
-				/>
-				<Slider
-					label="Opacity"
-					value={opacity}
-					min={0.2}
-					max={1}
-					step={0.05}
-					onChange={setOpacity}
-				/>
-				<Select
-					label="Surface"
-					value={surface}
-					options={[
-						{ value: "paper", label: "Paper" },
-						{ value: "white", label: "White" },
-					]}
-					onChange={(value) => setSurface(value as CardSurface)}
-				/>
-				<Select
-					label="Shape"
-					value={aspect}
-					options={ASPECTS}
-					onChange={setAspect}
-				/>
-
-				<ControlSection label="Export" />
-				<Select
-					label="Scale"
-					value={String(scale)}
-					options={[1, 2, 3].map((value) => ({
-						value: String(value),
-						label: `${value}× — ${CARD_WIDTH * value} × ${cardHeight * value}`,
-					}))}
-					onChange={(value) => setScale(Number(value))}
-				/>
-				<Select
-					label="Format"
-					value={format}
-					options={[
-						{ value: "webp", label: "WebP" },
-						{ value: "png", label: "PNG" },
-					]}
-					onChange={(value) => setFormat(value as CardFormat)}
-				/>
-				<ControlRow label="Save" value={status ? "" : undefined}>
-					<div className="flex items-center gap-2">
+				<ControlSection label="Content">
+					<Select
+						label="Book"
+						value={book.slug}
+						options={books.map((entry) => ({
+							value: entry.slug,
+							label: entry.title,
+						}))}
+						onChange={selectBook}
+					/>
+					<TextAreaField
+						label="Quote"
+						value={quote}
+						rows={5}
+						placeholder="Paste the passage. Wrap a phrase in == to run the pen over it."
+						onChange={setQuote}
+						ref={quoteRef}
+					/>
+					<ControlRow label="Pen">
 						<button
 							type="button"
-							disabled={busy}
-							onClick={() => void run("save")}
-							className="rounded-md bg-gray-900 px-3 py-1 text-[13px] leading-[1.43] font-[450] text-white shadow-skew cursor-pointer hover:bg-gray-800 disabled:opacity-50"
+							onClick={markSelection}
+							className="rounded-md bg-white px-2.5 py-1 text-[13px] leading-[1.43] font-[450] text-gray-900 ring ring-gray-500/15 shadow-skew cursor-pointer hover:bg-gray-50"
 						>
-							{busy ? "Rendering…" : `Save ${format.toUpperCase()}`}
+							Highlight selection
 						</button>
-						<button
-							type="button"
-							disabled={busy}
-							onClick={() => void run("copy")}
-							className="rounded-md bg-white px-3 py-1 text-[13px] leading-[1.43] font-[450] text-gray-900 ring ring-gray-500/15 shadow-skew cursor-pointer hover:bg-gray-50 disabled:opacity-50"
-						>
-							Copy
-						</button>
-						{status && (
-							<span className="text-[12px] leading-[1.33] font-[420] text-gray-500">
-								{status}
-							</span>
-						)}
-					</div>
-				</ControlRow>
+					</ControlRow>
+					<TextField
+						label="Title"
+						value={book.title}
+						onChange={(title) => dispatchBook({ type: "edited", patch: { title } })}
+					/>
+					<TextField
+						label="Author"
+						value={book.author}
+						onChange={(author) => dispatchBook({ type: "edited", patch: { author } })}
+					/>
+					<Slider
+						label="Rating"
+						value={book.rating}
+						min={0}
+						max={5}
+						step={1}
+						showSteps
+						onChange={(rating) => dispatchBook({ type: "edited", patch: { rating } })}
+					/>
+					<TextField
+						label="Cover"
+						value={book.cover}
+						placeholder="/covers/x.png or an absolute URL"
+						onChange={(cover) => dispatchBook({ type: "edited", patch: { cover } })}
+					/>
+				</ControlSection>
+
+				<ControlSection label="Look">
+					<Slider
+						label="Quote size"
+						value={quoteSize}
+						min={14}
+						max={44}
+						step={1}
+						unit="px"
+						onChange={setQuoteSize}
+					/>
+					<Select
+						label="Palette"
+						value={palette}
+						options={PALETTES.map((name) => ({ value: name, label: name }))}
+						onChange={(value) => setPalette(value as PaletteName)}
+					/>
+					<Select
+						label="Ink"
+						value={swatch}
+						options={SWATCHES.map((name) => ({ value: name, label: name }))}
+						onChange={setSwatch}
+					/>
+					<Slider
+						label="Opacity"
+						value={opacity}
+						min={0.2}
+						max={1}
+						step={0.05}
+						onChange={setOpacity}
+					/>
+					<Select
+						label="Surface"
+						value={surface}
+						options={[
+							{ value: "paper", label: "Paper" },
+							{ value: "white", label: "White" },
+						]}
+						onChange={(value) => setSurface(value as CardSurface)}
+					/>
+					<Select
+						label="Shape"
+						value={aspect}
+						options={ASPECTS}
+						onChange={setAspect}
+					/>
+				</ControlSection>
+
+				<ControlSection label="Export">
+					<Select
+						label="Scale"
+						value={String(scale)}
+						options={[1, 2, 3].map((value) => ({
+							value: String(value),
+							label: `${value}× — ${CARD_WIDTH * value} × ${cardHeight * value}`,
+						}))}
+						onChange={(value) => setScale(Number(value))}
+					/>
+					<Select
+						label="Format"
+						value={format}
+						options={[
+							{ value: "webp", label: "WebP" },
+							{ value: "png", label: "PNG" },
+						]}
+						onChange={(value) => setFormat(value as CardFormat)}
+					/>
+					<ControlRow label="Save" value={status ? "" : undefined}>
+						<div className="flex items-center gap-2">
+							<button
+								type="button"
+								disabled={busy}
+								onClick={() => void run("save")}
+								className="rounded-md bg-gray-900 px-3 py-1 text-[13px] leading-[1.43] font-[450] text-white shadow-skew cursor-pointer hover:bg-gray-800 disabled:opacity-50"
+							>
+								{busy ? "Rendering…" : `Save ${format.toUpperCase()}`}
+							</button>
+							<button
+								type="button"
+								disabled={busy}
+								onClick={() => void run("copy")}
+								className="rounded-md bg-white px-3 py-1 text-[13px] leading-[1.43] font-[450] text-gray-900 ring ring-gray-500/15 shadow-skew cursor-pointer hover:bg-gray-50 disabled:opacity-50"
+							>
+								Copy
+							</button>
+							{status && (
+								<span className="text-[12px] leading-[1.33] font-[420] text-gray-500">
+									{status}
+								</span>
+							)}
+						</div>
+					</ControlRow>
+				</ControlSection>
 			</ControlPanel>
 		</div>
 	);
