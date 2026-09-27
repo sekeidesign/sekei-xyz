@@ -55,10 +55,11 @@ export function FlowLifecycle() {
 export function FlowPlayground() {
 	const [source, setSource] = useState(LIFECYCLE);
 	const [padding, setPadding] = useState(6);
-	const [rows, setRows] = useState(30);
-	const [columns, setColumns] = useState(40);
+	const [rows, setRows] = useState(24);
+	const [columns, setColumns] = useState(32);
 	const [clearance, setClearance] = useState(16);
-	const [speed, setSpeed] = useState(500);
+	const [speed, setSpeed] = useState(600);
+	const [threshold, setThreshold] = useState(50);
 	const [run, setRun] = useState(0);
 
 	return (
@@ -73,6 +74,7 @@ export function FlowPlayground() {
 						columns={columns}
 						clearance={clearance}
 						speed={speed}
+						threshold={threshold / 100}
 						className="p-12"
 					/>
 				</Pan>
@@ -104,6 +106,7 @@ export function FlowPlayground() {
 				</ControlSection>
 				<ControlSection label="Motion">
 					<Slider label="Speed" value={speed} min={100} max={2000} step={50} unit="px/s" onChange={setSpeed} />
+					<Slider label="Threshold" value={threshold} min={0} max={100} step={5} unit="%" onChange={setThreshold} />
 					<div className="px-2 py-2">
 						<Button onClick={() => setRun(run + 1)}>
 							<ResetIcon />

@@ -1,6 +1,6 @@
 "use client";
 
-import { m } from "motion/react";
+import { m, useInView } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { cn } from "../cn";
@@ -12,6 +12,13 @@ const STROKE = 3;
 const RADIUS = 10;
 const ARROW = { length: 7, width: 8 };
 const APPEAR = { type: "spring", duration: 0.5, bounce: 0 } as const;
+
+const LINE = { hidden: { pathLength: 0, opacity: 0 }, shown: { pathLength: 1, opacity: 1 } };
+const HEAD = { hidden: { opacity: 0 }, shown: { opacity: 1 } };
+const LABEL = {
+	hidden: { opacity: 0, x: -6, filter: "blur(2px)" },
+	shown: { opacity: 1, x: 0, filter: "blur(0px)" },
+};
 const INSET = STROKE + ARROW.width;
 
 /** When the drawing reaches each node, travelling at `speed` along the edges. */
@@ -83,10 +90,11 @@ function useLayout(source: string, spacing: LayoutSpacing) {
 export function Flow({
 	source,
 	animate = true,
-	speed = 500,
+	threshold = 0.5,
+	speed = 600,
 	padding = 6,
-	rows = 30,
-	columns = 40,
+	rows = 24,
+	columns = 32,
 	clearance = 16,
 	className,
 	"aria-label": label,
@@ -94,6 +102,8 @@ export function Flow({
 	/** Mermaid-style lines: `a[Label] --- b`, `-->` for an arrow, `a:T --> T:b` to pick sides. */
 	source: string;
 	animate?: boolean;
+	/** How much of the diagram has to be on screen before it draws in, from 0 to 1. */
+	threshold?: number;
 	/** How fast the lines draw in, in px per second. */
 	speed?: number;
 	padding?: number;
@@ -106,6 +116,8 @@ export function Flow({
 	const { ref, layout, error } = useLayout(source, { padding, rows, columns, clearance });
 	const reduced = usePrefersReducedMotion();
 	const still = !animate || reduced;
+	const inView = useInView(ref, { once: true, amount: threshold });
+	const state = still || inView ? "shown" : "hidden";
 	const time = useMemo(
 		() => (layout ? arrivals(layout, speed) : new Map<string, number>()),
 		[layout, speed],
@@ -131,7 +143,7 @@ export function Flow({
 					strokeWidth={STROKE}
 					strokeLinecap="round"
 					strokeLinejoin="round"
-					className="text-gray-300"
+					className="text-gray-400"
 				>
 					{layout?.edges.map((edge, index) => {
 						const points = edge.arrow ? trimEnd(edge.points, ARROW.length - 1) : edge.points;
@@ -141,8 +153,8 @@ export function Flow({
 							<g key={index}>
 								<m.path
 									d={roundedPath(points, RADIUS)}
-									initial={still ? false : { pathLength: 0, opacity: 0 }}
-									animate={{ pathLength: 1, opacity: 1 }}
+									initial={still ? false : LINE.hidden}
+									animate={LINE[state]}
 									transition={{
 										pathLength: { delay, duration, ease: "linear" },
 										opacity: { delay, duration: 0 },
@@ -152,8 +164,8 @@ export function Flow({
 									<m.path
 										d={arrowHead(edge.points, ARROW.length, ARROW.width)}
 										fill="currentColor"
-										initial={still ? false : { opacity: 0 }}
-										animate={{ opacity: 1 }}
+										initial={still ? false : HEAD.hidden}
+										animate={HEAD[state]}
 										transition={{ ...APPEAR, delay: delay + duration }}
 									/>
 								)}
@@ -164,8 +176,8 @@ export function Flow({
 				{layout?.nodes.map((node) => (
 					<m.g
 						key={node.id}
-						initial={still ? false : { opacity: 0, x: -6, filter: "blur(2px)" }}
-						animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+						initial={still ? false : LABEL.hidden}
+						animate={LABEL[state]}
 						transition={{ ...APPEAR, delay: time.get(node.id) ?? 0 }}
 					>
 						<text
