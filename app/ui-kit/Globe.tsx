@@ -19,6 +19,13 @@ const MARKER_COLOR: [number, number, number] = [0.31, 0.616, 1];
 // front-facing point.
 const CAMERA_OFFSET = { lat: -8, long: 40 };
 
+/**
+ * Where the sphere lands relative to the Globe's box: its centre sits
+ * `offset` px in from the bottom-right corner, and it's `diameter` times the
+ * box's longer side across.
+ */
+export const SPHERE = { offset: { x: 64, y: 40 }, diameter: 1.2 };
+
 function locationToAngles(lat: number, long: number): [number, number] {
 	return [
 		Math.PI - ((long * Math.PI) / 180 - Math.PI / 2),
@@ -153,8 +160,8 @@ export const Globe = ({ location = MONTREAL, className }: GlobeProps) => {
 		<div ref={wrapperRef} className={className}>
 			<canvas
 				ref={canvasRef}
-				className="absolute -top-10 -left-16"
-				style={{ width, height }}
+				className="absolute"
+				style={{ width, height, top: -SPHERE.offset.y, left: -SPHERE.offset.x }}
 			/>
 		</div>
 	);
