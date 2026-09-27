@@ -3,10 +3,6 @@
  * card, its media and its actions can't drift apart visually.
  */
 
-// The design's white-chip treatment: a 1px #6A72821A ring plus the theme's own
-// shadow-skew. Shared by the media badge, the work icon and the code link.
-export const CHIP = "bg-white ring-1 ring-gray-500/10 shadow-skew";
-
 export const MEDIA_SIZE = 179;
 
 /** The nested-bezel surface from Problems: a gray-100 ringed frame holding a white ringed card. */

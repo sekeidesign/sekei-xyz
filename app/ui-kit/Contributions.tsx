@@ -1,6 +1,6 @@
 import { cn } from "./cn";
 import { PullRequestIcon } from "./icons/PullRequestIcon";
-import { SURFACE_INNER, SURFACE_OUTER } from "./post/surface";
+import { Surface } from "./Surface";
 
 const COUNT = new Intl.NumberFormat("en-US");
 
@@ -49,33 +49,31 @@ export function Contributions({
 	children?: React.ReactNode;
 }) {
 	return (
-		<div className={cn("my-6 w-full rounded-xl", SURFACE_OUTER)}>
-			<div className={cn("flex flex-col rounded-lg", SURFACE_INNER)}>
-				<div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 p-3">
-					<span className="font-mono text-xs text-gray-400">My work</span>
-					<div className="flex items-center gap-3">
-						<span className="flex items-center gap-1.5 text-xs font-[500] text-gray-600">
-							<span className="tabular-nums">{COUNT.format(prs)}</span>
-							{prs === 1 ? "PR" : "PRs"}
-							<PullRequestIcon className="size-4 text-gray-400" />
-						</span>
-						<span className="h-4 w-px bg-gray-200" />
-						<span className="flex items-center gap-2 font-mono text-xs font-[450] tabular-nums">
-							<span className="text-green-700">+{COUNT.format(added)}</span>
-							<span className="text-red-600">−{COUNT.format(removed)}</span>
-							<Split added={added} removed={removed} />
-						</span>
-					</div>
+		<Surface className="my-6 w-full" inner={{ className: "flex flex-col" }}>
+			<div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 p-3">
+				<span className="font-mono text-xs text-gray-400">My work</span>
+				<div className="flex items-center gap-3">
+					<span className="flex items-center gap-1.5 text-xs font-[500] text-gray-600">
+						<span className="tabular-nums">{COUNT.format(prs)}</span>
+						{prs === 1 ? "PR" : "PRs"}
+						<PullRequestIcon className="size-4 text-gray-400" />
+					</span>
+					<span className="h-4 w-px bg-gray-200" />
+					<span className="flex items-center gap-2 font-mono text-xs font-[450] tabular-nums">
+						<span className="text-green-700">+{COUNT.format(added)}</span>
+						<span className="text-red-600">−{COUNT.format(removed)}</span>
+						<Split added={added} removed={removed} />
+					</span>
 				</div>
-				{children && (
-					<>
-						<span className="h-px w-full bg-gray-200/50" />
-						{/* The note comes through as MDX prose, which carries its own
-						    bottom margin — the panel supplies the spacing here. */}
-						<div className="p-3 [&_p]:mb-0">{children}</div>
-					</>
-				)}
 			</div>
-		</div>
+			{children && (
+				<>
+					<span className="h-px w-full bg-gray-200/50" />
+					{/* The note comes through as MDX prose, which carries its own
+					    bottom margin — the panel supplies the spacing here. */}
+					<div className="p-3 [&_p]:mb-0">{children}</div>
+				</>
+			)}
+		</Surface>
 	);
 }

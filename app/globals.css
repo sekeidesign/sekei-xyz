@@ -173,6 +173,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-accent: var(--color-amber-500);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-pixel: var(--font-geist-pixel);
@@ -197,6 +198,21 @@ body {
 
 body {
   color: var(--foreground);
+}
+
+/* Anything without a ring of its own gets the accent rather than the browser's
+   blue. In the base layer, so a component's own focus utilities still win. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
+
+/* Chrome matches :focus-visible on a native select even when it was clicked,
+   so a select's ring waits for InputModality to see the keyboard. */
+html:not([data-keyboard]) select:focus-visible {
+  outline: none;
 }
 
 .panel {
@@ -720,12 +736,12 @@ body {
 
 .control-slider:focus-visible::-webkit-slider-thumb {
   box-shadow: 0 0 0 1px #6a72821a, 0 1px 3px #36415312, 0 0 0 2px #fff,
-    0 0 0 4px color-mix(in oklab, var(--color-gray-900) 40%, transparent);
+    0 0 0 4px var(--color-accent);
 }
 
 .control-slider:focus-visible::-moz-range-thumb {
   box-shadow: 0 0 0 1px #6a72821a, 0 1px 3px #36415312, 0 0 0 2px #fff,
-    0 0 0 4px color-mix(in oklab, var(--color-gray-900) 40%, transparent);
+    0 0 0 4px var(--color-accent);
 }
 
 .control-slider::-moz-range-track {
@@ -745,6 +761,36 @@ body {
   border-radius: 9999px;
   background: #fff;
   box-shadow: 0 0 0 1px #6a72821a, 0 1px 3px #36415312;
+}
+
+/* The Slider's input: invisible, full height, drawn over by the component.
+   The thumb is kept at 12px because the fill and handle are positioned
+   against that travel. */
+.control-slider-hit {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+  background: transparent;
+  cursor: ew-resize;
+  outline: none;
+}
+
+.control-slider-hit::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 28px;
+  background: transparent;
+}
+
+.control-slider-hit::-moz-range-thumb {
+  width: 12px;
+  height: 28px;
+  border: 0;
+  background: transparent;
+}
+
+.control-slider-hit::-moz-range-track {
+  background: transparent;
 }
 
 /* Colour inputs, given the same ring and shadow as the rest of the panel.

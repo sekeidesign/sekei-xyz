@@ -1,6 +1,6 @@
 import { PROPS, SKILLS, USAGE } from "./content";
 import { A, Code, P, Section, Table } from "./Prose";
-import { Snippet } from "./Snippet";
+import { CodeBlock } from "@ui-kit/code/CodeBlock";
 
 export function Usage() {
 	return (
@@ -11,12 +11,12 @@ export function Usage() {
 				the stable-reference rule, anchors and cost; the other writes new
 				effects.
 			</P>
-			<Snippet code={SKILLS} />
+			<CodeBlock code={SKILLS} />
 			<P>
 				The canvas fills its nearest positioned ancestor, so give the parent{" "}
 				<Code>relative</Code>.
 			</P>
-			<Snippet code={USAGE} lang="tsx" />
+			<CodeBlock code={USAGE} lang="tsx" />
 			<P>
 				Build the effect once. A new <Code>effect</Code> reference restarts the
 				simulation — the canvas and its observer survive, but particles and heat

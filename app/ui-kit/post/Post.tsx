@@ -170,7 +170,11 @@ function Title({
 			<div className="flex-1 min-w-0 flex flex-col items-start justify-center">
 				<div className="flex items-baseline gap-1.5 flex-wrap">
 					{href ? (
-						<Link href={href} className="hover:text-gray-700">
+						<Link
+							href={href}
+							data-card-link
+							className="hover:text-gray-700 focus-visible:outline-none"
+						>
 							{heading}
 						</Link>
 					) : (

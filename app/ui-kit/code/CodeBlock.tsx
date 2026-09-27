@@ -11,7 +11,7 @@ import { Highlighted, type Lang } from "./highlight";
 // The social bar's link blue, so a copied state matches the rest of the site.
 const CHECK_COLOR = "oklch(74.6% 0.16 232.661)";
 
-export function Snippet({
+export function CodeBlock({
 	code,
 	lang = "bash",
 	framed = true,
@@ -68,7 +68,7 @@ export function Snippet({
 				type="button"
 				onClick={copy}
 				aria-label={copied ? "Copied" : "Copy code"}
-				className="absolute top-2 right-2 flex size-7 cursor-pointer items-center justify-center rounded-md bg-white/10 text-gray-300 ring ring-white/10 transition-transform duration-150 ease-out hover:bg-white/20 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/50 active:scale-[0.97] active:duration-75"
+				className="absolute top-2 right-2 flex size-7 cursor-pointer items-center justify-center rounded-md bg-white/10 text-gray-300 ring ring-white/10 transition-transform duration-150 ease-out hover:bg-white/20 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent active:scale-[0.97] active:duration-75"
 			>
 				<span className="relative flex size-4">
 					<span

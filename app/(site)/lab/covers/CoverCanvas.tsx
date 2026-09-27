@@ -2,8 +2,9 @@
 
 import { type ReactNode, useState } from "react";
 import { cn } from "@ui-kit/cn";
-import { COLUMN_INNER, SURFACE_INNER, SURFACE_OUTER } from "@ui-kit/post/surface";
+import { COLUMN_INNER } from "@ui-kit/post/surface";
 import { VARIANTS } from "./variants";
+import { Surface } from "@ui-kit/Surface";
 
 /** The boxes a cover ships in: a feed card's square, a post page's column. */
 const SIZES = [
@@ -15,14 +16,13 @@ const SIZES = [
 /** The shipped frame, so a cover is judged in the chrome it renders in. */
 function CoverFrame({ size, children }: { size: number; children: ReactNode }) {
 	return (
-		<div
+		<Surface
 			style={{ width: size, height: size }}
-			className={cn("shrink-0 rounded-xl", SURFACE_OUTER)}
+			className="shrink-0"
+			inner={{ className: "relative size-full" }}
 		>
-			<div className={cn("relative size-full rounded-lg", SURFACE_INNER)}>
-				{children}
-			</div>
-		</div>
+			{children}
+		</Surface>
 	);
 }
 

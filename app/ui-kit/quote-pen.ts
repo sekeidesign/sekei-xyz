@@ -3,7 +3,8 @@ import type { HighlightOptions } from "@highlighters/react";
 export const QUOTATION = /["“][^"“”]+["”]/g;
 
 export const PEN: HighlightOptions = {
-	color: { palette: "mild", swatch: "green" },
+	// Tailwind amber-500 as hex: the pen paints to canvas, which reads no CSS vars.
+	color: "#fe9a00",
 	opacity: 0.8,
 	tip: { type: "chisel", angle: 1, angleJitter: 6 },
 	edge: { waviness: 1, frequency: 32 },

@@ -63,7 +63,7 @@ export function ControlRow({
 	value?: ReactNode;
 }) {
 	return (
-		<div className="flex items-center gap-3 px-3 py-2">
+		<div className="flex items-center gap-3 py-2 pr-2 pl-3">
 			<span
 				id={labelId}
 				className="w-20 shrink-0 text-[13px] leading-[1.43] font-[420] text-gray-500"

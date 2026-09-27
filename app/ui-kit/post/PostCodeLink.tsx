@@ -1,9 +1,8 @@
 import Link from "next/link";
-import { cn } from "../cn";
+import { Button } from "../Button";
 import { CodeIcon } from "../icons/KindIcons";
 import { ICON_PRESS } from "../press";
 import { TooltipTrigger } from "../Tooltip";
-import { CHIP } from "./surface";
 
 /** The "view source" affordance in a card's footer. */
 export function CodeLink({ href }: { href: string }) {
@@ -12,19 +11,16 @@ export function CodeLink({ href }: { href: string }) {
 			payload="View code"
 			// render, so the trigger IS the anchor rather than a button
 			// wrapping one — nested interactive elements would break both.
-			render={(props) => (
-				<Link
-					{...props}
-					href={href}
-					target="_blank"
-					rel="noopener noreferrer"
-					aria-label="View code"
+			render={
+				<Button
+					iconOnly
+					render={
+						<Link href={href} target="_blank" rel="noopener noreferrer" />
+					}
 				/>
-			)}
-			className={cn(
-				"group flex items-center justify-center size-[26px] rounded-full shrink-0 text-gray-500 hover:bg-gray-50",
-				CHIP,
-			)}
+			}
+			aria-label="View code"
+			className="group"
 		>
 			<CodeIcon filled className={ICON_PRESS} />
 		</TooltipTrigger>

@@ -83,7 +83,7 @@ export function DitherStudio() {
 			<RaidTypes tweaks={tweaks} />
 			<div className="grid gap-4 md:grid-cols-2">
 				<ControlPanel title="Canvas">
-					<Slider label="Cell" value={cell} min={1} max={8} step={1} unit="px" onChange={setCell} />
+					<Slider label="Cell" value={cell} min={1} max={8} step={1} showSteps unit="px" onChange={setCell} />
 					<Select
 						label="Run"
 						value={active ?? "hover"}

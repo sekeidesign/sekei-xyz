@@ -2,8 +2,9 @@ import type { ReactNode } from "react";
 
 export type Lang = "tsx" | "bash" | "json";
 
-// A tokeniser, not a parser: the only snippets it sees are the ones on this
-// page, which is a small enough grammar to be worth not shipping a highlighter.
+// A tokeniser, not a parser: the only snippets it sees are the site's own
+// install lines, configs and imports, which is a small enough grammar to be
+// worth not shipping a highlighter.
 const CLASS = {
 	comment: "text-gray-500",
 	keyword: "text-purple-300",

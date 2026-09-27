@@ -80,7 +80,12 @@ export function PostRow({
 			onPointerLeave={onPointerLeave}
 			// The hover fill is suppressed while the pointer is inside an opted-out
 			// surface (a live demo), via :has() — no pointer state to track.
-			className={cn("post-card cursor-pointer rounded-2xl", className)}
+			// The title is the card's real link, so keyboard focus lands on it; the ring
+			// goes on the card it stands for. Inset, so a neighbour can't clip it.
+			className={cn(
+				"post-card cursor-pointer rounded-2xl has-[[data-card-link]:focus-visible]:outline-2 has-[[data-card-link]:focus-visible]:-outline-offset-2 has-[[data-card-link]:focus-visible]:outline-accent",
+				className,
+			)}
 		>
 			{children}
 		</PanelRow>

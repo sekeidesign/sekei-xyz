@@ -6,7 +6,6 @@ import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { cn } from "../cn";
 import { KIND } from "../covers/raid-log";
 import { TatoMark } from "../icons/TatoMark";
-import { SURFACE_INNER, SURFACE_OUTER } from "../post/surface";
 import {
 	Disc,
 	GLYPH,
@@ -18,6 +17,7 @@ import {
 import { RAID_KINDS } from "./kinds";
 import { SourceIcon } from "./SourceIcon";
 import { SOURCES } from "./sources";
+import { Surface } from "../Surface";
 
 /**
  * The design's own card, and the x of each column's centre in it. Both the
@@ -100,110 +100,107 @@ export function ExtractionFlow() {
 	const next = (current + 1) % RAID_KINDS.length;
 
 	return (
-		<div className={cn("my-6 w-full cursor-default rounded-xl", SURFACE_OUTER)}>
+		<Surface
+			className="my-6 w-full cursor-default"
+			inner={{
+				ref,
+				role: "img",
+				"aria-label":
+					"Activity from meetings, chats, email and connected tools flows into Tato, which produces a RAID item",
+				className: cn("relative h-80 bg-gray-50", inView && "flow-live"),
+			}}
+		>
+			<Flow paths={INBOUND} tone="text-gray-600" duration={4.8} fade />
+			<Flow
+				paths={OUTBOUND}
+				tone={KIND[RAID_KINDS[next].kind].tint}
+				duration={1.6}
+				delay={1.2}
+				held
+				onArrive={() => {
+					if (reduced) return;
+					setLeaving(current);
+					setCurrent(next);
+				}}
+			/>
+
 			<div
-				ref={ref}
-				role="img"
-				aria-label="Activity from meetings, chats, email and connected tools flows into Tato, which produces a RAID item"
-				className={cn(
-					"relative h-80 rounded-lg",
-					SURFACE_INNER,
-					"bg-gray-50",
-					inView && "flow-live",
-				)}
+				style={{ left: lane(SOURCE_X) }}
+				className="absolute top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col gap-4"
 			>
-				<Flow paths={INBOUND} tone="text-gray-600" duration={4.8} fade />
-				<Flow
-					paths={OUTBOUND}
-					tone={KIND[RAID_KINDS[next].kind].tint}
-					duration={1.6}
-					delay={1.2}
-					held
-					onArrive={() => {
-						if (reduced) return;
-						setLeaving(current);
-						setCurrent(next);
-					}}
-				/>
-
-				<div
-					style={{ left: lane(SOURCE_X) }}
-					className="absolute top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col gap-4"
-				>
-					{SOURCES.map(({ label, viewBox, paths }) => (
-						<Disc key={label} wash="bg-gray-200 shadow-gray-500/20">
-							<SourceIcon
-								viewBox={viewBox}
-								paths={paths}
-								className="size-5 text-gray-600/75"
-							/>
-						</Disc>
-					))}
-				</div>
-
-				<div
-					style={{ left: lane(MARK_X) }}
-					className="absolute top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center"
-				>
-					{[0, 1, 2].map((step) => (
-						<span
-							key={step}
-							aria-hidden="true"
-							className="flow-ring absolute top-1/2 left-1/2 size-13 -translate-x-1/2 -translate-y-1/2 rounded-[10px] ring-1 ring-gray-500/10"
-							style={{ animationDelay: `${step * 1.2}s` }}
+				{SOURCES.map(({ label, viewBox, paths }) => (
+					<Disc key={label} wash="bg-gray-200 shadow-gray-500/20">
+						<SourceIcon
+							viewBox={viewBox}
+							paths={paths}
+							className="size-5 text-gray-600/75"
 						/>
-					))}
-					{/* 10px is the tile's rounded-md plus this frame's p-1, so the two
-					    corners stay concentric — and the rings above start on them. */}
-					<span className="relative flex rounded-[10px] bg-white p-1 ring-1 ring-gray-500/10 shadow-sm">
-						<span className="flex size-11 items-center justify-center rounded-md bg-linear-to-b from-orange-500 to-orange-600 ring-1 ring-orange-600 shadow-xl shadow-orange-500/25 inset-shadow-2xs inset-shadow-white/20">
-							<TatoMark className="h-8 text-white" />
-						</span>
-					</span>
-				</div>
-
-				<div
-					style={{ left: lane(OUTPUT_X) }}
-					className="absolute top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center"
-				>
-					{leaving !== null && (
-						<Trace key={current} tone={KIND[RAID_KINDS[current].kind].tint} />
-					)}
-					<span className="flex rounded-full bg-white p-1 ring-1 ring-gray-500/10 shadow-sm">
-						<span className="relative size-10">
-							{RAID_KINDS.map(({ kind, wash }, index) => {
-								const { Icon, tint } = KIND[kind];
-								const here = index === current;
-								return (
-									<span
-										key={kind}
-										className={cn(
-											"absolute inset-0 flex items-center justify-center rounded-full bg-linear-to-b from-white to-transparent ring-1 ring-gray-500/10 shadow-sm",
-											wash,
-											WASH,
-											here ? "opacity-100" : "opacity-0",
-										)}
-									>
-										<Icon
-											size={24}
-											className={cn(
-												tint,
-												GLYPH,
-												here
-													? GLYPH_HERE
-													: index === leaving
-														? GLYPH_LEAVING
-														: GLYPH_WAITING,
-											)}
-										/>
-									</span>
-								);
-							})}
-						</span>
-					</span>
-				</div>
+					</Disc>
+				))}
 			</div>
-		</div>
+
+			<div
+				style={{ left: lane(MARK_X) }}
+				className="absolute top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center"
+			>
+				{[0, 1, 2].map((step) => (
+					<span
+						key={step}
+						aria-hidden="true"
+						className="flow-ring absolute top-1/2 left-1/2 size-13 -translate-x-1/2 -translate-y-1/2 rounded-[10px] ring-1 ring-gray-500/10"
+						style={{ animationDelay: `${step * 1.2}s` }}
+					/>
+				))}
+				{/* 10px is the tile's rounded-md plus this frame's p-1, so the two
+				    corners stay concentric — and the rings above start on them. */}
+				<span className="relative flex rounded-[10px] bg-white p-1 ring-1 ring-gray-500/10 shadow-sm">
+					<span className="flex size-11 items-center justify-center rounded-md bg-linear-to-b from-orange-500 to-orange-600 ring-1 ring-orange-600 shadow-xl shadow-orange-500/25 inset-shadow-2xs inset-shadow-white/20">
+						<TatoMark className="h-8 text-white" />
+					</span>
+				</span>
+			</div>
+
+			<div
+				style={{ left: lane(OUTPUT_X) }}
+				className="absolute top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center"
+			>
+				{leaving !== null && (
+					<Trace key={current} tone={KIND[RAID_KINDS[current].kind].tint} />
+				)}
+				<span className="flex rounded-full bg-white p-1 ring-1 ring-gray-500/10 shadow-sm">
+					<span className="relative size-10">
+						{RAID_KINDS.map(({ kind, wash }, index) => {
+							const { Icon, tint } = KIND[kind];
+							const here = index === current;
+							return (
+								<span
+									key={kind}
+									className={cn(
+										"absolute inset-0 flex items-center justify-center rounded-full bg-linear-to-b from-white to-transparent ring-1 ring-gray-500/10 shadow-sm",
+										wash,
+										WASH,
+										here ? "opacity-100" : "opacity-0",
+									)}
+								>
+									<Icon
+										size={24}
+										className={cn(
+											tint,
+											GLYPH,
+											here
+												? GLYPH_HERE
+												: index === leaving
+													? GLYPH_LEAVING
+													: GLYPH_WAITING,
+										)}
+									/>
+								</span>
+							);
+						})}
+					</span>
+				</span>
+			</div>
+		</Surface>
 	);
 }
 

@@ -3,9 +3,8 @@
 import { AnimatePresence, m, useInView } from "motion/react";
 import { type CSSProperties, useEffect, useId, useRef, useState } from "react";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
-import { cn } from "../cn";
-import { SURFACE_INNER, SURFACE_OUTER } from "../post/surface";
 import { CursorIcon, DismissIcon, FLAME, TrackIcon } from "./review-icons";
+import { Surface } from "../Surface";
 
 type Phase = "away" | "over" | "press" | "held" | "leaving" | "reset";
 
@@ -67,139 +66,137 @@ export function TrackPress() {
 	const tracked = phase === "held" || phase === "leaving";
 
 	return (
-		<div className={cn("my-6 w-full cursor-default rounded-xl", SURFACE_OUTER)}>
-			<div
-				ref={ref}
-				role="img"
-				aria-label="A cursor pressing track on a RAID item: the dismiss action folds away and the flame fills orange"
-				className={cn(
-					"flex h-60 items-center rounded-lg",
-					SURFACE_INNER,
-					"bg-gray-50",
-				)}
-			>
-				{/* The control sits in a row of its own, as it does in the list, so
-				    it stays against the right edge while it folds down. */}
-				<div className="flex w-full items-center gap-6 px-8">
-					<div className="flex min-w-0 grow items-center gap-4">
-						<span className="size-7 shrink-0 rounded-full bg-gray-500/10" />
-						<span className="h-4 w-8 md:w-full max-w-72 rounded-full bg-gray-500/10" />
-						<span className="h-4 w-8 md:w-14 shrink-0 rounded-full bg-gray-500/10" />
-					</div>
-					{/* The pill measures itself around what it holds, so dropping the
-					    dismiss action closes it up on the compositor rather than
-					    animating a width frame by frame. Radius as a style, or the
-					    projection would distort it on the way down. */}
-					<m.div
+		<Surface
+			className="my-6 w-full cursor-default"
+			inner={{
+				ref,
+				role: "img",
+				"aria-label":
+					"A cursor pressing track on a RAID item: the dismiss action folds away and the flame fills orange",
+				className: "flex h-60 items-center bg-gray-50",
+			}}
+		>
+			{/* The control sits in a row of its own, as it does in the list, so
+			    it stays against the right edge while it folds down. */}
+			<div className="flex w-full items-center gap-6 px-8">
+				<div className="flex min-w-0 grow items-center gap-4">
+					<span className="size-7 shrink-0 rounded-full bg-gray-500/10" />
+					<span className="h-4 w-8 md:w-full max-w-72 rounded-full bg-gray-500/10" />
+					<span className="h-4 w-8 md:w-14 shrink-0 rounded-full bg-gray-500/10" />
+				</div>
+				{/* The pill measures itself around what it holds, so dropping the
+				    dismiss action closes it up on the compositor rather than
+				    animating a width frame by frame. Radius as a style, or the
+				    projection would distort it on the way down. */}
+				<m.div
+					layout
+					transition={SPRING}
+					style={{ borderRadius: 9999 }}
+					className="flex shrink-0 items-center bg-white ring-1 ring-gray-500/10 shadow-skew"
+				>
+					<AnimatePresence initial={false} mode="popLayout">
+						{!tracked && (
+							<m.span
+								key="dismiss"
+								layout
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
+								exit={{ opacity: 0 }}
+								transition={SPRING}
+								className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full text-gray-600"
+							>
+								<DismissIcon size={32} />
+							</m.span>
+						)}
+						{!tracked && (
+							<m.span
+								key="rule"
+								layout
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
+								exit={{ opacity: 0 }}
+								transition={SPRING}
+								className="-mx-px h-6 w-px shrink-0 bg-gray-400/20"
+							/>
+						)}
+					</AnimatePresence>
+					<m.span
 						layout
+						animate={{ scale: pressed ? 0.90 : 1 }}
 						transition={SPRING}
-						style={{ borderRadius: 9999 }}
-						className="flex shrink-0 items-center bg-white ring-1 ring-gray-500/10 shadow-skew"
+						className="relative flex size-14 shrink-0 items-center justify-center rounded-full text-gray-600"
 					>
-						<AnimatePresence initial={false} mode="popLayout">
-							{!tracked && (
-								<m.span
-									key="dismiss"
-									layout
-									initial={{ opacity: 0 }}
-									animate={{ opacity: 1 }}
-									exit={{ opacity: 0 }}
-									transition={SPRING}
-									className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full text-gray-600"
-								>
-									<DismissIcon size={32} />
-								</m.span>
-							)}
-							{!tracked && (
-								<m.span
-									key="rule"
-									layout
-									initial={{ opacity: 0 }}
-									animate={{ opacity: 1 }}
-									exit={{ opacity: 0 }}
-									transition={SPRING}
-									className="-mx-px h-6 w-px shrink-0 bg-gray-400/20"
+						{/* Clipped here rather than on the button, which would cut off
+						    the pointer on its way in. */}
+						<span className="absolute inset-0 overflow-hidden rounded-full">
+							{tracked && (
+								<span
+									key={pass}
+									className="dot-ripple"
+									style={
+										{
+											"--ripple-y": "100%",
+										// Twice the row's own lattice, for a button at twice its size.
+										"--dot-size": "0.75px",
+										"--dot-gap": "4px",
+											"--ripple-color": "var(--color-orange-600)",
+											"--ripple-duration": "600ms",
+											"--ripple-delay": "75ms",
+										} as CSSProperties
+									}
 								/>
 							)}
-						</AnimatePresence>
-						<m.span
-							layout
-							animate={{ scale: pressed ? 0.90 : 1 }}
-							transition={SPRING}
-							className="relative flex size-14 shrink-0 items-center justify-center rounded-full text-gray-600"
+						</span>
+						<svg
+							viewBox="0 0 24 24"
+							className="absolute size-8 text-orange-600"
+							aria-hidden="true"
+							focusable="false"
 						>
-							{/* Clipped here rather than on the button, which would cut off
-							    the pointer on its way in. */}
-							<span className="absolute inset-0 overflow-hidden rounded-full">
-								{tracked && (
-									<span
-										key={pass}
-										className="dot-ripple"
-										style={
-											{
-												"--ripple-y": "100%",
-											// Twice the row's own lattice, for a button at twice its size.
-											"--dot-size": "0.75px",
-											"--dot-gap": "4px",
-												"--ripple-color": "var(--color-orange-600)",
-												"--ripple-duration": "600ms",
-												"--ripple-delay": "75ms",
-											} as CSSProperties
-										}
-									/>
-								)}
-							</span>
-							<svg
-								viewBox="0 0 24 24"
-								className="absolute size-8 text-orange-600"
-								aria-hidden="true"
-								focusable="false"
-							>
-								<defs>
-									<clipPath id={clip}>
-										<path d={FLAME} />
-									</clipPath>
-								</defs>
-								<g clipPath={`url(#${clip})`}>
-									<m.circle
-										cx="12"
-										cy="23"
-										fill="currentColor"
-										initial={{ r: 0 }}
-										animate={{ r: tracked ? 25 : 0 }}
-										transition={{ duration: tracked ? 0.45 : 0.2, ease: "easeOut" }}
-									/>
-								</g>
-							</svg>
-							<m.span
-								animate={{ opacity: tracked ? 0 : 1 }}
-								transition={{ duration: 0.15, delay: tracked ? FILL_DELAY : 0 }}
-								className="relative"
-							>
-								<TrackIcon size={32} />
-							</m.span>
-							<m.span
-								animate={{ opacity: tracked ? 1 : 0 }}
-								transition={{ duration: 0.15, delay: tracked ? FILL_DELAY : 0 }}
-								className="absolute text-orange-600"
-							>
-								<TrackIcon size={32} />
-							</m.span>
-							<m.span
-								initial={AWAY}
-								animate={{
-									...(onButton ? ON : AWAY),
-									scale: pressed ? 0.88 : 1,
-								}}
-								transition={{ ...SPRING_LONG, scale: { duration: 0.12 } }}
-								className="absolute top-1/2 left-1/2 text-gray-900 drop-shadow-md drop-shadow-black/25"
-							>
-								<CursorIcon />
-							</m.span>
+							<defs>
+								<clipPath id={clip}>
+									<path d={FLAME} />
+								</clipPath>
+							</defs>
+							<g clipPath={`url(#${clip})`}>
+								<m.circle
+									cx="12"
+									cy="23"
+									fill="currentColor"
+									initial={{ r: 0 }}
+									animate={{ r: tracked ? 25 : 0 }}
+									transition={{ duration: tracked ? 0.45 : 0.2, ease: "easeOut" }}
+								/>
+							</g>
+						</svg>
+						<m.span
+							animate={{ opacity: tracked ? 0 : 1 }}
+							transition={{ duration: 0.15, delay: tracked ? FILL_DELAY : 0 }}
+							className="relative"
+						>
+							<TrackIcon size={32} />
 						</m.span>
-					</m.div>
-				</div>
+						<m.span
+							animate={{ opacity: tracked ? 1 : 0 }}
+							transition={{ duration: 0.15, delay: tracked ? FILL_DELAY : 0 }}
+							className="absolute text-orange-600"
+						>
+							<TrackIcon size={32} />
+						</m.span>
+						<m.span
+							initial={AWAY}
+							animate={{
+								...(onButton ? ON : AWAY),
+								scale: pressed ? 0.88 : 1,
+							}}
+							transition={{ ...SPRING_LONG, scale: { duration: 0.12 } }}
+							className="absolute top-1/2 left-1/2 text-gray-900 drop-shadow-md drop-shadow-black/25"
+						>
+							<CursorIcon />
+						</m.span>
+					</m.span>
+				</m.div>
 			</div>
-		</div>
+		</Surface>
 	);
 }
