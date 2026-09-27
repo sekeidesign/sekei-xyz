@@ -2,6 +2,7 @@ import type { ComponentType } from "react";
 import * as Actions from "./stories/actions";
 import * as Content from "./stories/content";
 import * as Controls from "./stories/controls";
+import * as Flow from "./stories/flow";
 import * as Icons from "./stories/icons";
 import * as Showcase from "./stories/showcase";
 
@@ -202,6 +203,21 @@ const UNSORTED: Entry[] = [
 		exports: ["NextCaseStudy"],
 		Thumb: Content.NextStudyThumb,
 		examples: [{ name: "Default", Component: Content.NextStudy }],
+	},
+	{
+		slug: "flow",
+		name: "Flow",
+		group: "Content",
+		description:
+			"Labels joined by rounded lines, laid out by ELK from Mermaid-style source and drawn in along each path.",
+		source: "flow/Flow.tsx",
+		exports: ["Flow"],
+		Thumb: Flow.FlowThumb,
+		examples: [
+			{ name: "Branching", Component: Flow.FlowTriage, bleed: true },
+			{ name: "Loops and sides", Component: Flow.FlowLifecycle, bleed: true },
+			{ name: "Playground", Component: Flow.FlowPlayground, bleed: true },
+		],
 	},
 	{
 		slug: "framed-icon",

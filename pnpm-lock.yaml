@@ -44,6 +44,9 @@ importers:
       cobe:
         specifier: ^2.0.1
         version: 2.0.1
+      elkjs:
+        specifier: ^0.12.0
+        version: 0.12.0
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
@@ -1941,6 +1944,9 @@ packages:
 
   electron-to-chromium@1.5.417:
     resolution: {integrity: sha512-4T+DTDWuMPM4aHlHwWdAVCVWwp7LDilnhzkj+c/Lbj91XSQrLuOmZSLtS9Q4iIqjlPUbPOnC624zDVVHCHaolQ==}
+
+  elkjs@0.12.0:
+    resolution: {integrity: sha512-YZcKynxVxYoKIOEpywEPwCFdg+BTbxQRNf3pbwdDCvc8O3kQD8bmIwSxKU1eOTVc4Xo+VG9Te+575mlfvOrhEQ==}
 
   emoji-regex@9.2.2:
     resolution: {integrity: sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==}
@@ -5660,6 +5666,8 @@ snapshots:
       gopd: 1.2.0
 
   electron-to-chromium@1.5.417: {}
+
+  elkjs@0.12.0: {}
 
   emoji-regex@9.2.2: {}
 
