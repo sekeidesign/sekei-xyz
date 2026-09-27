@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { DitherCanvas } from "@/components/shad-fx/dither/dither-canvas";
 import { KIND } from "../covers/raid-log";
 import { Disc } from "./Disc";
@@ -19,14 +19,11 @@ export function RaidTypes({ tweaks }: { tweaks?: RaidTypesTweaks }) {
 	const { cell = 2, active = "hover" } = tweaks ?? {};
 
 	return (
-		<Surface
-			className="my-6 w-full cursor-default"
-			inner={{ className: "flex h-48 sm:h-60 items-stretch bg-gray-50" }}
-		>
-			{RAID_KINDS.map(({ kind }, index) => (
-				<Fragment key={kind}>
-					{index > 0 && <span className="w-px shrink-0 bg-gray-500/10" />}
+		<Surface className="my-6 w-full cursor-default" inner={{ className: "bg-gray-50" }}>
+			<div className="grid grid-cols-2 gap-px bg-gray-500/10 sm:flex sm:h-60">
+				{RAID_KINDS.map(({ kind }, index) => (
 					<RaidCell
+						key={kind}
 						kind={kind}
 						seed={index + 1}
 						cell={cell}
@@ -38,8 +35,8 @@ export function RaidTypes({ tweaks }: { tweaks?: RaidTypesTweaks }) {
 							)
 						}
 					/>
-				</Fragment>
-			))}
+				))}
+			</div>
 		</Surface>
 	);
 }
@@ -80,7 +77,7 @@ function RaidCell({
 	return (
 		<div
 			ref={cellRef}
-			className="relative flex flex-1 items-center justify-center"
+			className="relative flex h-40 flex-1 items-center justify-center bg-gray-50 sm:h-auto"
 			onPointerEnter={() => onHover(true)}
 			onPointerLeave={() => onHover(false)}
 		>
