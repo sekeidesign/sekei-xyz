@@ -2,7 +2,6 @@
 
 import { Avatar } from "@ui-kit/Avatar";
 import { Button } from "@ui-kit/Button";
-import { CaseStudyLink } from "@ui-kit/CaseStudyLink";
 import { CodeBlock } from "@ui-kit/code/CodeBlock";
 import { Contributions } from "@ui-kit/Contributions";
 import { CopyIcon } from "@ui-kit/icons/CopyIcon";
@@ -126,32 +125,6 @@ export function ContributionsNote() {
 	);
 }
 
-export function CaseStudyImage() {
-	return (
-		<div className="w-full max-w-md">
-			<CaseStudyLink
-				href="/p/role-metafy"
-				title="Metafy"
-				description="A coaching marketplace, and the Windows app that came after it."
-				image="/casestudies/metafy-windows-app.webp"
-			/>
-		</div>
-	);
-}
-
-export function CaseStudyPlaceholder() {
-	return (
-		<div className="w-full max-w-md">
-			<CaseStudyLink
-				href="/p/tato"
-				title="Tato"
-				description="Meeting intelligence for teams that run on decisions."
-				image=""
-			/>
-		</div>
-	);
-}
-
 export function NextStudy() {
 	return (
 		<div className="w-full max-w-md -mt-10">
@@ -181,19 +154,6 @@ export function QuoteThumb() {
 				Design is how it works.
 			</p>
 			<p className="mt-2 text-xs font-[450] text-gray-400">Steve Jobs</p>
-		</div>
-	);
-}
-
-export function CaseStudyThumb() {
-	return (
-		<div className="w-[340px] [&>a]:my-0">
-			<CaseStudyLink
-				href="/p/role-metafy"
-				title="Metafy"
-				description="A coaching marketplace, and the Windows app that came after it."
-				image="/casestudies/metafy-windows-app.webp"
-			/>
 		</div>
 	);
 }

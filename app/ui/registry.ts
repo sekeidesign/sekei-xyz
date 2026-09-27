@@ -182,19 +182,6 @@ const UNSORTED: Entry[] = [
 		],
 	},
 	{
-		slug: "case-study-link",
-		name: "CaseStudyLink",
-		group: "Content",
-		description: "Thumbnail, title and blurb, linking out to a case study.",
-		source: "CaseStudyLink.tsx",
-		exports: ["CaseStudyLink"],
-		Thumb: Content.CaseStudyThumb,
-		examples: [
-			{ name: "With image", Component: Content.CaseStudyImage },
-			{ name: "Placeholder", Component: Content.CaseStudyPlaceholder },
-		],
-	},
-	{
 		slug: "next-case-study",
 		name: "NextCaseStudy",
 		group: "Content",
