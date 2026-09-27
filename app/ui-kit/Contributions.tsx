@@ -49,7 +49,7 @@ export function Contributions({
 	children?: React.ReactNode;
 }) {
 	return (
-		<Surface className="my-6 w-full" inner={{ className: "flex flex-col" }}>
+		<Surface className="post-lead mt-6 mb-10 w-full" inner={{ className: "flex flex-col" }}>
 			<div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 p-3">
 				<span className="font-mono text-xs text-gray-500">My work</span>
 				<div className="flex items-center gap-3">

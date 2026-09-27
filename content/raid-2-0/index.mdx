@@ -11,6 +11,7 @@ cover: "/casestudies/raid-2-0/edit-and-track.webp"
 import { Contributions } from "@ui-kit/Contributions";
 import { Figure } from "@ui-kit/Figure";
 import { NextCaseStudy } from "@ui-kit/NextCaseStudy";
+import { Quote } from "@ui-kit/Quote";
 import { ExtractionFlow } from "@ui-kit/figures/ExtractionFlow";
 import { HistoryDrawer } from "@ui-kit/figures/HistoryDrawer";
 import { NeedsReview } from "@ui-kit/figures/NeedsReview";
@@ -19,6 +20,7 @@ import { SummaryPanel } from "@ui-kit/figures/SummaryPanel";
 import { TrackPress } from "@ui-kit/figures/TrackPress";
 import { RaidTable } from "@ui-kit/figures/RaidTable";
 import { RaidTypes } from "@ui-kit/figures/RaidTypes";
+import { RiskLifecycle, RiskTriage } from "@ui-kit/figures/RiskFlows";
 
 
 
@@ -28,6 +30,11 @@ End-to-end ownership. Initial discovery, planning and scoping, designing and
 iterating in Figma and Paper, developing and shipping the front-end.
 
 </Contributions>
+
+I kicked things off on the project by doing a deep dive into existing RAID logs that our customers were maintaining, usually in spreadsheets. 
+I then did a deeper dive into RAID management best practices, researching documentation and how existing industry standard tools like SAP handle RAID management.
+
+I learned that despite RAID being a large interweaving web of dependencies, the core workflows are not a far leap from typical issue tracking in product management.
 
 ## Anatomy of a RAID log
 
@@ -41,6 +48,19 @@ make a RAID log critical to success and extremely difficult to manage.
 
 <RaidTypes />
 
+As these projects evolve and grow, Risks begin to crop up. During their lifecycle, the PM's primary goal is to monitor them, and mitigate them as they rise in likelhood and impact.
+
+If the team is unable to adequately address a risk as it intensifies, it will eventually become an Issue. This means the Risk has been realized and is actively driving the project off the critical path.
+
+By modelling this lifecycle and the associated relationships, we were armed with a framework to not only build a RAID log, but to also build a set of natural human-in-the-loop workflows including:
+* Status evolution based on relationships
+* Risk promotion to Issue
+* Automated follow-ups and escalation
+
+<RiskLifecycle />
+
+## Extraction and human-in-the-loop
+
 RAIDs crop up in meetings, chat messages, emails, reports, and any other
 surface where people interact. They get discussed and tackled in an even
 broader set of tools, and their evolution is long and rarely clear-cut.
@@ -48,7 +68,7 @@ This complexity is an opportunity for Tato to put its deep project
 knowledge, integrations, and agents to work to extract, monitor, and
 document RAID items across the lifecycle of a multi-year project.
 
-## Extraction and human-in-the-loop
+<ExtractionFlow />
 
 Meetings are the primary source of RAID items, but the items themselves
 are usually managed in Jira, Smartsheet, or plain old spreadsheets. Our
@@ -56,8 +76,6 @@ first job was consolidating those sources into a normalized log that could
 act as a single source of truth. Tato updates the log after any activity,
 and pulls from external tools periodically or on command through MCPs and
 bespoke integrations.
-
-<ExtractionFlow />
 
 The RAID updates on the activity summary page started as a simple section
 showing the under-the-hood thinking of our agent. Exposing that machinery
@@ -79,7 +97,9 @@ is always within reach and the log stays tidy.
 Dismissing an item tucks it away, letting the system know this AI extraction was not useful.
 Tracking an item marks as exceptionally relevant, so I used a subtle interaction to make it feel impactful and energetic.
 
+<RiskTriage />
 <TrackPress />
+
 
 This first iteration landed well, with early feedback showing a perception
 that Tato was smarter and more nuanced. We've found our users' quantitative perception to be just as important as the qualitative improvements when it comes to interacting with an LLM.
@@ -134,12 +154,14 @@ Finally, based on user feedback, I made the table editable without opening
 an item. That feedback partly inspired the drawer redesign too, making
 every property of an item visual as well as editable inline.
 
-## The future of RAID
+## Impact and adoption
 
-The goal of this project, and of Tato as a whole, is to make the processes
-behind these large transformations more automated and effortless, shifting the
-human workload from note taking and data transfer to verification and the
-occasional correction.
+Although our PM user base is still small, we've seen a lot of positive qualitative feedback from early users.
+
+<Quote cite="PM on an $8M ERP implementation">
+	"The new RAID, OK, I love it. Once I saw I could trust it, I got
+	rid of my SharePoint lists and centralised everything there."
+</Quote>
 
 This RAID log is one small step toward a future where humans and AI
 collaborate to ensure successful business transformations.
