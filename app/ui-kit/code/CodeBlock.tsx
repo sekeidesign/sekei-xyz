@@ -6,6 +6,7 @@ import { CheckCircleIcon } from "@ui-kit/icons/CheckCircleIcon";
 import { CopyIcon } from "@ui-kit/icons/CopyIcon";
 import { SURFACE_INNER, SURFACE_OUTER } from "@ui-kit/post/surface";
 import { ICON_SWAP, ICON_SWAP_IN, ICON_SWAP_OUT } from "@ui-kit/press";
+import { TooltipTrigger } from "@ui-kit/Tooltip";
 import { Highlighted, type Lang } from "./highlight";
 
 // The social bar's link blue, so a copied state matches the rest of the site.
@@ -70,8 +71,8 @@ export function CodeBlock({
 					<Highlighted code={code} lang={lang} />
 				</code>
 			</pre>
-			<button
-				type="button"
+			<TooltipTrigger
+				payload="Copy code"
 				onClick={copy}
 				aria-label="Copy code"
 				className="absolute top-2 right-2 flex size-7 cursor-pointer items-center justify-center rounded-md bg-white/10 text-gray-300 ring ring-white/10 transition-transform duration-150 ease-out hover:bg-white/20 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent active:scale-[0.97] active:duration-75"
@@ -97,7 +98,7 @@ export function CodeBlock({
 						<CopyIcon />
 					</span>
 				</span>
-			</button>
+			</TooltipTrigger>
 			<output className="sr-only">{status}</output>
 		</div>
 	);

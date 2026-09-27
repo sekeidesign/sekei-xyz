@@ -56,7 +56,7 @@ export function Canvas({
 									FOCUS_RING,
 									SURFACE_CLASS[option.value],
 									surface === option.value &&
-										"outline-2 outline-offset-1 outline-accent",
+										"outline-2 outline-offset-1 outline-gray-700",
 								)}
 							/>
 						))}
