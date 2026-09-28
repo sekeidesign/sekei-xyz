@@ -115,7 +115,7 @@ Tracking an item marks it as exceptionally relevant, which tells our agent to pa
 
 
 This first iteration landed well, with early feedback showing a perception
-that Tato was smarter and more nuanced. We've found <Highlight>our users' perception of quality to be just as important as the quantitative improvements when it comes to interacting with an LLM.</Highlight>
+that Tato was smarter and more nuanced. <Highlight>We've found our users' perception of quality to be just as important as the quantitative improvements when it comes to interacting with an LLM.</Highlight>
 
 I then reworked the entire
 summary page into a two column layout, giving RAID
@@ -159,7 +159,7 @@ more breathing room, grouping related controls, and making the table
 contents scrollable rather than the page, so the header, footer, and every available
 action stay visible. I also ensured the table had robust and intuitive keyboard navigation, including the skip to main content link, row navigation with arrow keys, proper focus management, and more.
 
-Finally, I built a collection of indicators to show impact, likelihood, and status. All animated with state machines to support smooth transitions between any number of states.
+Finally, I built a collection of indicators to show impact, likelihood, and status. Each animation is driven by a single value, so it springs smoothly between any two values, and supports additional intermediate states.
 
 <IndicatorDemo />
 
