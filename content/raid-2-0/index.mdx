@@ -10,8 +10,10 @@ cover: "/casestudies/raid-2-0/edit-and-track.webp"
 
 import { Contributions } from "@ui-kit/Contributions";
 import { Figure } from "@ui-kit/Figure";
+import { Highlight } from "@ui-kit/Highlight";
 import { NextCaseStudy } from "@ui-kit/NextCaseStudy";
 import { Quote } from "@ui-kit/Quote";
+import { Stats } from "@ui-kit/Stats";
 import { ExtractionFlow } from "@ui-kit/figures/ExtractionFlow";
 import { HistoryDrawer } from "@ui-kit/figures/HistoryDrawer";
 import { NeedsReview } from "@ui-kit/figures/NeedsReview";
@@ -24,23 +26,33 @@ import { RiskLifecycle, RiskTriage } from "@ui-kit/figures/RiskFlows";
 
 
 
-<Contributions prs={16} added={16843} removed={8751}>
+<Contributions
+	prs={16}
+	added={16843}
+	removed={8751}
+	details={[
+		{ label: "Timeline", value: "July to September 2026" },
+		{ label: "Team", value: "Me on design and front-end, Alex Hermann on backend engineering, Benjamin Ryan as customer success lead" },
+		{ label: "Deliverables", value: "Research and the RAID lifecycle model, product and interaction design, front-end build: review flow, summary panel, history drawer, control centre" },
+	]}
+>
 
-End-to-end ownership. Initial discovery, planning and scoping, designing and
-iterating in Figma and Paper, developing and shipping the front-end.
+End-to-end ownership over 3 months of design, development, and launch. 
+
+Initial discovery, planning and scoping, designing and iterating in Figma and Paper, developing and shipping the front-end.
 
 </Contributions>
 
-I kicked things off on the project by doing a deep dive into existing RAID logs that our customers were maintaining, usually in spreadsheets. 
-I then did a deeper dive into RAID management best practices, researching documentation and how existing industry standard tools like SAP handle RAID management.
+The current process for managing RAIDs is old school and manual, <Highlight>often taking place in spreadsheets or SharePoint lists</Highlight>. This turns already overwhelmed PMs into bottlenecks, since the entire team has to wait for them to review and update the log to get latest picture of how their project is doing.
 
-I learned that despite RAID being a large interweaving web of dependencies, the core workflows are not a far leap from typical issue tracking in product management.
+To help empower our customers to manage their RAIDs more effectively, I kicked things off on the project by doing a deep dive into existing RAID logs that our customers were maintaining, usually in spreadsheets. 
+I then did a deeper dive into RAID management best practices, researching documentation and how existing industry standard tools like SAP handle RAID management. Here's what I learned.
 
 ## Anatomy of a RAID log
 
-A RAID log is a collection of Risks, Action Items, Issues, and Decisions.
+<Highlight>A RAID log is an interconnected collection of Risks, Action Items, Issues, and Decisions.</Highlight>
 It documents the status of a project as it evolves, identifying threats to
-the critical path and ensuring appropriate ownership and traceability.
+the critical path and ensuring appropriate ownership, mitigation, and traceability.
 
 In digital transformation programs, where projects span three to five
 years, cross project dependencies, large teams, and even larger budgets
@@ -48,7 +60,7 @@ make a RAID log critical to success and extremely difficult to manage.
 
 <RaidTypes />
 
-As these projects evolve and grow, Risks begin to crop up. During their lifecycle, the PM's primary goal is to monitor them, and mitigate them as they rise in likelhood and impact.
+As these projects evolve and grow, Risks begin to crop up. During their lifecycle, the PM's primary goal is to monitor them, and mitigate them as they rise in likelihood and impact.
 
 If the team is unable to adequately address a risk as it intensifies, it will eventually become an Issue. This means the Risk has been realized and is actively driving the project off the critical path.
 
@@ -64,8 +76,8 @@ By modelling this lifecycle and the associated relationships, we were armed with
 RAIDs crop up in meetings, chat messages, emails, reports, and any other
 surface where people interact. They get discussed and tackled in an even
 broader set of tools, and their evolution is long and rarely clear-cut.
-This complexity is an opportunity for Tato to put its deep project
-knowledge, integrations, and agents to work to extract, monitor, and
+This complexity is <Highlight>an opportunity for Tato to put its deep project
+knowledge, integrations, and agents to work</Highlight> to extract, monitor, and
 document RAID items across the lifecycle of a multi-year project.
 
 <ExtractionFlow />
@@ -78,44 +90,45 @@ and pulls from external tools periodically or on command through MCPs and
 bespoke integrations.
 
 The RAID updates on the activity summary page started as a simple section
-showing the under-the-hood thinking of our agent. Exposing that machinery
-is almost always a mistake that overloads the user, and despite our best
+showing the under-the-hood thinking of our agent. <Highlight>Exposing that machinery
+almost always overloads the user</Highlight>, and despite our best
 efforts, LLMs produce volume, which leads to an overwhelming number of
 items.
 
 Hiding the machinery was the first improvement, and it cut a lot of noise
-on its own, since multiple snippets often related to a single update on a
-single item. From there I reduced the amount of text and added icons and
+on its own, since a single meeting could produce upwards of 60 snippets for only a handful of RAID items. 
+From there I reduced the amount of text and added icons and
 avatars, which improved legibility and hierarchy and made the whole list
 easier to parse.
 
 <NeedsReview />
 
 I also exposed two primary actions on each item, so tracking or dismissing
-is always within reach and the log stays tidy. 
-
-Dismissing an item tucks it away, letting the system know this AI extraction was not useful.
-Tracking an item marks as exceptionally relevant, so I used a subtle interaction to make it feel impactful and energetic.
+is always within reach and the log stays tidy. These actions will also have downstream implications on the status of the item.
 
 <RiskTriage />
+
+Dismissing an item tucks it away, letting the system know this AI extraction was not useful.
+Tracking an item marks it as exceptionally relevant, which tells our agent to pay special attention to it moving forward. I used a subtle interaction to make this key action feel impactful and energetic.
+
 <TrackPress />
 
 
 This first iteration landed well, with early feedback showing a perception
-that Tato was smarter and more nuanced. We've found our users' quantitative perception to be just as important as the qualitative improvements when it comes to interacting with an LLM.
+that Tato was smarter and more nuanced. We've found <Highlight>our users' perception of quality to be just as important as the quantitative improvements when it comes to interacting with an LLM.</Highlight>
 
-To take it further I reworked the
-summary page from a single vertical column into two columns, giving RAID
-management its own first class surface where the user keeps meeting
+I then reworked the entire
+summary page into a two column layout, giving RAID
+management its own first class surface. The user keeps meeting
 context in view while digging into items for proper grooming.
 
 <SummaryPanel />
 
 ## An auditable paper trail
 
-A well managed RAID log is also an accurate record of a project's
+A well managed RAID log is also an accurate ledger of a project's
 evolution, and of what the team did to mitigate critical risks. Our
-history view was hard to reach, sometimes hidden behind two separate
+history view was hard to reach, sometimes hidden behind multiple
 clicks, and it focused on diffs between versions. Diffs matter, but they
 fail to paint the most important picture: what caused a change, and when.
 
@@ -144,23 +157,35 @@ managing the full log.
 I started with basic UX improvements: tightening space for
 more breathing room, grouping related controls, and making the table
 contents scrollable rather than the page, so the header, footer, and every available
-action stay visible. 
+action stay visible. I also ensured the table had robust and intuitive keyboard navigation, including the skip to main content link, row navigation with arrow keys, proper focus management, and more.
 
-Along with all of the other status icons to show impact and likelihood, I built this Linear inspired fractional progress indicator so we can smoothly animate between the states, and support any number of intermediate states.
+Finally, I built a collection of indicators to show impact, likelihood, and status. All animated with state machines to support smooth transitions between any number of states.
 
 <IndicatorDemo />
 
 ## Impact and adoption
 
-Although our PM user base is still small, we've seen a lot of positive qualitative feedback from early users.
+
+<Stats
+	caption="First four weeks of tracking, September 2026, internal accounts excluded."
+	stats={[
+		{ value: "5×", label: "Items logged through chat, week over week", trend: [320, 341, 813, 1669] },
+		{ value: "5.2k", label: "Updates the agent wrote back to the log" },
+		{ value: "148", label: "Items tracked by 14 people across 9 customers" },
+	]}
+/>
+
+Although our user base is fairly small, especially when it comes to PMs who actually manage RAID, we've seen strong signals of adoption and value, including a 5x increase in items logged via chat in the 4 weeks since launch. <Highlight> Chat is one of the main ways users can generate new RAIDs and import existing items via MCP or document uploads. </Highlight>
+
+We've also received positive qualitative feedback from early users, including:
 
 <Quote cite="PM on an $8M ERP implementation">
-	"The new RAID, OK, I love it. Once I saw I could trust it, I got
+	"The new RAID, I love it. Once I saw I could trust it, I got
 	rid of my SharePoint lists and centralised everything there."
 </Quote>
 
 This RAID log is one small step toward a future where humans and AI
-collaborate to ensure successful business transformations.
+collaborate to ensure successful business transformations. The next step is to build upon our learnings and double down on clever automations that help large teams close the loop on their RAIDs.
 
 
 <NextCaseStudy
