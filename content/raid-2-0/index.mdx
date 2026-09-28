@@ -37,34 +37,29 @@ import { RiskLifecycle, RiskTriage } from "@ui-kit/figures/RiskFlows";
 	]}
 >
 
-End-to-end ownership over 3 months of design, development, and launch. 
+End-to-end ownership over 3 months of design, development, and launch.
 
 Initial discovery, planning and scoping, designing and iterating in Figma and Paper, developing and shipping the front-end.
 
 </Contributions>
 
-The standard process for managing RAIDs is old school and manual, <Highlight>often taking place in spreadsheets or SharePoint lists</Highlight>. This turns already overwhelmed PMs into bottlenecks, since the entire team has to wait for them to review and update the log to get latest picture of how their project is doing.
+The standard process for managing RAIDs is old-school and manual, <Highlight>taking place in spreadsheets or SharePoint lists</Highlight>. This turns overwhelmed PMs into bottlenecks, since the entire team has to wait for them to review and update the log to get latest picture of how their project is doing.
 
-To help empower our customers to manage their RAIDs more effectively, I kicked things off on the project by doing a deep dive into existing RAID logs that our customers were maintaining, usually in spreadsheets. 
-I then did a deeper dive into RAID management best practices, researching documentation and how existing industry standard tools like SAP handle RAID management. Here's what I learned.
+To help empower our customers as they manage their RAIDs, I kicked things off on the project by doing a deep dive into existing RAID logging solutions. This helped me understand how inefficient current processes are, and how much opportunity there is to automate this work with agents.
+I then dove deeper into RAID management best practices, researched documentation, and learned how existing industry standard tools like SAP handle RAID management.
 
 ## Anatomy of a RAID log
 
-<Highlight>A RAID log is an interconnected collection of Risks, Action Items, Issues, and Decisions.</Highlight>
-It documents the status of a project as it evolves, identifying threats to
-the critical path and ensuring appropriate ownership, mitigation, and traceability.
+<Highlight>A RAID log is an interconnected set of Risks, Action Items, Issues, and Decisions.</Highlight>
+It documents the status of a project as it evolves, identifying threats to the critical path so they can be resolved.
 
-In digital transformation programs, where projects span three to five
-years, cross project dependencies, large teams, and even larger budgets
-make a RAID log critical to success and extremely difficult to manage.
+Large digital transformation programs, can span three to five years. Cross project dependencies, large teams, and even larger budgets make a RAID log critical to success but exponential in complexity.
 
 <RaidTypes />
 
-As these projects evolve and grow, Risks begin to crop up. During their lifecycle, the PM's primary goal is to monitor them, and mitigate them as they rise in likelihood and impact.
+If the team is unable to adequately address a Risk as it intensifies, it will be promoted to an Issue. This means it is actively driving the project off the critical path.
 
-If the team is unable to adequately address a risk as it intensifies, it will eventually become an Issue. This means the Risk has been realized and is actively driving the project off the critical path.
-
-By modelling this lifecycle and the associated relationships, we were armed with a framework to not only build a RAID log, but to also build a set of natural human-in-the-loop workflows including:
+By modelling this lifecycle and the associated relationships, we were armed with a framework to build a robust RAID log, and a set of intuitive human-in-the-loop workflows including:
 * Status evolution based on relationships
 * Risk promotion to Issue
 * Automated follow-ups and escalation
@@ -73,93 +68,56 @@ By modelling this lifecycle and the associated relationships, we were armed with
 
 ## Extraction and human-in-the-loop
 
-RAIDs crop up in meetings, chat messages, emails, reports, and any other
-surface where people interact. They get discussed and tackled in an even
-broader set of tools, and their evolution is long and rarely clear-cut.
-This complexity is <Highlight>an opportunity for Tato to put its deep project
-knowledge, integrations, and agents to work</Highlight> to extract, monitor, and
-document RAID items across the lifecycle of a multi-year project.
+RAIDs appear in meetings, chat messages, emails, reports, and any other surface where people interact. Their evolution is long and rarely clear-cut, and their status is implicitly updated in conversations. This complexity is <Highlight>an opportunity for Tato to put its deep project knowledge, integrations, and agents to work</Highlight> to extract, monitor, and document RAID items.
 
 <ExtractionFlow />
 
-Meetings are the primary source of RAID items, but the items themselves
-are usually managed in Jira, Smartsheet, or plain old spreadsheets. Our
-first job was consolidating those sources into a normalized log that could
-act as a single source of truth. Tato updates the log after any activity,
-and pulls from external tools periodically or on command through MCPs and
-bespoke integrations.
+Meetings are the primary source of RAID item context, but the items themselves are managed in Jira, SharePoint, or plain old spreadsheets. Our first job was consolidating those sources into a normalized log that could act as a single source of truth.
 
-The RAID updates on the activity summary page started as a simple section
-showing the under-the-hood thinking of our agent. <Highlight>Exposing that machinery
-almost always overloads the user</Highlight>, and despite our best
-efforts, LLMs produce volume, which leads to an overwhelming number of
-items.
+Tato updates the log after any activity, and pulls from external tools periodically or on command through MCPs and bespoke integrations.
 
-Hiding the machinery was the first improvement, and it cut a lot of noise
-on its own, since a single meeting could produce upwards of 60 snippets for only a handful of RAID items. 
-From there I reduced the amount of text and added icons and
-avatars, which improved legibility and hierarchy and made the whole list
-easier to parse.
+Initially these updates were exposed as simple sections showing the under-the-hood thinking of our agent. <Highlight>Exposing that machinery almost always overloads the user</Highlight>, because despite our best efforts LLMs produce volume and lead to cognitive load. I hid that machinery to cut a lot of noise, since a single meeting could produce upwards of 60 snippets for a handful of RAID items.
+
+Then I reduced the amount of text and added icons and avatars, to improve legibility and hierarchy and make the list easier to parse.
 
 <NeedsReview />
 
-I also exposed two primary actions on each item, so tracking or dismissing
-is always within reach and the log stays tidy. These actions will also have downstream implications on the status of the item.
+I exposed two primary actions on each item. This is where the human can review the agent’s assumptions and trigger additional workflows by tracking or dismissing.
 
 <RiskTriage />
 
-Dismissing an item tucks it away, letting the system know this AI extraction was not useful.
-Tracking an item marks it as exceptionally relevant, which tells our agent to pay special attention to it moving forward. I used a subtle interaction to make this key action feel impactful and energetic.
+Dismissing an item tucks it away and changes its status, letting the agent know that this extraction was not useful.
+Tracking an item marks it as exceptionally relevant and updates its status. This tells our agent to pay special attention to it moving forward.
+
+To add delight I explored a subtle interaction to make this key action feel impactful and energetic.
 
 <TrackPress />
 
+Early feedback showed a perception that Tato was smarter and more nuanced, and that the system was easier to control. <Highlight>We've found our users' perception of quality to be as important as the quantitative improvements when it comes to interacting with an LLM.</Highlight>
 
-This first iteration landed well, with early feedback showing a perception
-that Tato was smarter and more nuanced. <Highlight>We've found our users' perception of quality to be just as important as the quantitative improvements when it comes to interacting with an LLM.</Highlight>
-
-I then reworked the entire
-summary page into a two column layout, giving RAID
-management its own first class surface. The user keeps meeting
-context in view while digging into items for proper grooming.
+As a final improvement to this workflow I reworked the entire summary page. A two-column layout gives RAID management its own first-class surface and keeps meeting context in view while the user grooms the outputs.
 
 <SummaryPanel />
 
 ## An auditable paper trail
 
-A well managed RAID log is also an accurate ledger of a project's
-evolution, and of what the team did to mitigate critical risks. Our
-history view was hard to reach, sometimes hidden behind multiple
-clicks, and it focused on diffs between versions. Diffs matter, but they
-fail to paint the most important picture: what caused a change, and when.
+A well managed RAID log is an accurate ledger of a project's evolution. This keeps teams and our agents accountable. Our history view was hard to reach, and focused purely on versions.
 
-Clarity matters even more when working alongside an agent. The history
-documents which changes the agent made and the reasoning behind them, so
-the human can understand them and correct them when necessary.
+The improved history documents which changes were made by people and the agent and the reasoning behind them. It exposes related activities and reasoning, so the human can understand updates and correct them when necessary.
 
 <HistoryDrawer />
 
-I tried many iterations for showing an item's history and ultimately kept
-the drawer we already had. The drawer offers the most real estate for
-understanding a risk and its history while letting the user stay in their
-current workflow, moving easily between every item in a list. Making it
-more visual and tightening the hierarchy also gave space back and
-increased legibility.
+I tried several iterations for the history and landed on a drawer with a clickable timeline. The drawer offers the most real estate for understanding a risk and its history while letting the user stay in their current workflow, with the option to open a full page if necessary.
 
 ## The ultimate control centre
 
-The last piece of this iteration was an improved control centre. Much of
-the work happens in the context of an activity summary, and the components
-and flows are largely shared, but we still wanted a delightful surface for
-managing the full log.
+The last piece of this project was an improved control centre. Much of the work of RAID management happens in the context of an activity summary, but we wanted a delightful primary surface for managing the full log.
 
 <RaidTable />
 
-I started with basic UX improvements: tightening space for
-more breathing room, grouping related controls, and making the table
-contents scrollable rather than the page, so the header, footer, and every available
-action stay visible. I also ensured the table had robust and intuitive keyboard navigation, including the skip to main content link, row navigation with arrow keys, proper focus management, and more.
+I started with basic UX improvements: tightening space for more breathing room, grouping related controls, making the table contents scrollable rather than the page so the header, footer, and every available action stay visible. I ensured the table had robust and intuitive keyboard navigation, including the skip to main content link, row navigation with arrow keys, proper focus management, and more.
 
-Finally, I built a collection of indicators to show impact, likelihood, and status. Each animation is driven by a single value, so it springs smoothly between any two values, and supports additional intermediate states.
+Finally, I built a collection of indicators to show impact, likelihood, and status. Each animation is driven by a single value so it springs smoothly between any two values, and supports additional intermediate states.
 
 <IndicatorDemo />
 
@@ -175,7 +133,7 @@ Finally, I built a collection of indicators to show impact, likelihood, and stat
 	]}
 />
 
-Although our user base is fairly small, especially when it comes to PMs who actually manage RAID, we've seen strong signals of adoption and value, including a 5x increase in items logged via chat in the 4 weeks since launch. <Highlight> Chat is one of the main ways users can generate new RAIDs and import existing items via MCP or document uploads. </Highlight>
+Although our user base is small, we've seen strong signals of adoption and value, including a 5x increase in items logged via chat in the 4 weeks since launch. <Highlight>Chat is one of the main ways users can generate new RAIDs and import existing items via MCP or document uploads.</Highlight>
 
 We've also received positive qualitative feedback from early users, including:
 
