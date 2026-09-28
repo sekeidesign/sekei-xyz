@@ -316,7 +316,7 @@ export function IndicatorDemo() {
 			className="my-6 w-full cursor-default"
 			inner={{
 				className:
-					"flex flex-col divide-y divide-gray-500/10 bg-gray-50 sm:flex-row sm:divide-x sm:divide-y-0",
+					"flex flex-col divide-y divide-gray-500/10 sm:flex-row sm:divide-x sm:divide-y-0",
 			}}
 		>
 			<StatusColumn />

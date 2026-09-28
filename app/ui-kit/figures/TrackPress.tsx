@@ -10,10 +10,10 @@ type Phase = "away" | "over" | "press" | "held" | "leaving" | "reset";
 
 /** One pass of the loop: approach, press, hold the tracked state, let go. */
 const SEQUENCE: { phase: Phase; ms: number }[] = [
-	{ phase: "away", ms: 2000 },
+	{ phase: "away", ms: 1200 },
 	{ phase: "over", ms: 700 },
 	{ phase: "press", ms: 150 },
-	{ phase: "held", ms: 1000 },
+	{ phase: "held", ms: 750 },
 	{ phase: "leaving", ms: 900 },
 	{ phase: "reset", ms: 100 },
 ];
@@ -36,7 +36,7 @@ const ON = { x: 8, y: 7 };
  * trip draws a loop. Made once: the path carries what it needs to pick up an
  * interrupted move from where it was.
  */
-const REACH = arc({ strength: 0.3, direction: "ccw" });
+const REACH = arc({ strength: 0.3 });
 
 /** Seconds the flame lags the release, in step with the ripple's own delay. */
 const FILL_DELAY = 0.075;
