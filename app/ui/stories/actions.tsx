@@ -23,7 +23,7 @@ function Outbound({ label = "Download" }: { label?: string }) {
 		<Button
 			variant="primary"
 			render={
-				<Link href="https://www.sekei.xyz" target="_blank" rel="noopener noreferrer" />
+				<Link href="https://www.sekei.design" target="_blank" rel="noopener noreferrer" />
 			}
 			className="group pl-2.5"
 		>

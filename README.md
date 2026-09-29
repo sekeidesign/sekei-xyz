@@ -1,6 +1,6 @@
-# sekei.xyz
+# sekei.design
 
-My site, live at [sekei.xyz](https://www.sekei.xyz): a timeline of shipped
+My site, live at [sekei.design](https://www.sekei.design): a timeline of shipped
 work, case studies, reading notes and UI experiments. Next.js App Router,
 Tailwind v4, Base UI, Motion.
 
@@ -12,7 +12,7 @@ own repo; this site keeps a vendored copy under `components/shad-fx/` and hosts
 the docs.
 
 - [Library and source](https://github.com/sekeidesign/shad-fx)
-- [Docs and playground](https://www.sekei.xyz/shad-fx)
+- [Docs and playground](https://www.sekei.design/shad-fx)
 
 `/registry/*` is a rewrite in `next.config.ts` onto that repo's `r/`, so the
 `@sekei` namespace keeps resolving through this domain.

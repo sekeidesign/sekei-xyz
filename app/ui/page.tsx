@@ -72,7 +72,7 @@ export default function UiKitIndex() {
 					UI kit
 				</h1>
 				<p className="max-w-lg text-[15px] leading-relaxed font-[420] text-gray-500">
-					Reusable components from sekei.xyz.
+					Reusable components from sekei.design.
 				</p>
 			</header>
 

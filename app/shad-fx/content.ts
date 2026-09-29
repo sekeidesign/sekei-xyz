@@ -34,7 +34,7 @@ export const SKILL_LIST: Skill[] = [
 
 export const REGISTRY_CONFIG = `{
   "registries": {
-    "@sekei": "https://www.sekei.xyz/registry/{name}.json"
+    "@sekei": "https://www.sekei.design/registry/{name}.json"
   }
 }`;
 
