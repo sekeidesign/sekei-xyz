@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 		default: "UI kit",
 		template: "%s | UI kit",
 	},
-	description: "The components behind sekei.xyz.",
+	description: "The components behind sekei.design.",
 	robots: { index: false, follow: false },
 };
 

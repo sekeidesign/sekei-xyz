@@ -46,7 +46,7 @@ export function TextLinks() {
 			I design and build at <TextLink href="https://tato.co" hasFavicon>Tato</TextLink>,
 			ship experiments in{" "}
 			<TextLink href="https://motion.dev" hasFavicon>Motion</TextLink>, and
-			write about <TextLink href="https://www.sekei.xyz">what I learn</TextLink>.
+			write about <TextLink href="https://www.sekei.design">what I learn</TextLink>.
 		</p>
 	);
 }
@@ -247,7 +247,7 @@ export function CodeJson() {
 				lang="json"
 				code={`{
   "registries": {
-    "@sekei": "https://www.sekei.xyz/registry/{name}.json"
+    "@sekei": "https://www.sekei.design/registry/{name}.json"
   }
 }`}
 			/>

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 const CONTACT = [
 	{ label: "pg.gonni@gmail.com", href: "mailto:pg.gonni@gmail.com" },
-	{ label: "sekei.xyz", href: "https://www.sekei.xyz" },
+	{ label: "sekei.design", href: "https://www.sekei.design" },
 	{ label: "github.com/sekeidesign", href: "https://github.com/sekeidesign" },
 ];
 

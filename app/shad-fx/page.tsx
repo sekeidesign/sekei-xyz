@@ -62,7 +62,7 @@ export default function ShadFxDocs() {
 				<div className="flex flex-col p-4 md:p-6">
 					<header className="flex flex-col gap-6">
 						<div className="flex items-center justify-between gap-3">
-							<BackLink label="Back to sekei.xyz" iconOnly />
+							<BackLink label="Back to sekei.design" iconOnly />
 							<div className="flex items-center gap-2">
 								<CopyAgentPrompt prompt={agentPrompt()} />
 								<Button

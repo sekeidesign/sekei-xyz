@@ -5,7 +5,7 @@ import { SUMMARY } from "../shad-fx/content";
 export const dynamic = "force-static";
 
 export function GET() {
-	const body = `# sekei.xyz
+	const body = `# sekei.design
 
 > PG Gonni's site: a timeline of shipped work, case studies, reading notes and UI experiments, plus the docs for shad-fx.
 
