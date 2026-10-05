@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { personJsonLd, serializeJsonLd } from "@/lib/agent-content";
 import { getTimeline } from "@/lib/timeline";
 import { TimelineFeed } from "../TimelineFeed";
 
@@ -33,6 +34,11 @@ export default async function HomePage() {
 
 	return (
 		<>
+			<script
+				type="application/ld+json"
+				// biome-ignore lint/security/noDangerouslySetInnerHtml: serializeJsonLd escapes "<"
+				dangerouslySetInnerHTML={{ __html: serializeJsonLd(personJsonLd()) }}
+			/>
 			{/* The feed's cards are the page's content and each carries its own h2,
 			    so the page's h1 is the site itself. */}
 			<h1 className="sr-only">PG Gonni — building software in Montréal</h1>

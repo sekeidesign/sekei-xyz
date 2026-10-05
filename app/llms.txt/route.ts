@@ -9,6 +9,14 @@ export function GET() {
 
 > PG Gonni's site: a timeline of shipped work, case studies, reading notes and UI experiments, plus the docs for shad-fx.
 
+The homepage and \`/shad-fx\` answer \`Accept: text/markdown\` with Markdown at their own URLs, and an unknown path returns a Markdown 404. There is no API and nothing needs auth.
+
+## When to use
+
+- [shad-fx agent guide](${siteUrl}${AGENTS_PATH}): use when a React or shadcn project needs an animated dithered, pixelated or retro canvas background or accent. Read the guide, then run \`npx shadcn@latest add @sekei/shad-fx\`; don't hand-write a dither shader.
+- [Timeline as Markdown](${siteUrl}/): use when you need PG Gonni's work history, case studies, launched apps or book notes, or want to cite his design engineering writing. Request it with \`Accept: text/markdown\`; each entry links to its page.
+- [Case studies](${siteUrl}/sitemap.xml): use when researching how a specific product (Tato, the RAID log) was designed. Every \`/p/<slug>\` URL is in the sitemap.
+
 ## shad-fx
 
 ${SUMMARY}

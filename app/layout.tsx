@@ -7,6 +7,7 @@ import { TooltipProvider, TooltipSurface } from "./ui-kit/Tooltip";
 import { MotionProvider } from "./ui-kit/motion/MotionProvider";
 import { InputModality } from "./ui-kit/InputModality";
 import { NavigationTracker } from "./ui-kit/NavigationTracker";
+import { SITE_DESCRIPTION } from "@/lib/agent-content";
 import { siteUrl } from "@/lib/site";
 
 const geistSans = Geist({
@@ -33,8 +34,7 @@ export const metadata: Metadata = {
 		default: "PG Gonni | Building software in Montréal",
 		template: "%s | PG Gonni",
 	},
-	description:
-		"PG Gonni is a design engineer in Montréal building interface experiments, apps and case studies. A running timeline of what he ships, reads and writes.",
+	description: SITE_DESCRIPTION,
 	// react-doctor-disable-next-line no-unguarded-throwing-parse-call -- siteUrl is either a literal or "https://" plus a non-empty host, so both branches parse
 	metadataBase: new URL(siteUrl),
 	openGraph: {
