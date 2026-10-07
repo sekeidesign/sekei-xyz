@@ -205,8 +205,17 @@ function Link({ gap }: { gap?: boolean }) {
  */
 function MeetingFlow() {
 	return (
-		<Surface className="w-full" inner={{ className: `flex justify-center px-10 pt-10 pb-20 ${DOTS}` }}>
-			<div className="flex items-center gap-2 text-sm">
+		<Surface className="w-full" inner={{ className: `flex justify-center px-10 pt-16 pb-20 ${DOTS}` }}>
+			<div className="relative flex items-center gap-2 text-sm">
+				<div className="absolute right-8 bottom-full left-8 mb-2 h-5 rounded-t-lg border-x-2 border-t-2 border-dashed border-gray-400">
+					<svg
+						viewBox="0 0 10 6"
+						aria-hidden="true"
+						className="absolute top-full -left-px h-1.5 w-2.5 -translate-x-1/2 fill-gray-400"
+					>
+						<path d="M0 0h10L5 6z" />
+					</svg>
+				</div>
 				<div className="relative flex items-center gap-2">
 					<Step gap>Prepare agenda</Step>
 					<Link gap />
@@ -550,6 +559,7 @@ export const SLIDES: Slide[] = [
 			"Three initiatives. One: human in the loop, so people review, track and dismiss what the agent extracts. Two: navigable history, the ledger of changes. Three: a RAID management dashboard.",
 			"And a layer across all three: agent write-backs. You can ask Tato to read or write any item.",
 			"Then switch to the live demo, about nine minutes:",
+			"First, set expectations: I did a ton of iteration on how to display a RAID item, its history, and the rest. Flash the Paper file to show the explorations, then go to the product.",
 			"Meeting summary → extracted RAID items → track and dismiss. Explain what each one tells Tato.",
 			"Open an item → history drawer → walk the timeline, activity to update.",
 			"While the drawer is open, talk through the hard problem: history. I ran workshops with Alex on three questions. When does an activity map to an update: when it happened, when it was processed, or when it was tied to the item? How do we handle updates, reverts and dismisses? And how do we make it work without proper event sourcing, a four-to-six-month project that's still in progress?",
