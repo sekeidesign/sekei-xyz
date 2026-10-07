@@ -3,4 +3,4 @@
 export const siteUrl =
 	process.env.VERCEL_ENV !== "production" && process.env.VERCEL_URL
 		? `https://${process.env.VERCEL_URL}`
-		: "https://www.sekei.xyz";
+		: "https://www.sekei.design";
