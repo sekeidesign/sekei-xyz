@@ -1,14 +1,25 @@
 "use client";
 
 import { m } from "motion/react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
+import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import useMeasure from "react-use-measure";
+import { Button } from "@ui-kit/Button";
+import { BackIcon } from "@ui-kit/icons/BackIcon";
 import { cn } from "@ui-kit/cn";
 import { SECTIONS, SLIDES, type Slide, stagger } from "./slides";
 
 const WIDTH = 1280;
 const HEIGHT = 720;
 const CHANNEL = "sekei-present";
+const FOOTER = 40;
+
+const Agentation =
+	process.env.NODE_ENV === "development"
+		? dynamic(() => import("agentation").then((mod) => mod.Agentation), { ssr: false })
+		: () => null;
+const STEP = "disabled:cursor-default disabled:opacity-40 disabled:hover:bg-white";
 const PAPER = "dot-matrix bg-gray-50 [--dot-color:var(--color-gray-200)] [--dot-gap:14px] [--dot-size:0.75px]";
 
 type Message = { type: "goto"; index: number } | { type: "hello" };
@@ -58,15 +69,18 @@ function useDeck() {
 	useEffect(() => {
 		const onKey = (event: KeyboardEvent) => {
 			if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey) return;
-			if (ownsKey(event.target, event.key)) {
-				if (event.key === "Escape") (event.target as HTMLElement).blur();
+			// The Agentation toolbar lives in a shadow root, which retargets
+			// event.target to its host; the composed path still holds the field.
+			const target = event.composedPath()[0] ?? null;
+			if (ownsKey(target, event.key)) {
+				if (event.key === "Escape" && target instanceof HTMLElement) target.blur();
 				return;
 			}
 			const forward = ["ArrowRight", "ArrowDown", "PageDown", " "];
 			const back = ["ArrowLeft", "ArrowUp", "PageUp"];
 			if (forward.includes(event.key)) go(readHash() + 1);
 			else if (back.includes(event.key)) go(readHash() - 1);
-			else if (event.key === "Home") go(0);
+			else if (event.key === "Home" || event.key === "r") go(0);
 			else if (event.key === "End") go(SLIDES.length - 1);
 			else if (event.key === "p") window.open(`/present?presenter#${readHash() + 1}`, "presenter");
 			else if (event.key === "f") {
@@ -83,24 +97,40 @@ function useDeck() {
 }
 
 /** A slide drawn at its design size and zoomed to fit its box, so figures reflow at the scale they were built for. */
-function Scaled({ slide, className }: { slide: Slide; className?: string }) {
+function Scaled({
+	slide,
+	className,
+	footer,
+}: {
+	slide: Slide;
+	className?: string;
+	footer?: ReactNode;
+}) {
 	const id = SLIDES.indexOf(slide);
 	const [ref, bounds] = useMeasure();
-	const zoom = bounds.width ? Math.min(bounds.width / WIDTH, bounds.height / HEIGHT) : 0;
+	const reserved = footer ? FOOTER : 0;
+	const zoom = bounds.width ? Math.min(bounds.width / WIDTH, (bounds.height - reserved) / HEIGHT) : 0;
 
 	return (
 		<div ref={ref} className={cn("flex min-h-0 min-w-0 items-center justify-center", className)}>
 			{zoom > 0 && (
-				<m.div
-					key={id}
-					initial="hidden"
-					animate="show"
-					variants={stagger(0.1, 0.05)}
-					style={{ width: WIDTH, height: HEIGHT, zoom }}
-					className="shrink-0 overflow-hidden rounded-lg bg-gray-100 text-[15px] shadow-xl shadow-gray-900/5 ring-1 ring-gray-500/15"
-				>
-					{slide.body}
-				</m.div>
+				<div className="flex flex-col" style={{ width: WIDTH * zoom }}>
+					<m.div
+						key={id}
+						initial="hidden"
+						animate="show"
+						variants={stagger(0.1, 0.05)}
+						style={{ width: WIDTH, height: HEIGHT, zoom }}
+						className="shrink-0 overflow-hidden rounded-lg bg-gray-100 text-[15px] shadow-xl shadow-gray-900/5 ring-1 ring-gray-500/15"
+					>
+						{slide.body}
+					</m.div>
+					{footer && (
+						<div className="flex items-center justify-between" style={{ height: FOOTER }}>
+							{footer}
+						</div>
+					)}
+				</div>
 			)}
 		</div>
 	);
@@ -114,18 +144,54 @@ export function Deck() {
 	}, []);
 
 	const deck = useDeck();
-	return presenter ? <Presenter {...deck} /> : <Audience index={deck.index} />;
+	return presenter ? <Presenter {...deck} /> : <Audience {...deck} />;
 }
 
-function Audience({ index }: { index: number }) {
-	const slide = SLIDES[index];
-
+function Audience({ index, go }: { index: number; go: (index: number) => void }) {
 	return (
-		<main className={cn("relative flex h-dvh w-full p-10", PAPER)}>
-			<Scaled slide={slide} className="flex-1" />
-			<span className="absolute right-4 bottom-1 font-pixel text-xs text-gray-400 tabular-nums">
-				{index + 1} / {SLIDES.length}
-			</span>
+		<main className={cn("flex h-dvh w-full px-10 pt-10", PAPER)}>
+			<Scaled
+				slide={SLIDES[index]}
+				className="flex-1"
+				footer={
+					<>
+						<div className="flex gap-1">
+							<Button
+								iconOnly
+								aria-label="Previous slide"
+								disabled={index === 0}
+								onClick={() => go(index - 1)}
+								className={STEP}
+							>
+								<ChevronLeftIcon className="size-4" />
+							</Button>
+							<Button
+								iconOnly
+								aria-label="Next slide"
+								disabled={index === SLIDES.length - 1}
+								onClick={() => go(index + 1)}
+								className={STEP}
+							>
+								<ChevronRightIcon className="size-4" />
+							</Button>
+							<div aria-hidden="true" className="mx-1 h-4 w-px self-center bg-gray-500/15" />
+							<Button
+								iconOnly
+								aria-label="Back to the first slide"
+								disabled={index === 0}
+								onClick={() => go(0)}
+								className={STEP}
+							>
+								<BackIcon size={16} />
+							</Button>
+						</div>
+						<span className="text-xs text-gray-400 tabular-nums">
+							{index + 1} / {SLIDES.length}
+						</span>
+					</>
+				}
+			/>
+			<Agentation endpoint="http://localhost:4747" appName="Presentation" useHashLocation />
 		</main>
 	);
 }
@@ -134,7 +200,7 @@ function formatTime(ms: number) {
 	const total = Math.max(0, Math.floor(ms / 1000));
 	const m = Math.floor(total / 60);
 	const s = total % 60;
-	return `${m}:${String(s).padStart(2, "0")}`;
+	return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
 function useClock() {
@@ -207,38 +273,36 @@ function Presenter({ index, go }: { index: number; go: (index: number) => void }
 
 			<div className="panel flex min-h-0 flex-col">
 				<header className="flex items-center justify-between gap-4 border-b border-gray-200 p-5">
-					<div className="flex items-baseline gap-3">
+					<div className="flex items-center gap-3">
 						<span className={cn("font-pixel text-4xl tabular-nums", behind ? "text-red-600" : "text-gray-900")}>
 							{formatTime(clock.elapsed)}
 						</span>
-						<button
-							type="button"
-							onClick={clock.running ? clock.reset : clock.start}
-							className="rounded-md bg-white px-2 py-1 text-xs font-[500] text-gray-700 ring-1 ring-gray-500/15"
-						>
+						<Button onClick={clock.running ? clock.reset : clock.start} className="min-w-16 justify-center">
 							{clock.running ? "Reset" : "Start"}
-						</button>
+						</Button>
 					</div>
 					<div className="flex items-center gap-2 text-sm text-gray-500 tabular-nums">
-						<button
-							type="button"
-							onClick={() => go(index - 1)}
-							className="rounded-md bg-white px-2 py-1 ring-1 ring-gray-500/15"
+						<Button
+							iconOnly
 							aria-label="Previous slide"
+							disabled={index === 0}
+							onClick={() => go(index - 1)}
+							className={STEP}
 						>
-							←
-						</button>
+							<ChevronLeftIcon className="size-4" />
+						</Button>
 						<span>
 							{index + 1} / {SLIDES.length}
 						</span>
-						<button
-							type="button"
-							onClick={() => go(index + 1)}
-							className="rounded-md bg-white px-2 py-1 ring-1 ring-gray-500/15"
+						<Button
+							iconOnly
 							aria-label="Next slide"
+							disabled={index === SLIDES.length - 1}
+							onClick={() => go(index + 1)}
+							className={STEP}
 						>
-							→
-						</button>
+							<ChevronRightIcon className="size-4" />
+						</Button>
 					</div>
 				</header>
 				<div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-6">

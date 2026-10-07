@@ -32,6 +32,21 @@ const nextConfig: NextConfig = {
     ];
   },
 
+  // The deck and its media (customer logos, product recordings) are for one
+  // interview, so nothing under /present should reach a search index. The
+  // header covers the files a meta tag can't.
+  async headers() {
+    return ["/present", "/present/:path*"].map((source) => ({
+      source,
+      headers: [
+        {
+          key: "X-Robots-Tag",
+          value: "noindex, nofollow, noarchive, nosnippet, noimageindex",
+        },
+      ],
+    }));
+  },
+
   async redirects() {
     return [
       // Filters moved from route segments to a query param, so several can be

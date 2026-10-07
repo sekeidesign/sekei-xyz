@@ -4,15 +4,22 @@ import { m, type Variants } from "motion/react";
 import { Fragment, type ReactNode } from "react";
 import { Quote } from "@ui-kit/Quote";
 import { Stats } from "@ui-kit/Stats";
-import { HistoryDrawer } from "@ui-kit/figures/HistoryDrawer";
-import { NeedsReview } from "@ui-kit/figures/NeedsReview";
-import { TrackPress } from "@ui-kit/figures/TrackPress";
+import Image from "next/image";
+import { cn } from "@ui-kit/cn";
+import { Button } from "@ui-kit/Button";
+import { Problems } from "@ui-kit/Problems";
+import { ArrowIcon } from "@ui-kit/icons/ArrowIcon";
+import { VideoIcon } from "@ui-kit/icons/VideoIcon";
+import { SURFACE_INNER, SURFACE_OUTER } from "@ui-kit/post/surface";
+import { Surface } from "@ui-kit/Surface";
+import { ExtractionFlow } from "@ui-kit/figures/ExtractionFlow";
+import { IndicatorDemo } from "@ui-kit/figures/IndicatorDemo";
+import { RiskLifecycle } from "@ui-kit/figures/RiskFlows";
 import { Asset } from "./Asset";
 
 export const SECTIONS = [
-	{ name: "Opening", minutes: 1 },
-	{ name: "RAID log", minutes: 22 },
-	{ name: "Unified search", minutes: 18 },
+	{ name: "RAID log", minutes: 21 },
+	{ name: "Meeting experience", minutes: 19 },
 	{ name: "Q&A", minutes: 15 },
 ] as const;
 
@@ -63,11 +70,11 @@ function Words({ children }: { children: ReactNode }) {
 	));
 }
 
-function Heading({ children }: { children: ReactNode }) {
+function Heading({ children, wide }: { children: ReactNode; wide?: boolean }) {
 	return (
 		<m.h2
 			variants={stagger(0.035)}
-			className="text-[44px] leading-[1.1] font-[550] tracking-tight text-balance text-gray-900"
+			className={cn("text-5xl leading-[1.1] tracking-tight text-balance text-gray-900", !wide && "max-w-3/4")}
 		>
 			<Words>{children}</Words>
 		</m.h2>
@@ -78,18 +85,18 @@ function Display({ children, className }: { children: ReactNode; className?: str
 	return (
 		<m.h1
 			variants={stagger(0.045)}
-			className={`max-w-[900px] text-[68px] leading-[1.02] font-[550] tracking-tight text-balance text-gray-900 ${className ?? ""}`}
+			className={`max-w-3/4 text-7xl leading-none tracking-tight text-balance text-gray-900 ${className ?? ""}`}
 		>
 			<Words>{children}</Words>
 		</m.h1>
 	);
 }
 
-function Lines({ items }: { items: ReactNode[] }) {
+function Lines({ items, wide }: { items: ReactNode[]; wide?: boolean }) {
 	return (
 		<m.ul
 			variants={stagger(0.09)}
-			className="flex flex-col gap-3 text-2xl leading-snug text-pretty text-gray-600"
+			className={cn("flex flex-col gap-3 text-lg leading-snug text-pretty text-gray-600", !wide && "max-w-3/4")}
 		>
 			{items.map((item, index) => (
 				<m.li key={index} variants={rise}>
@@ -100,15 +107,6 @@ function Lines({ items }: { items: ReactNode[] }) {
 	);
 }
 
-function Cards({ children, className }: { children: ReactNode; className: string }) {
-	return (
-		<m.ol variants={stagger(0.08)} className={className}>
-			{children}
-		</m.ol>
-	);
-}
-
-const CARD = "flex flex-col rounded-xl bg-white p-6 ring-1 ring-gray-500/10";
 
 function Title({
 	title,
@@ -124,7 +122,7 @@ function Title({
 			<div className="flex flex-col gap-5">
 				<Display>{title}</Display>
 				{sub && (
-					<m.p variants={rise} className="max-w-[760px] text-2xl text-pretty text-gray-500">
+					<m.p variants={rise} className="max-w-3xl text-2xl text-pretty text-gray-500">
 						{sub}
 					</m.p>
 				)}
@@ -132,7 +130,7 @@ function Title({
 			<m.dl variants={stagger(0.08)} className="grid grid-cols-3 gap-8">
 				{meta?.map(({ label, value }) => (
 					<m.div key={label} variants={rise} className="flex flex-col gap-1">
-						<dt className="text-sm font-[500] text-gray-400">{label}</dt>
+						<dt className="text-sm text-gray-400">{label}</dt>
 						<dd className="text-base text-pretty text-gray-700">{value}</dd>
 					</m.div>
 				))}
@@ -141,375 +139,605 @@ function Title({
 	);
 }
 
-function Statement({ heading, children }: { heading: string; children?: ReactNode }) {
+function Statement({
+	heading,
+	lede,
+	children,
+}: {
+	heading: string;
+	lede?: string;
+	children?: ReactNode;
+}) {
 	return (
 		<div className="flex h-full flex-col justify-between gap-10 p-20">
-			<Heading>{heading}</Heading>
+			<div className="flex flex-col gap-5">
+				<Heading>{heading}</Heading>
+				{lede && (
+					<m.p variants={rise} className="max-w-3/4 text-lg leading-snug text-pretty text-gray-600">
+						{lede}
+					</m.p>
+				)}
+			</div>
 			{children}
 		</div>
 	);
 }
 
-/**
- * Text on the left, a figure on the right. The case-study figures bleed past
- * the post column with negative margins, which the slot zeroes.
- */
-function Split({
-	heading,
-	children,
-	figure,
+/** The UI kit's lists and stats carry their own weights and mono numerals; on a slide everything shares one face. */
+const ONE_FACE = "[&_*]:font-sans! [&_*]:font-normal!";
+
+/** Drops a UI-kit Surface's frame and card so the figure sits straight on the slide. */
+const BARE =
+	"[&>div]:bg-transparent! [&>div]:p-0! [&>div]:shadow-none! [&>div]:ring-0! [&>div>div]:bg-transparent! [&>div>div]:shadow-none! [&>div>div]:ring-0!";
+
+function List({
+	label,
+	items,
+	wide,
+	dense,
 }: {
-	heading: string;
-	children?: ReactNode;
-	figure: ReactNode;
+	label: string;
+	items: string[];
+	wide?: boolean;
+	dense?: boolean;
 }) {
 	return (
-		<div className="grid h-full grid-cols-[1fr_768px] items-center gap-12 p-12 pl-20">
-			<div className="flex h-full flex-col justify-between gap-8 py-8">
-				<Heading>{heading}</Heading>
+		<Reveal className={cn("[&>*]:my-0!", ONE_FACE, !wide && "max-w-3/4", dense && "[&_li]:py-3! [&>div>div>div:first-child]:hidden")}>
+			<Problems label={label} items={items} />
+		</Reveal>
+	);
+}
+
+const DOTS =
+	"dot-matrix bg-gray-50 [--dot-color:var(--color-gray-200)] [--dot-gap:14px] [--dot-size:0.75px]";
+
+function Step({ children, gap }: { children: ReactNode; gap?: boolean }) {
+	return <span className={cn("whitespace-nowrap", gap ? "text-gray-500" : "text-blue-600")}>{children}</span>;
+}
+
+function Link({ gap }: { gap?: boolean }) {
+	return <span className={cn("w-8 shrink-0 border-t-2", gap ? "border-dashed border-gray-400" : "border-blue-600")} />;
+}
+
+/**
+ * Drawn by hand rather than with Flow: the renderer can't mute a step or
+ * annotate a span of them, and the gap before the meeting is the point.
+ */
+function MeetingFlow() {
+	return (
+		<Surface className="w-full" inner={{ className: `flex justify-center px-10 pt-10 pb-20 ${DOTS}` }}>
+			<div className="flex items-center gap-2 text-sm">
+				<div className="relative flex items-center gap-2">
+					<Step gap>Prepare agenda</Step>
+					<Link gap />
+					<Step gap>Notify owners</Step>
+					<div className="absolute top-full right-0 left-0 mt-3 flex flex-col items-center">
+						<span className="h-2 w-full border-x border-b border-dotted border-gray-400" />
+						<span className="h-2 border-l border-dotted border-gray-400" />
+						<span className="text-center text-xs leading-tight whitespace-nowrap text-gray-600">
+							No Tato before the meeting
+							<br />
+							the biggest opportunity
+						</span>
+					</div>
+				</div>
+				<Link gap />
+				<Step>Capture outcomes</Step>
+				<Link />
+				<Step>Review recap</Step>
+				<Link />
+				<Step>Share recap</Step>
+			</div>
+		</Surface>
+	);
+}
+
+/** The point on top, the recording underneath fading out where the live demo takes over. */
+function DemoSlide({
+	heading,
+	lede,
+	items,
+	src,
+	label,
+	href,
+}: {
+	heading: string;
+	lede?: string;
+	items: string[];
+	src: string;
+	label: string;
+	href?: string;
+}) {
+	return (
+		<div className="relative flex h-full flex-col gap-8 px-20 pt-20">
+			<div className="grid grid-cols-2 items-start gap-12">
+				<div className="flex flex-col gap-5">
+					<Heading wide>{heading}</Heading>
+					{lede && (
+						<m.p variants={rise} className="text-lg leading-snug text-pretty text-gray-600">
+							{lede}
+						</m.p>
+					)}
+				</div>
+				<List wide dense label="" items={items} />
+			</div>
+			<Reveal className="mask-b-from-30% mask-b-to-55%">
+				<Asset src={src} label={label} className="aspect-[8/5]" />
+			</Reveal>
+			{href && (
+				<m.div variants={rise} className="absolute bottom-10 left-1/2 -translate-x-1/2">
+					<Button
+						variant="primary"
+						render={<a href={href} target="_blank" rel="noreferrer" />}
+						className="h-11 gap-2 px-5 text-base"
+					>
+						Live demo
+						<ArrowIcon rotate={45} />
+					</Button>
+				</m.div>
+			)}
+		</div>
+	);
+}
+
+/** Sam's layout: the argument on the left, the one number that proves it drawn on the right. */
+function Visual({
+	heading,
+	lede,
+	children,
+	visual,
+}: {
+	heading: string;
+	lede?: string;
+	children?: ReactNode;
+	visual: ReactNode;
+}) {
+	return (
+		<div className="grid h-full grid-cols-2">
+			<div className="flex flex-col justify-between gap-10 p-20 pr-12">
+				<div className="flex flex-col gap-5">
+					<Heading wide>{heading}</Heading>
+					{lede && (
+						<m.p variants={rise} className="text-lg leading-snug text-pretty text-gray-600">
+							{lede}
+						</m.p>
+					)}
+				</div>
 				{children}
 			</div>
-			<Reveal className="overflow-hidden rounded-xl [&>*]:m-0! [&>*]:mx-0! [&>*]:my-0!">
-				{figure}
-			</Reveal>
+			<div className="flex items-center justify-center overflow-hidden border-l border-gray-200 bg-white">{visual}</div>
 		</div>
+	);
+}
+
+function Coverage() {
+	return (
+		<>
+			<Meter share={0.5} label="Meetings Tato joins" value="~50%" />
+			<m.div variants={rise} className="relative">
+				<div className="grid grid-cols-[repeat(5,2.5rem)] gap-3">
+					{Array.from({ length: 20 }, (_, tile) => (
+						<span
+							key={tile}
+							className={cn(
+								"flex size-10 items-center justify-center rounded-full",
+								tile < 10 ? "bg-gray-100 text-gray-700" : "border border-dashed border-gray-300 text-gray-300",
+							)}
+						>
+							<VideoIcon size={20} />
+						</span>
+					))}
+				</div>
+				{/* The missed half is the bottom two rows: two 40px rows and a 12px gap in, the line sits mid-gap. */}
+				<span className="absolute top-24.5 left-0 -right-32 border-t border-dotted border-gray-300" />
+				<span className="absolute -bottom-1.5 left-0 -right-32 border-t border-dotted border-gray-300" />
+				<div className="absolute top-24.5 -bottom-1.5 -right-20 flex w-0 flex-col items-center">
+					<span className="flex-1 border-l border-dotted border-gray-300" />
+					<span className="py-1.5 text-center text-xs leading-tight whitespace-nowrap text-gray-500">
+						~50% lost
+						<br />
+						visibility and data
+					</span>
+					<span className="flex-1 border-l border-dotted border-gray-300" />
+				</div>
+			</m.div>
+		</>
+	);
+}
+
+const MEETING_DEMO = "http://localhost:3000";
+const LIVE_DEMO = "https://demo.tato.co/dashboard/rad/risks?pageSize=40&tracked=tracked";
+
+const CUSTOMERS = [
+	{ name: "Agropur", src: "agropur.png" },
+	{ name: "Bridor", src: "bridor.svg", wordmark: true },
+	{ name: "EBC", src: "ebc.png" },
+	{ name: "Gestisoft", src: "gestisoft.svg", wordmark: true },
+	{ name: "HEC Montréal", src: "hec.png" },
+	{ name: "Héma-Québec", src: "hema-quebec.png" },
+	{ name: "Héroux-Devtek", src: "heroux-devtek.svg", wordmark: true },
+	{ name: "LIDD", src: "lidd.png" },
+	{ name: "NYLL", src: "nyll.png" },
+	{ name: "SIS Global", src: "sis-global.png" },
+	{ name: "SQI", src: "sqi.jpg" },
+	{ name: "Xerox", src: "xerox.png" },
+];
+
+function Customers({ active }: { active: string }) {
+	return (
+		<m.ul variants={rise} className="grid grid-cols-6 gap-3">
+			{CUSTOMERS.map(({ name, src, wordmark }) => (
+				<li
+					key={name}
+					className={cn(
+						"rounded-full",
+						SURFACE_OUTER,
+						name === active && "outline-2 outline-offset-2 outline-accent",
+					)}
+				>
+					<div className={cn("flex size-10 items-center justify-center rounded-full", SURFACE_INNER)}>
+						<Image
+							src={`/present/customers/${src}`}
+							alt={name}
+							width={40}
+							height={40}
+							unoptimized
+							className={cn(
+								wordmark ? "h-auto w-4/5" : "size-full object-cover",
+								name !== active && "opacity-40 grayscale",
+							)}
+						/>
+					</div>
+				</li>
+			))}
+		</m.ul>
+	);
+}
+
+function Meter({ share, label, value }: { share: number; label: string; value: string }) {
+	return (
+		<m.div variants={rise} className="flex flex-col gap-2">
+			<div className="h-2 overflow-hidden rounded-[1px] bg-gray-100">
+				<div style={{ width: `${share * 100}%` }} className="h-full rounded-[1px] bg-gray-800" />
+			</div>
+			<div className="flex justify-between text-sm text-gray-500">
+				<span>{label}</span>
+				<span className="text-gray-900 tabular-nums">{value}</span>
+			</div>
+		</m.div>
+	);
+}
+
+function Outcome({ children }: { children: ReactNode }) {
+	return (
+		<m.div variants={stagger(0.15, 0.2)} className="flex w-max flex-col gap-10">
+			{children}
+		</m.div>
 	);
 }
 
 export const SLIDES: Slide[] = [
 	{
-		section: "Opening",
-		label: "Two Tato projects",
-		body: (
-			<div className="flex h-full flex-col justify-between p-20">
-				<Display>How should people work alongside an agent?</Display>
-				<Cards className="grid grid-cols-2 gap-6">
-					{[
-						["01", "RAID log with a human in the loop", "Shipped"],
-						["02", "Unified search & chat", "In rollout behind a flag"],
-					].map(([n, name, status]) => (
-						<m.li key={n} variants={rise} className={`${CARD} gap-2`}>
-							<span className="font-pixel text-sm text-gray-400">{n}</span>
-							<span className="text-2xl font-[550] text-gray-900">{name}</span>
-							<span className="text-base text-gray-500">{status}</span>
-						</m.li>
-					))}
-				</Cards>
-			</div>
-		),
-		notes: [
-			"Since we've covered my background, straight into the work.",
-			"Two Tato projects. The RAID log, which shipped, and unified search and chat, which is in rollout behind a flag.",
-			"Both tackle the same question: how should people work alongside an agent? I'll show both live in the product.",
-		],
-	},
-
-	{
 		section: "RAID log",
 		label: "Title",
 		body: (
 			<Title
-				title="A RAID log with a human in the loop"
-				sub="End-to-end ownership: research, the model, design, and the front-end."
-				meta={[
-					{ label: "Team", value: "Me on design and front-end (16 PRs). Alex Hermann, backend. Benjamin Ryan, customer success." },
-					{ label: "Timeline", value: "July to September 2026" },
-					{ label: "Role", value: "No PM on the project, so I was acting PM" },
-				]}
+				title="Closing the loop on an AI native RAID log"
+				sub="How I built an agentic RAID log to automate manual work, and increased coverage over customer data to help close the loop on complex projects."
 			/>
 		),
 		notes: [
-			"Three of us. I owned design and front-end, 16 PRs. Alex Hermann on backend, Benjamin Ryan on customer success.",
-			"No PM, so I was acting PM: scoping, research, and the contract with engineering.",
-			"How we learned, in one breath: domain research into customers' own logs, SAP and RAID best practice; partner feedback through Benjamin and customer calls; then ship, observe, iterate. Seed stage, around nine customers.",
+			"We've covered my background, so straight into the work.",
+			"Two Tato projects, told as one story: the RAID log, the coverage gap it exposed, and the meeting experience we built to close it.",
 		],
 	},
 	{
 		section: "RAID log",
-		label: "Problem",
+		label: "Why RAID matters",
 		body: (
-			<Statement heading="RAID updates happen in meetings, and never reach the log">
+			<Visual
+				heading="Existing workflows are slow, labour intensive, and full of gaps"
+				visual={
+					<Reveal className={`w-full px-10 [&>*]:my-0! ${BARE} ${ONE_FACE}`}>
+						<ExtractionFlow />
+					</Reveal>
+				}
+			>
 				<Lines
+					wide
 					items={[
-						"Programs run three to five years",
-						"The log lives in spreadsheets and SharePoint",
-						"One PM keeps it, so everyone waits on them",
+						"RAID maps how a project is really progressing. It drives executive reporting and keeps the project on track.",
+						"But the PM of a project can't be in every meeting, see every email, read every chat message. This causes gaps in information and delays on getting the latest source of truth.",
+						"Spreadsheets make this worse. They are cumbersome to update, and hard to reason over. They spread decisions and decentralize truth.",
 					]}
 				/>
-			</Statement>
+			</Visual>
 		),
 		notes: [
-			"RAID: Risks, Action items, Issues, Decisions. On a multi-year transformation program it's the record of what could knock the project off its critical path.",
-			"In practice it's a spreadsheet or a SharePoint list. One PM maintains it, so the team waits on them for the current picture.",
-			"And the updates happen in meetings. Someone raises a risk, someone agrees an action, and it never makes it into the log.",
+			"RAID: Risks, Action items, Issues, Decisions. It maps the reality of how a project is progressing, drives executive reporting, and keeps the project on track.",
+			"And it's still filled in by hand in spreadsheets. That's extra labour, and more mistakes.",
+			"The PM can't be in every meeting, see every email or read every chat message, so information has gaps and the source of truth lags. Spreadsheets make it worse: cumbersome to update, hard to reason over, and they scatter decisions.",
+			"The PM can't be in every meeting, but Tato can.",
 		],
 	},
 	{
 		section: "RAID log",
-		label: "The bet",
+		label: "Starting point",
 		body: (
-			<Statement heading="Tato is already in the meeting. Will PMs trust what it writes?">
-				<Cards className="grid grid-cols-3 gap-6">
-					{[
-						["Human in the loop", "The agent proposes, people decide"],
-						["Less noise", "Show the outcome, not the machinery"],
-						["A ledger", "Every change, and why it happened"],
-					].map(([title, body]) => (
-						<m.li key={title} variants={rise} className={`${CARD} gap-2`}>
-							<span className="text-2xl font-[550] text-gray-900">{title}</span>
-							<span className="text-lg text-pretty text-gray-500">{body}</span>
-						</m.li>
-					))}
-				</Cards>
-			</Statement>
-		),
-		notes: [
-			"Tato already joins the meetings, so extracting RAID items is the easy part. The hard part is getting a PM to trust a log an agent writes to.",
-			"Three things made that work, and they're the next three slides: a human in the loop, less noise, and a ledger.",
-			"Underneath all of it is the model. As acting PM I took the research to Alex and we defined what a RAID item is: fields, relationships, how status moves, and how a realised risk is promoted to an issue. That became our contract, and every workflow sits on it.",
-		],
-	},
-	{
-		section: "RAID log",
-		label: "Less noise",
-		body: (
-			<Split heading="v1 showed its work, and buried the user" figure={<NeedsReview />}>
-				<Lines items={["60+ snippets for one meeting", "Hide the machinery, then cut the text"]} />
-			</Split>
-		),
-		notes: [
-			"Toggle Before / After under the figure.",
-			"v1 exposed the agent's reasoning. One meeting could produce upwards of sixty snippets for a handful of real items.",
-			"LLMs produce volume, and volume creates cognitive load.",
-			"Hiding the machinery cut most of the noise on its own. Then less text, icons for type and source, avatars for owners, and a clear hierarchy, so the list can be scanned.",
-		],
-	},
-	{
-		section: "RAID log",
-		label: "Human in the loop",
-		body: (
-			<Split heading="People always get the last word" figure={<TrackPress />}>
-				<Lines items={["Track or dismiss, on every item", "Users found Tato smarter, and easier to control"]} />
-			</Split>
-		),
-		notes: [
-			"Two actions on every item, always in reach.",
-			"Dismiss tells the system the extraction wasn't useful. Track tells the agent to pay attention to it from now on. Both feed status downstream.",
-			"Track gets a small, energetic press, because it's the action we want to feel rewarding.",
-			"Early feedback: Tato felt smarter and more nuanced, and easier to control. Perceived quality matters as much as measured quality when people work with an LLM.",
-		],
-	},
-	{
-		section: "RAID log",
-		label: "Ledger",
-		body: (
-			<Split heading="Trust needs a paper trail" figure={<HistoryDrawer />}>
-				<Lines items={["Every change links to its cause", "Person or agent, with the reasoning"]} />
-			</Split>
-		),
-		notes: [
-			"History used to be a flat list of versions. It showed what changed, not why. For RAID, the why is the point: the log is a ledger of how the project evolved. And with an agent writing to it, people need to see what it changed and why, so they can correct it.",
-			"Alex and I first tried to fix it in the UI. The workarounds kept breaking, because the data didn't hold the answer.",
-			"So we fixed the data instead: each version links to the activity that caused it, records whether a person or the agent made it, and carries the reasoning.",
-			"I explored several places for history to live and kept the drawer: the most room, without leaving your workflow.",
-		],
-	},
-	{
-		section: "RAID log",
-		label: "Live demo: RAID",
-		body: (
-			<Statement heading="In the product">
+			<Visual
+				heading="Our first RAID attempt was an objective failure"
+				visual={
+					<Outcome>
+						<Customers active="SIS Global" />
+						<Meter share={1 / 12} label="Customers using RAID" value="1 of 12" />
+					</Outcome>
+				}
+			>
 				<Lines
+					wide
 					items={[
-						"Review a meeting's items",
-						"Track, dismiss, and open the history",
-						"The control centre",
+						"Barely used by a single customer due to a lack of trust and UX friction.",
+						"The company vision is to automate your work so you can deliver on time and on budget.",
+						"Our goal here is to make it trustworthy and intuitive to manage. We want to centralize all RAID management into Tato and move users off spreadsheets.",
 					]}
 				/>
+			</Visual>
+		),
+		notes: [
+			"Our first attempt at RAID was an objective failure: barely used by a single customer, because of a lack of trust and UX friction.",
+			"The company vision is to automate your work so you can deliver on time and on budget.",
+			"The goal for this round: make it trustworthy and intuitive to manage, centralise all RAID management in Tato, and move users off spreadsheets.",
+		],
+	},
+	{
+		section: "RAID log",
+		label: "Research → lifecycle",
+		body: (
+			<Statement
+				heading="Researching and scoping the problem"
+				lede="Ran user research sessions with 3 client partners and dug into documentation to understand the mechanics of a RAID log."
+			>
+				<m.figure variants={stagger(0.15)} className="flex flex-col gap-3">
+					<Reveal className={`[&>*]:my-0! ${ONE_FACE}`}>
+						<RiskLifecycle />
+					</Reveal>
+					<m.figcaption variants={rise} className="max-w-3/4 text-sm leading-snug text-pretty text-gray-500">
+						Mapped the research into an understanding of the lifecycle of a RAID item, to inform our data model,
+						flows, and automations.
+					</m.figcaption>
+				</m.figure>
 			</Statement>
 		),
 		notes: [
-			"Switch to Tato.",
-			"Meeting summary: two columns, RAID first-class, meeting context in view. Review the extracted items.",
-			"Track one, dismiss one. Open the drawer and walk the history: what caused each change, person vs agent, reasoning.",
-			"Control centre: the table scrolls, not the page, so header and footer stay. Keyboard through the rows. Change impact or likelihood to show the indicators spring between values.",
-			"Tie-in: dense operational tooling people live in all day.",
+			"Three client partners: experienced PMs who beta test for us and give expert feedback.",
+			"I asked them how and when they update the log, how they report on it, and how it evolves over time.",
+			"Alongside that, deep research through some truly awful documents.",
+			"Then I mapped the R/A/I/D lifecycle: a Risk is mitigated by Actions and Decisions, or it escalates into an Issue.",
+			"Mapping it let me work with engineering on the right data structures.",
+			"It's domain-driven design: every new primitive we model is available to our agent for free.",
+		],
+	},
+	{
+		section: "RAID log",
+		label: "Delight in the details",
+		body: (
+			<Statement heading="Delight in the details" lede="Impact, likelihood and status are each driven by a single value, so they spring smoothly between any two states.">
+				<Reveal className={`max-w-3/4 [&>*]:my-0! ${ONE_FACE}`}>
+					<IndicatorDemo />
+				</Reveal>
+			</Statement>
+		),
+		notes: ["Small details make the log feel alive. Impact, likelihood and status each animate from a single value, so they spring smoothly between any two states, including the intermediate ones. Drag the sliders to show it."],
+	},
+	{
+		section: "RAID log",
+		label: "Initiatives + demo 1",
+		body: (
+			<DemoSlide
+				heading="Three initiatives to help drive our goals"
+				lede="Built around how people and agents work together: Tato can drive all three, and people can steer any of them."
+				items={[
+					"Human in the loop: review, track, dismiss",
+					"Navigable history: the ledger of changes",
+					"RAID management dashboard",
+				]}
+				src="/present/raid-demo.mp4"
+				label="RAID demo recording"
+				href={LIVE_DEMO}
+			/>
+		),
+		notes: [
+			"Three initiatives. One: human in the loop, so people review, track and dismiss what the agent extracts. Two: navigable history, the ledger of changes. Three: a RAID management dashboard.",
+			"And a layer across all three: agent write-backs. You can ask Tato to read or write any item.",
+			"Then switch to the live demo, about nine minutes:",
+			"Meeting summary → extracted RAID items → track and dismiss. Explain what each one tells Tato.",
+			"Open an item → history drawer → walk the timeline, activity to update.",
+			"While the drawer is open, talk through the hard problem: history. I ran workshops with Alex on three questions. When does an activity map to an update: when it happened, when it was processed, or when it was tied to the item? How do we handle updates, reverts and dismisses? And how do we make it work without proper event sourcing, a four-to-six-month project that's still in progress?",
+			"Several design iterations, and we shaped the changes API together. A pragmatic tradeoff: ship trust now, rather than wait on the ideal architecture.",
+			"Dashboard: keyboard navigation, optimistic updates and prefetch speed, animated property icons.",
+			"Ask Tato in chat to update an item, and watch it write back.",
 		],
 	},
 	{
 		section: "RAID log",
 		label: "Impact",
 		body: (
-			<Statement heading="Small numbers, strong signals">
-				<m.div variants={stagger(0.12)} className="grid grid-cols-[1fr_1.3fr] items-center gap-12 [&_figure]:my-0!">
-					<Reveal>
+			<Statement heading="Our first real hint of product-market fit">
+				<div className="flex flex-col gap-8">
+					<Reveal className="max-w-3/4 [&_figure>div]:my-0!">
 						<Quote cite="PM on an $8M ERP implementation">
 							“Once I saw I could trust it, I got rid of my SharePoint lists and
-							centralised everything there.”
+							centralized everything in Tato.”
 						</Quote>
 					</Reveal>
-					<Reveal>
+					<Reveal className={`max-w-3/4 [&>*]:my-0! ${ONE_FACE}`}>
 						<Stats
-							caption="First four weeks of tracking, September 2026, internal accounts excluded."
 							stats={[
 								{ value: "5×", label: "Items logged through chat, week over week", trend: [320, 341, 813, 1669] },
+								{ value: "+800%", label: "Customers with weekly active RAID users" },
 								{ value: "5.2k", label: "Updates the agent wrote back to the log" },
-								{ value: "148", label: "Items tracked by 14 people across 9 customers" },
 							]}
 						/>
 					</Reveal>
-				</m.div>
+				</div>
 			</Statement>
 		),
 		notes: [
-			"Lead with the quote. A PM on an $8M ERP implementation dropped their SharePoint lists for Tato, and the word they used was trust.",
-			"First four weeks, internal accounts excluded: items logged through chat grew five times week over week, 5.2k updates written back by the agent, 148 items tracked by 14 people across 9 customers.",
-			"Small numbers, because the user base is small. But strong signals.",
-		],
-	},
-	{
-		section: "RAID log",
-		label: "Learnings",
-		body: (
-			<Statement heading="Trust is a design problem">
-				<Lines items={["Next time: define history in the data model, up front"]} />
-			</Statement>
-		),
-		notes: [
-			"Less text, visible control, and an honest history are design decisions, not model improvements.",
-			"What I'd do differently: design history into the data model from day one, instead of finding it through UI workarounds.",
+			"GA was about five weeks ago.",
+			"Items logged are up five times. Chat interactions are up a lot, including users uploading their existing spreadsheets to convert them. And customers with weekly active RAID users went from 1 to 9, out of 12. That's an 800% increase.",
+			"One PM told us she can't do her job without it. Once she trusted it, she moved everything off SharePoint.",
+			"Our first real hint of product-market fit.",
 		],
 	},
 
 	{
-		section: "Unified search",
-		label: "Title",
+		section: "Meeting experience",
+		label: "The coverage gap",
 		body: (
-			<Title
-				title="One place to find anything, and ask for the rest"
-				sub="Unified search and chat"
-				meta={[{ label: "Status", value: "In rollout behind a flag" }]}
+			<Visual
+				heading="Making Tato more sticky to increase adoption and value"
+				lede="The RAID log is only valuable if we get a clear picture. We need full coverage of all meetings."
+				visual={
+					<Outcome>
+						<Coverage />
+					</Outcome>
+				}
+			>
+				<Lines
+					wide
+					items={[
+						"The value only arrives after a meeting is processed. Tato only covers a narrow slice and is less sticky to less users.",
+						"Tato only joins about half of all meetings, which lowers coverage and leaves open an opportunity to close the loop on RAID.",
+					]}
+				/>
+			</Visual>
+		),
+		notes: [
+			"RAID is only as accurate as our coverage of a project's interactions.",
+			"Users only get value after a meeting finishes processing. That's a narrow slice, and hard to make sticky.",
+			"And Tato doesn't join about 50% of meetings: calendar misconfigurations, bot architecture, scale. Users don't find out until after.",
+			"If asked: of the meetings Tato does try to join, almost all succeed. The gap is meetings it never tries.",
+		],
+	},
+	{
+		section: "Meeting experience",
+		label: "Closing the loop",
+		body: (
+			<Statement
+				heading="Customer feedback gave us signs of where to focus next"
+				lede="Double down on adoption, stickiness, and delight."
+			>
+				<div className="flex flex-col gap-8">
+					<Lines
+						items={[
+							"There was real appetite from PMs to use this RAID log to run their meetings.",
+							"Due to its self healing nature, and the historical ledger, Tato is the natural place to automatically track progress over months and years.",
+						]}
+					/>
+					<List
+						label="Goals"
+						items={[
+							"Increase Tato's coverage of users' calendars",
+							"Increase meeting opens before the meeting happens",
+						]}
+					/>
+				</div>
+			</Statement>
+		),
+		notes: [
+			"A RAID item gets discussed over and over for months, as Risks are mitigated with Actions and Decisions to prevent Issues.",
+			"The signal: once PMs saw the RAID quality, they wanted to run their scrums and steering committees from our data.",
+			"So: double down on adoption, stickiness, and delight. Two goals: increase Tato's coverage of users' calendars, and increase meeting opens before the meeting happens.",
+		],
+	},
+	{
+		section: "Meeting experience",
+		label: "Approach",
+		body: (
+			<Statement heading="Two bets, from the meeting flow">
+				<div className="flex flex-col gap-6">
+					<Reveal className={ONE_FACE}>
+						<MeetingFlow />
+					</Reveal>
+					<m.div variants={stagger(0.1)} className="grid grid-cols-2 gap-6">
+						<List
+							wide
+							label="Collaborative notes"
+							items={[
+								"Yjs and PlateJS: a custom markdown editor",
+								"@ RAID chips with the design-system card",
+								"RAID items as blocks and tables",
+							]}
+						/>
+						<List
+							wide
+							label="Clear bot status"
+							items={[
+								"Recall.ai joins and records the meeting",
+								"New states, recording time, dismissals",
+								"motion/react for state transitions",
+							]}
+						/>
+					</m.div>
+				</div>
+			</Statement>
+		),
+		notes: [
+			"I mapped the meeting flow from our partner research into five job stories, in sequence:",
+			"Before a meeting, I want to prepare an agenda with the most up to date information, so that I can run a fast and efficient meeting.",
+			"Before a meeting, I want the meeting owners to be notified that an agenda has been populated for them to review, so the notes can be relevant and accurate.",
+			"During a workshop, I want decisions, gaps, open questions, and owners to be captured so that work doesn't slip through the cracks.",
+			"After a meeting, I want a recap with Risks, Action Items, Issues, and Decisions and their sources sent to the meeting owner for review, so we can ensure information is accurate before sharing with the wider team.",
+			"After a meeting, I want a recap with RAIDs and their sources sent to all attendees, so everyone has a shared source of truth and can agree or disagree with outcomes early.",
+			"Two bets. One: real-time collaborative notes with full coverage of our data, for humans and agents. Two: clarity and simplicity on the bot's join status.",
+			"How the notes are built: our existing Yjs infrastructure plus PlateJS for a custom markdown editor. @ inline RAID chips: hover shows the design-system RAID card, click opens the drawer. RAID items as blocks and tables, for running scrums.",
+			"How the bot status is built: Recall.ai joins and records the meeting. A DB migration extends the meetings table with new states, recording time and dismissal reasons. The state card animates between states with motion/react.",
+		],
+	},
+	{
+		section: "Meeting experience",
+		label: "Demo 2",
+		body: (
+			<DemoSlide
+				heading="Tato before and during the meeting"
+				items={[
+					"Collaborate on notes in real time",
+					"@ a risk and open its history",
+					"Run a scrum from a RAID table",
+					"See why Tato will or won't join",
+				]}
+				src="/present/meeting-demo.mp4"
+				label="Meeting experience demo recording"
+				href={MEETING_DEMO}
 			/>
 		),
 		notes: [
-			"The second project, in rollout behind a flag.",
-			"The question underneath it: where does the agent live in the product?",
+			"About nine minutes.",
+			"Upcoming meeting → open the notes before it starts.",
+			"Two windows: show real-time collaboration.",
+			"@ tag a risk → hover card → click → drawer with history, without leaving the meeting.",
+			"Insert a RAID table block: this is how you run a scrum.",
+			"Bot state card: walk through the states and transitions, why Tato will or won't join, and ask it to join.",
 		],
 	},
 	{
-		section: "Unified search",
-		label: "The signal",
+		section: "Meeting experience",
+		label: "Status & next",
 		body: (
-			<Statement heading="Users started asking the agent to find their meetings">
-				<Lines items={["They were working around search"]} />
+			<Statement heading="Early rollout. Small data, clear appetite.">
+				<List
+					label="Next"
+					items={[
+						"Agent write-backs: generate meeting agendas with DDD and automations",
+						"Proactive outreach: an always-on agent shares the right info at the right time",
+					]}
+				/>
 			</Statement>
 		),
 		notes: [
-			"Start with what we saw. People were asking chat to find meetings for them.",
-			"Recent meetings are the most important surface in Tato; they're where RAID comes from. And people were routing around search to reach them.",
-			"What users ask the agent to do tells you where the UI is failing them.",
-		],
-	},
-	{
-		section: "Unified search",
-		label: "How we got there",
-		body: (
-			<Statement heading="We'd split the product in two">
-				<Cards className="grid grid-cols-2 gap-6">
-					{[
-						["/present/search-v1.webp", "v1: ⌘K search, chat centred below", "The industry default"],
-						["/present/search-v2.webp", "v2: chat docked bottom-right", "Parallel chats, but meetings got harder to find"],
-					].map(([src, label, caption]) => (
-						<m.li key={src} variants={rise} className="flex flex-col gap-3">
-							<Asset src={src} label={label} className="aspect-[16/9]" />
-							<span className="text-lg text-gray-500">{caption}</span>
-						</m.li>
-					))}
-				</Cards>
-			</Statement>
-		),
-		notes: [
-			"v1 was the industry default: Cmd+K search, with chat centred on the page below it.",
-			"v2 moved chat bottom-right so people could run chats in parallel. The cost was that meetings got harder to find.",
-			"Two entry points, and users had to guess which one to use.",
-		],
-	},
-	{
-		section: "Unified search",
-		label: "One place to start",
-		body: (
-			<Statement heading="One input for search, navigation, and the agent">
-				<Cards className="grid grid-cols-3 gap-6">
-					{[
-						["Empty", "Your recent meetings"],
-						["A few words", "Pages, meetings, settings, RAID, and Ask Tato"],
-						["A question", "Straight to the agent"],
-					].map(([title, body]) => (
-						<m.li key={title} variants={rise} className={`${CARD} gap-2`}>
-							<span className="text-2xl font-[550] text-gray-900">{title}</span>
-							<span className="text-lg text-pretty text-gray-500">{body}</span>
-						</m.li>
-					))}
-				</Cards>
-			</Statement>
-		),
-		notes: [
-			"One composer on Cmd+K; Cmd+J still works. A single point of reference: find what you need, and lean on the agent when you need it.",
-			"Empty shows recents, up to six. A few words shows navigation, settings, activity and RAID results, up to five each with a 250ms debounce, plus Ask Tato. A question goes to Ask only, and no search is fired.",
-		],
-	},
-	{
-		section: "Unified search",
-		label: "Details",
-		body: (
-			<Statement heading="The delight is in the details">
-				<Cards className="grid grid-cols-3 gap-6">
-					{[
-						["Guess, then recover", "Ends in ? or runs six words: it's a question. Wrong guess? ⌘ Enter."],
-						["Ask is one ↑ away", "Drawn first, but last in keyboard order, so the best match is highlighted"],
-						["Nothing jumps", "The card springs open, results grow upward and hold steady as they land"],
-					].map(([title, body]) => (
-						<m.li key={title} variants={rise} className={`${CARD} gap-2`}>
-							<span className="text-2xl font-[550] text-gray-900">{title}</span>
-							<span className="text-lg text-pretty text-gray-500">{body}</span>
-						</m.li>
-					))}
-				</Cards>
-			</Statement>
-		),
-		notes: [
-			"Intent: ends in a question mark or is six or more words, and it's chat. I tried a smarter classifier and it was overkill; one or two words is almost always a page or a meeting. The heuristic is instant, free, deterministic and testable. A wrong guess costs one keystroke, so I designed for cheap recovery, not perfect prediction.",
-			"Ask Tato is drawn first but sits last in keyboard order, so the highlight lands on the best match and Ask is one ↑ away.",
-			"The card springs from 400 to 560px, results grow up from the input, and they hold steady so the highlight doesn't jump as async results arrive.",
-			"Keys: Enter picks the row, Cmd+Enter always asks, Shift+Enter is a newline, Esc collapses.",
-		],
-	},
-	{
-		section: "Unified search",
-		label: "Live demo: search",
-		body: (
-			<Statement heading="In the product">
-				<Lines items={["Open it empty", "Jump to a meeting", "Ask a question"]} />
-			</Statement>
-		),
-		notes: [
-			"Switch to Tato.",
-			"Cmd+K empty: recents. Type a meeting name: results plus Ask, highlight on the best match. Press ↑ to Ask.",
-			"Type a question: Ask only. Then a short query and Cmd+Enter to show the override.",
-			"Point out the nav redesign around the agent and the page, which frees horizontal space for multi-column agent layouts.",
-		],
-	},
-	{
-		section: "Unified search",
-		label: "What I'll measure",
-		body: (
-			<Statement heading="How I'll know it worked">
-				<Lines items={["Fewer “find my meeting” chats", "How often people override with ⌘ Enter", "Recents usage"]} />
-			</Statement>
-		),
-		notes: [
-			"It's in rollout, so no results yet. What I'll watch:",
-			"Fewer 'find my meeting' chats, which was the original signal. The Cmd+Enter override rate, which tells me how often the heuristic guessed wrong. And how much recents get used.",
+			"We're in early rollout, running user testing with early adopters. The data is small, but the appetite is clear.",
+			"Next: agent write-backs, generating meeting agendas using domain-driven design and automations.",
+			"And proactive outreach: an always-on agent that shares the right information at the right time. A daily scrum isn't a monthly steerco.",
 		],
 	},
 
@@ -517,36 +745,13 @@ export const SLIDES: Slide[] = [
 		section: "Q&A",
 		label: "Close",
 		body: (
-			<Statement heading="Keep people in the loop, and give them one place to start">
-				<Cards className="grid grid-cols-2 gap-6">
-					{[
-						["RAID log", "The agent proposes, people decide, and the ledger shows why"],
-						["Unified search", "Find what you need, and rely on the agent when you need it"],
-					].map(([title, body]) => (
-						<m.li key={title} variants={rise} className={`${CARD} gap-2`}>
-							<span className="text-2xl font-[550] text-gray-900">{title}</span>
-							<span className="text-lg text-pretty text-gray-500">{body}</span>
-						</m.li>
-					))}
-				</Cards>
-			</Statement>
-		),
-		notes: [
-			"Back to the opening question. My answer, from these two projects: keep people in the loop, and give them one place to start.",
-			"Then open it up.",
-		],
-	},
-	{
-		section: "Q&A",
-		label: "Questions",
-		body: (
 			<div className="flex h-full flex-col justify-between p-20">
-				<Display>Questions</Display>
+				<Display>Thanks, happy to go deeper on anything.</Display>
 				<m.span variants={rise} className="text-base text-gray-500">
-					sekei.xyz
+					sekei.design
 				</m.span>
 			</div>
 		),
-		notes: ["Around fifteen minutes."],
+		notes: ["Thanks, happy to go deeper on anything."],
 	},
 ];
