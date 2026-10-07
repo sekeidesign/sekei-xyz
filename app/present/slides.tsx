@@ -417,6 +417,84 @@ function Meter({ share, label, value }: { share: number; label: string; value: s
 	);
 }
 
+const EVAL_TOTAL = 141;
+
+const EVALS = [
+	{ label: "Old rule", right: 108, searchAsQuestion: 14, questionAsSearch: 13, meetingsMissed: 6, typical: "0ms", slowest: "0ms" },
+	{ label: "Old rule + question words", right: 112, searchAsQuestion: 14, questionAsSearch: 9, meetingsMissed: 6, typical: "0ms", slowest: "0ms" },
+	{ label: "Rules only, no Jev", right: 116, searchAsQuestion: 0, questionAsSearch: 19, meetingsMissed: 6, typical: "0ms", slowest: "0ms", shipped: true },
+	{ label: "Jev only", right: 135, searchAsQuestion: 2, questionAsSearch: 4, meetingsMissed: 0, typical: "182ms", slowest: "454ms" },
+	{ label: "Rules, then Jev", right: 137, searchAsQuestion: 2, questionAsSearch: 2, meetingsMissed: 0, typical: "167ms", slowest: "465ms" },
+	{ label: "Title match, rules, then Jev", right: 138, searchAsQuestion: 0, questionAsSearch: 3, meetingsMissed: 0, typical: "0ms", slowest: "217ms" },
+];
+
+const EVAL_COLUMNS = "grid grid-cols-[minmax(0,1fr)_repeat(6,7.5rem)] items-end gap-4";
+
+function Evals() {
+	return (
+		<m.div variants={stagger(0.1)} className="flex flex-col">
+			<m.div variants={rise} className={cn(EVAL_COLUMNS, "pb-3 text-xs leading-tight text-gray-400 [&>span:not(:first-child)]:text-right")}>
+				<span>{EVAL_TOTAL} queries</span>
+				<span>Right</span>
+				<span>Search as question</span>
+				<span>Question as search</span>
+				<span>Meeting missed</span>
+				<span>Typical</span>
+				<span>Slowest 5%</span>
+			</m.div>
+			{EVALS.map(({ label, right, searchAsQuestion, questionAsSearch, meetingsMissed, typical, slowest, shipped }) => (
+				<m.div
+					key={label}
+					variants={rise}
+					className={cn(
+						EVAL_COLUMNS,
+						"border-t border-gray-200 py-2 text-sm tabular-nums [&>span:not(:first-child)]:text-right",
+						shipped ? "text-gray-900" : "text-gray-500",
+					)}
+				>
+					<span className="text-pretty">{label}</span>
+					<span>{Math.round((right / EVAL_TOTAL) * 100)}%</span>
+					<span>{searchAsQuestion}</span>
+					<span>{questionAsSearch}</span>
+					<span>{meetingsMissed}</span>
+					<span>{typical}</span>
+					<span>{slowest}</span>
+				</m.div>
+			))}
+		</m.div>
+	);
+}
+
+function CommandMenu() {
+	return (
+		<div className="flex h-full flex-col justify-between gap-10 p-20">
+			<div className="grid grid-cols-2 items-start gap-12">
+				<div className="flex flex-col gap-5">
+					<Heading wide>The Jev experiment</Heading>
+					<m.div variants={stagger(0.08)} className="flex flex-col gap-3 text-lg leading-snug text-pretty text-gray-600">
+						<m.p variants={rise}>
+							For instant access to previous, upcoming, and missing meetings, I unified our ⌘K and chat surfaces into a
+							morphing tool that intelligently adapts to the query.
+						</m.p>
+						<m.p variants={rise}>
+							I tried two approaches: Jev, and simple JS logic. In the end the simple logic was more reliable and faster,
+							so I dropped the shiny object.
+						</m.p>
+					</m.div>
+				</div>
+				<Reveal className="justify-self-end">
+					<Asset
+						src="/present/command-menu.mp4"
+						label="Command menu demo recording"
+						className="aspect-[2380/1786] h-80 w-auto! rounded-md!"
+					/>
+				</Reveal>
+			</div>
+			<Evals />
+		</div>
+	);
+}
+
 function Outcome({ children }: { children: ReactNode }) {
 	return (
 		<m.div variants={stagger(0.15, 0.2)} className="flex w-max flex-col gap-10">
@@ -433,11 +511,21 @@ export const SLIDES: Slide[] = [
 			<Title
 				title="Closing the loop on an AI native RAID log"
 				sub="How I built an agentic RAID log to automate manual work, and increased coverage over customer data to help close the loop on complex projects."
+				meta={[
+					{
+						label: "Team",
+						value: "Me on design and front-end. Alex Hermann on backend. Benjamin Ryan, then Justin (CEO), for customer success.",
+					},
+					{ label: "Timeline", value: "July 2026 to now. RAID shipped in September, meetings are in early rollout." },
+					{ label: "Role", value: "No PM on either project, so I was acting PM and design engineer" },
+				]}
 			/>
 		),
 		notes: [
 			"We've covered my background, so straight into the work.",
 			"Two Tato projects, told as one story: the RAID log, the coverage gap it exposed, and the meeting experience we built to close it.",
+			"Small team. I owned design and front-end, 16 PRs on the RAID log alone. Alex Hermann on backend for both. Benjamin Ryan represented customer success on RAID, Justin, our CEO, on meetings.",
+			"No PM, so I was acting PM: scoping, research, and the contract with engineering.",
 		],
 	},
 	{
@@ -702,6 +790,19 @@ export const SLIDES: Slide[] = [
 			"Two bets. One: real-time collaborative notes with full coverage of our data, for humans and agents. Two: clarity and simplicity on the bot's join status.",
 			"How the notes are built: our existing Yjs infrastructure plus PlateJS for a custom markdown editor. @ inline RAID chips: hover shows the design-system RAID card, click opens the drawer. RAID items as blocks and tables, for running scrums.",
 			"How the bot status is built: Recall.ai joins and records the meeting. A DB migration extends the meetings table with new states, recording time and dismissal reasons. The state card animates between states with motion/react.",
+		],
+	},
+	{
+		section: "Meeting experience",
+		label: "Command menu evals",
+		body: <CommandMenu />,
+		notes: [
+			"To make information readily available and make it easier to add missing meetings, I unified ⌘K and chat into one morphing tool. Type anything, and it has to decide whether you're searching, asking Tato a question, or trying to join a meeting.",
+			"I didn't pick an approach by feel. I built a 141-query eval set and scored each approach on accuracy, the kind of mistake, and latency. A search shown as a question is the worst one, because it hides the results.",
+			"The old rule, six or more words or a question mark means a question, got 77%. Adding question words, who, what, when and so on, plus the French, got 79%. A tighter ruleset, a meeting link, a question word or a question mark, otherwise search, got 82% and never hid a search.",
+			"Then Jev, our model: 96% on its own, 97% behind the rules, 98% with a title match first. On paper, a clear win.",
+			"But every query that reaches Jev waits on a network call, around 170 to 180ms typical and over 450ms for the slowest 5%. And in real use, API calls error and drop in ways plain JS logic never does.",
+			"After more testing and iteration, Jev wasn't worth it over a simple ruleset. A great experiment: the evals put a number on what the model buys, and real use showed what it costs.",
 		],
 	},
 	{
