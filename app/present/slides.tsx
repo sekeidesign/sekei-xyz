@@ -354,7 +354,7 @@ function Coverage() {
 	);
 }
 
-const MEETING_DEMO = "http://localhost:3000";
+const MEETING_DEMO = "https://dev2.tato.co/summary/9d380910-ae2d-44a3-8448-62b45f18bee0";
 const LIVE_DEMO = "https://demo.tato.co/dashboard/rad/risks?pageSize=40&tracked=tracked";
 
 const CUSTOMERS = [
