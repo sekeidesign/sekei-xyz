@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DitherCanvas } from "@/components/shad-fx/dither/dither-canvas";
+import { useFx } from "@/components/shad-fx/use-fx";
 import { KIND } from "../covers/raid-log";
 import { Disc } from "./Disc";
 import { RAID_KINDS } from "./kinds";
@@ -61,18 +62,30 @@ function RaidCell({
 	const { label, wash } = RAID_KINDS.find((entry) => entry.kind === kind) ?? RAID_KINDS[0];
 	const { Icon, tint } = KIND[kind];
 
-	const effect = useMemo(() => {
-		const anchor = (): readonly [number, number] => {
-			const box = cellRef.current?.getBoundingClientRect();
-			const disc = discRef.current?.getBoundingClientRect();
-			if (!box || !disc || !box.width || !box.height) return [0.5, 0.43];
-			return [
-				(disc.left + disc.width / 2 - box.left) / box.width,
-				(disc.top + disc.height / 2 - box.top) / box.height,
-			];
+	const { factory, options, anchor } = raidEffect(kind, tweaks);
+	const fx = useFx(factory, options);
+	const measured = anchor && !(anchor in options) ? anchor : undefined;
+
+	useEffect(() => {
+		const box = cellRef.current;
+		const disc = discRef.current;
+		if (!measured || !box || !disc) return;
+		const measure = () => {
+			const b = box.getBoundingClientRect();
+			const d = disc.getBoundingClientRect();
+			if (!b.width || !b.height) return;
+			fx.set({
+				[measured]: [
+					(d.left + d.width / 2 - b.left) / b.width,
+					(d.top + d.height / 2 - b.top) / b.height,
+				],
+			});
 		};
-		return raidEffect(kind, anchor, tweaks);
-	}, [kind, tweaks]);
+		measure();
+		const observer = new ResizeObserver(measure);
+		observer.observe(box);
+		return () => observer.disconnect();
+	}, [fx, measured]);
 
 	return (
 		<div
@@ -81,7 +94,7 @@ function RaidCell({
 			onPointerEnter={() => onHover(true)}
 			onPointerLeave={() => onHover(false)}
 		>
-			<DitherCanvas effect={effect} active={active} cell={cell} seed={seed} />
+			<DitherCanvas effect={fx} active={active} cell={cell} seed={seed} />
 			<div className="relative flex flex-col items-center gap-4">
 				<span ref={discRef} className="flex">
 					<Disc wash={wash}>

@@ -230,10 +230,11 @@ export function CodeTsx() {
 		<div className="w-full max-w-2xl">
 			<CodeBlock
 				lang="tsx"
-				code={`import { DitherCanvas } from "@/components/shad-fx";
+				code={`import { DitherCanvas, fire, useFx } from "@/components/shad-fx";
 
 export function Hero() {
-  return <DitherCanvas effect={fire({ height: 0.6 })} cell={3} />;
+  const fx = useFx(fire, { height: 0.6 });
+  return <DitherCanvas effect={fx} cell={3} />;
 }`}
 			/>
 		</div>
@@ -275,10 +276,11 @@ export function CodeThumb() {
 		<div className="w-[560px]">
 			<CodeBlock
 				lang="tsx"
-				code={`import { DitherCanvas } from "@/components/shad-fx";
+				code={`import { DitherCanvas, fire, useFx } from "@/components/shad-fx";
 
 export function Hero() {
-  return <DitherCanvas effect={fire({ height: 0.6 })} cell={3} />;
+  const fx = useFx(fire, { height: 0.6 });
+  return <DitherCanvas effect={fx} cell={3} />;
 }`}
 			/>
 		</div>

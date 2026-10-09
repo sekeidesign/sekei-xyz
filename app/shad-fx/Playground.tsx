@@ -1,8 +1,8 @@
 "use client";
 
 import { useSpring } from "motion/react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { DitherCanvas } from "@/components/shad-fx";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { DitherCanvas, useFx } from "@/components/shad-fx";
 import { cn } from "@ui-kit/cn";
 import { ControlPanel, ControlSection } from "@ui-kit/controls/ControlPanel";
 import { Select } from "@ui-kit/controls/Select";
@@ -14,15 +14,15 @@ import { AnchorHandle } from "./AnchorHandle";
 import { EffectTabs } from "./EffectTabs";
 import { LevelHandle } from "./LevelHandle";
 import {
-	type AnchorGetters,
 	type AnchorKey,
 	type AnchorSpec,
 	type AnchorState,
-	build,
 	DEFAULTS,
+	FACTORIES,
 	handleOf,
 	type Kind,
 	KINDS,
+	optionsOf,
 	snippet,
 	SPECS,
 } from "./playground-config";
@@ -80,14 +80,6 @@ const initialColors = () =>
 		string[]
 	>;
 
-const initialLive = () =>
-	Object.fromEntries(
-		KINDS.map((kind) => {
-			const handle = handleOf(kind);
-			return [kind, handle ? DEFAULTS[kind][handle.key] : 0];
-		}),
-	) as Record<Kind, number>;
-
 export function Playground() {
 	const [kind, setKind] = useState<Kind>("fire");
 	const [surface, setSurface] = useState("light");
@@ -99,53 +91,43 @@ export function Playground() {
 	const [values, setValues] = useState(() => ({ ...DEFAULTS }));
 	const [colors, setColors] = useState(initialColors);
 	const [anchors, setAnchors] = useState(initialAnchors);
-	// One option per effect is steered from the stage: fire's height, fluid's
-	// level, rain's slant. It lives outside `values`, like the anchors, and
-	// reaches the effect through a getter read every frame, so a drag never
-	// produces a new effect reference and restarts what is on screen.
-	const [live, setLive] = useState(initialLive);
-
 	const spec = SPECS[kind];
 	const handle = useMemo(() => handleOf(kind), [kind]);
 	const anchor = anchors[kind];
 	const stage = useRef<HTMLDivElement>(null);
 
-	// Refs, not dependencies: the getters read the latest state without the
-	// effect being rebuilt around them.
-	const anchorRef = useRef(anchors);
-	useEffect(() => {
-		anchorRef.current = anchors;
-	}, [anchors]);
-	const liveRef = useRef(live);
-	useEffect(() => {
-		liveRef.current = live;
-	}, [live]);
-	// A sprung live value, for the handles that ask for one: fluid's level
-	// rises and settles behind its pill rather than stepping with it.
+	// A sprung option is left out of what useFx syncs and fed through `fx.set`
+	// as its spring moves, so the effect trails the knob instead of snapping.
+	const sprungSpec = spec.anchors?.find((a) => a.spring);
+	const sprungAnchor = anchor.on ? sprungSpec?.key : undefined;
+	const sprungHandle = handle?.spring ? handle.key : undefined;
+	const options = optionsOf(kind, values[kind], colors[kind], anchor);
+	if (sprungAnchor) delete options[sprungAnchor];
+	if (sprungHandle) delete options[sprungHandle];
+	const fx = useFx(FACTORIES[kind], options);
+
 	const sprungLive = useSpring(0, HANDLE_SPRING);
-	const liveSprung = Boolean(handle?.spring);
+	const liveTarget = sprungHandle ? values[kind][sprungHandle] : undefined;
 	const sprungLiveFor = useRef<Kind | null>(null);
 	useEffect(() => {
-		if (!liveSprung) return;
-		const value = live[kind];
+		if (liveTarget === undefined) return;
 		if (sprungLiveFor.current !== kind) {
 			sprungLiveFor.current = kind;
-			sprungLive.jump(value);
+			sprungLive.jump(liveTarget);
 			return;
 		}
-		sprungLive.set(value);
-	}, [kind, liveSprung, live, sprungLive]);
-	const getLive = useCallback(
-		() => (liveSprung ? sprungLive.get() : liveRef.current[kind]),
-		[kind, liveSprung, sprungLive],
-	);
+		sprungLive.set(liveTarget);
+	}, [kind, liveTarget, sprungLive]);
+	useEffect(() => {
+		if (!sprungHandle) return;
+		fx.set({ [sprungHandle]: sprungLive.get() });
+		return sprungLive.on("change", (value) => fx.set({ [sprungHandle]: value }));
+	}, [fx, sprungHandle, sprungLive]);
 
-	// A sprung anchor. The knob follows the pointer; the effect reads these,
-	// which trail it. Switching effects jumps them, so nothing swings in from
-	// wherever the previous effect's knob was.
+	// Switching effects jumps the spring, so nothing swings in from wherever
+	// the previous effect's knob was.
 	const sprungX = useSpring(0, HANDLE_SPRING);
 	const sprungY = useSpring(0, HANDLE_SPRING);
-	const sprungSpec = spec.anchors?.find((a) => a.spring);
 	const sprungAt = sprungSpec ? anchor.at[sprungSpec.key] : undefined;
 	const sprungFor = useRef<Kind | null>(null);
 	useEffect(() => {
@@ -159,51 +141,27 @@ export function Playground() {
 		sprungX.set(sprungAt.x);
 		sprungY.set(sprungAt.y);
 	}, [kind, sprungAt, sprungX, sprungY]);
-
-	const getters = useMemo(() => {
-		const out: AnchorGetters = {};
-		for (const a of spec.anchors ?? []) {
-			out[a.key] = a.spring
-				? () => [sprungX.get(), sprungY.get()]
-				: () => {
-						const p = anchorRef.current[kind].at[a.key];
-						return p ? [p.x, p.y] : a.at;
-					};
-		}
-		return out;
-	}, [kind, spec.anchors, sprungX, sprungY]);
-
-	const effect = useMemo(
-		() =>
-			build(
-				kind,
-				values[kind],
-				colors[kind],
-				anchor.on ? getters : {},
-				handle ? getLive : undefined,
-			),
-		[kind, values, colors, anchor.on, getters, handle, getLive],
-	);
-
-	const code = snippet(
-		kind,
-		handle ? { ...values[kind], [handle.key]: live[kind] } : values[kind],
-		colors[kind],
-		anchor,
-		{ cell, seed, active },
-	);
-
-	const isLive = (key: string) => handle?.key === key;
-	const valueOf = (key: string) => (isLive(key) ? live[kind] : values[kind][key]);
-	const setLiveValue = (value: number) =>
-		setLive((prev) => ({ ...prev, [kind]: value }));
-	const setValue = (key: string, value: number) => {
-		if (isLive(key)) {
-			setLiveValue(value);
+	useEffect(() => {
+		if (!sprungSpec) return;
+		const key = sprungSpec.key;
+		if (!sprungAnchor) {
+			fx.set({ [key]: undefined });
 			return;
 		}
+		const push = () => fx.set({ [key]: [sprungX.get(), sprungY.get()] });
+		push();
+		const offX = sprungX.on("change", push);
+		const offY = sprungY.on("change", push);
+		return () => {
+			offX();
+			offY();
+		};
+	}, [fx, sprungSpec, sprungAnchor, sprungX, sprungY]);
+
+	const code = snippet(kind, values[kind], colors[kind], anchor, { cell, seed, active });
+
+	const setValue = (key: string, value: number) =>
 		setValues((prev) => ({ ...prev, [kind]: { ...prev[kind], [key]: value } }));
-	};
 	const moveAnchor = (key: AnchorKey, x: number, y: number) =>
 		setAnchors((prev) => ({
 			...prev,
@@ -266,7 +224,7 @@ export function Playground() {
 					)}
 				>
 					<DitherCanvas
-						effect={effect}
+						effect={fx}
 						active={active}
 						cell={cell}
 						seed={seed}
@@ -321,23 +279,23 @@ export function Playground() {
 					{handle?.shape === "arc" && (
 						<SlantHandle
 							box={stage}
-							value={live[kind]}
+							value={values[kind][handle.key]}
 							min={handle.min}
 							max={handle.max}
 							step={handle.step}
 							label={`Drag to set the ${kind} ${handle.key}`}
-							onChange={setLiveValue}
+							onChange={(value) => setValue(handle.key, value)}
 						/>
 					)}
 					{handle?.shape === "level" && (
 						<LevelHandle
 							box={stage}
-							value={live[kind]}
+							value={values[kind][handle.key]}
 							min={handle.min}
 							max={handle.max}
 							step={handle.step}
 							label={`Drag to set the ${kind} ${handle.key}`}
-							onChange={setLiveValue}
+							onChange={(value) => setValue(handle.key, value)}
 						/>
 					)}
 				</div>
@@ -388,7 +346,7 @@ export function Playground() {
 							<Slider
 								key={number.key}
 								label={number.label}
-								value={valueOf(number.key)}
+								value={values[kind][number.key]}
 								min={number.min}
 								max={number.max}
 								step={number.step}

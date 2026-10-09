@@ -1,8 +1,8 @@
 import {
 	type Anchor,
+	assign,
 	type FxEffect,
 	type FxFrame,
-	resolveAnchor,
 	type RgbInput,
 	toRgb,
 } from "../engine";
@@ -23,19 +23,23 @@ export interface BeamOptions {
 	motes?: number;
 }
 
+/** `target` alone has no default: unset, the beam falls straight down. */
+const DEFAULTS: Required<Omit<BeamOptions, "target">> & Pick<BeamOptions, "target"> = {
+	color: [48, 128, 255],
+	origin: [0.5, 0.5],
+	target: undefined,
+	spread: 0.5,
+	motes: 16,
+};
+
 /**
  * A cone of light from above the top edge, dissolving toward the floor, with
  * slow dust winking inside it. Fully intensity-driven: there is no simulation
  * to run down, so it goes dark the moment the ease lands on zero.
  */
-export function beam({
-	color: colorInput = [48, 128, 255],
-	origin = [0.5, 0.5],
-	target,
-	spread = 0.5,
-	motes = 16,
-}: BeamOptions = {}): FxEffect {
-	const color = toRgb(colorInput);
+export function beam(options: BeamOptions = {}): FxEffect<BeamOptions> {
+	let o = assign(DEFAULTS, DEFAULTS, options);
+	let color = toRgb(o.color);
 	let cols = 0;
 	let rows = 0;
 	let rand: () => number = Math.random;
@@ -44,14 +48,14 @@ export function beam({
 	let dust: Particle[] = [];
 	let dark = true;
 
-	const halfWidth = (y: number) => ((y + rows * 0.2) / (rows * 1.2)) * spread * cols;
+	const halfWidth = (y: number) => ((y + rows * 0.2) / (rows * 1.2)) * o.spread * cols;
 
 	/** The axis column at row `y`: `origin` at the top edge, `target` at the floor. */
 	const axisX = (y: number) => cols * (ox + (tx - ox) * (y / Math.max(1, rows - 1)));
 
 	function aim() {
-		ox = resolveAnchor(origin)[0];
-		tx = target ? resolveAnchor(target)[0] : ox;
+		ox = o.origin[0];
+		tx = o.target ? o.target[0] : ox;
 	}
 
 	function mote(y: number): Particle {
@@ -105,12 +109,11 @@ export function beam({
 			rows = r;
 			rand = random;
 			aim();
-			dust = Array.from({ length: motes }, () => mote(rand() * r));
+			dust = Array.from({ length: o.motes }, () => mote(rand() * r));
 			dark = true;
 		},
 		step(frame) {
 			const { px, dt, t, intensity, reduced } = frame;
-			aim();
 			if (intensity <= 0.002) {
 				if (dark) return false;
 				px.clear();
@@ -132,5 +135,15 @@ export function beam({
 			return true;
 		},
 		idle: () => true,
+		set(patch) {
+			o = assign(DEFAULTS, o, patch);
+			if ("color" in patch) color = toRgb(o.color);
+			aim();
+			// Motes are topped up or trimmed, so the ones in the light stay put.
+			if (rows > 0) {
+				while (dust.length < o.motes) dust.push(mote(rand() * rows));
+				dust.length = Math.min(dust.length, o.motes);
+			}
+		},
 	};
 }

@@ -115,7 +115,10 @@ export default function ShadFxDocs() {
 								The engine runs <Code>requestAnimationFrame</Code> only while
 								something is changing, and stops once the eased intensity has
 								settled and the effect reports <Code>idle()</Code>. An inactive
-								effect costs nothing. Each frame is one <Code>putImageData</Code>{" "}
+								effect costs nothing. A canvas scrolled off screen pauses too,
+								through an <Code>IntersectionObserver</Code>, and resumes where it
+								left off as it comes back, so a page of them only pays for the
+								ones in view. Each frame is one <Code>putImageData</Code>{" "}
 								over a grid capped at 640×400 cells, not a <Code>fillRect</Code>{" "}
 								per cell.
 							</P>

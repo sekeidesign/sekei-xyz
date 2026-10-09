@@ -29,7 +29,6 @@
     "html-to-image": "^1.11.13",
     "lucide-react": "^1.28.0",
     "motion": "^12.43.0",
-    "motion-plus": "https://api.motion.dev/registry?package=motion-plus&version=1.5.4&token=227e71e4be314f5a9e5ba600faa60c97e9323cf108da08d6962dcfe62c549fcd",
     "next": "15.5.22",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

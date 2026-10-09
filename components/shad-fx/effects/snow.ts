@@ -1,4 +1,5 @@
 import {
+	assign,
 	type FxEffect,
 	type FxFrame,
 	type RgbInput,
@@ -28,20 +29,23 @@ interface Flake {
 
 const TAU = Math.PI * 2;
 
+const DEFAULTS: Required<SnowOptions> = {
+	color: [209, 213, 220],
+	flakes: 40,
+	speed: 0.12,
+	sway: 0.6,
+	settle: 0.12,
+};
+
 /**
  * Snow: flakes drifting down on their own sway and a slow shared gust, the
  * near ones winking as they go, settling into a drift along the floor that
  * smooths itself as it builds. Fully intensity-driven, like beam: the whole
  * scene fades with the ease and clears the moment it lands on zero.
  */
-export function snow({
-	color: colorInput = [209, 213, 220],
-	flakes = 40,
-	speed = 0.12,
-	sway = 0.6,
-	settle = 0.12,
-}: SnowOptions = {}): FxEffect {
-	const color = toRgb(colorInput);
+export function snow(options: SnowOptions = {}): FxEffect<SnowOptions> {
+	let o = assign(DEFAULTS, DEFAULTS, options);
+	let color = toRgb(o.color);
 	let cols = 0;
 	let rows = 0;
 	let rand: () => number = Math.random;
@@ -50,23 +54,23 @@ export function snow({
 	let dark = true;
 	let still = false;
 
-	const fallSpeed = (f: Flake) => speed * rows * (0.4 + 0.6 * f.size);
+	const fallSpeed = (f: Flake) => o.speed * rows * (0.4 + 0.6 * f.size);
 
 	function flake(y: number): Flake {
 		return { x: rand() * cols, y, size: rand(), phase: rand() * TAU };
 	}
 
 	function seed() {
-		aloft = Array.from({ length: flakes }, () => flake(rand() * rows));
+		aloft = Array.from({ length: o.flakes }, () => flake(rand() * rows));
 		ground = new Float32Array(cols);
 	}
 
 	function land(x: number) {
-		if (settle <= 0) return;
-		const cap = settle * rows;
+		if (o.settle <= 0) return;
+		const cap = o.settle * rows;
 		// Sized against the column count so a drift builds at the same pace on
 		// any grid, and spread to the neighbours so it mounds rather than spikes.
-		const inc = (0.5 * cols) / Math.max(1, flakes);
+		const inc = (0.5 * cols) / Math.max(1, o.flakes);
 		for (const [dx, share] of [[0, 1], [-1, 0.5], [1, 0.5]] as const) {
 			const i = x + dx;
 			if (i < 0 || i >= cols) continue;
@@ -75,7 +79,7 @@ export function snow({
 	}
 
 	function smooth(dt: number) {
-		if (settle <= 0 || cols < 3) return;
+		if (o.settle <= 0 || cols < 3) return;
 		const k = Math.min(1, dt * 2);
 		let prev = ground[0];
 		for (let x = 1; x < cols - 1; x++) {
@@ -90,7 +94,7 @@ export function snow({
 		for (const f of aloft) {
 			const vy = fallSpeed(f);
 			f.y += vy * dt;
-			f.x += (Math.sin(t * 0.9 + f.phase) + gust) * sway * vy * dt;
+			f.x += (Math.sin(t * 0.9 + f.phase) + gust) * o.sway * vy * dt;
 			if (f.x < -1) f.x += cols + 2;
 			else if (f.x > cols + 1) f.x -= cols + 2;
 			const xi = Math.min(cols - 1, Math.max(0, Math.round(f.x)));
@@ -154,7 +158,7 @@ export function snow({
 					for (let x = 0; x < cols; x++) {
 						const wave =
 							0.55 + 0.25 * Math.sin(x * 0.09 + a) + 0.2 * Math.sin(x * 0.23 + b);
-						ground[x] = settle * rows * wave;
+						ground[x] = o.settle * rows * wave;
 					}
 					still = true;
 				}
@@ -173,5 +177,16 @@ export function snow({
 			return true;
 		},
 		idle: () => true,
+		set(patch) {
+			o = assign(DEFAULTS, o, patch);
+			if ("color" in patch) color = toRgb(o.color);
+			// The still frame is a built drift with a fixed count of flakes.
+			if ("flakes" in patch || "settle" in patch) still = false;
+			if (rows === 0) return;
+			while (aloft.length < o.flakes) aloft.push(flake(-1 - rand() * 3));
+			aloft.length = Math.min(aloft.length, o.flakes);
+			const cap = o.settle * rows;
+			for (let x = 0; x < cols; x++) ground[x] = Math.min(ground[x], cap);
+		},
 	};
 }

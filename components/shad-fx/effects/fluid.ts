@@ -1,4 +1,5 @@
 import {
+	assign,
 	type FxEffect,
 	type FxFrame,
 	type RgbInput,
@@ -8,11 +9,8 @@ import { arms, type Particle, twinkle } from "./particles";
 
 export interface FluidOptions {
 	color?: RgbInput;
-	/**
-	 * Resting depth as a fraction of the height, at full intensity. A getter is
-	 * re-read every frame, so the level can be steered without rebuilding.
-	 */
-	level?: number | (() => number);
+	/** Resting depth as a fraction of the height, at full intensity. */
+	level?: number;
 	/** How far the surface tilts at either edge, as a fraction of the height. */
 	slosh?: number;
 	/** Slosh cycles per second. */
@@ -23,20 +21,23 @@ export interface FluidOptions {
 
 const TAU = Math.PI * 2;
 
+const DEFAULTS: Required<FluidOptions> = {
+	color: [48, 128, 255],
+	level: 0.2,
+	slosh: 0.09,
+	tempo: 0.15,
+	bubbles: 12,
+};
+
 /**
  * A liquid pooled along the floor, sloshing side to side around a level that
  * never changes: mass shifts left, then right, and the mean holds. The body is
  * densest at the floor and dissolves toward the surface line, which carries
  * the wave.
  */
-export function fluid({
-	color: colorInput = [48, 128, 255],
-	level = 0.2,
-	slosh = 0.09,
-	tempo = 0.15,
-	bubbles = 12,
-}: FluidOptions = {}): FxEffect {
-	const color = toRgb(colorInput);
+export function fluid(options: FluidOptions = {}): FxEffect<FluidOptions> {
+	let o = assign(DEFAULTS, DEFAULTS, options);
+	let color = toRgb(o.color);
 	let cols = 0;
 	let rows = 0;
 	let rand: () => number = Math.random;
@@ -44,8 +45,6 @@ export function fluid({
 	let bubs: Particle[] = [];
 	let glints: Particle[] = [];
 	let dark = true;
-
-	const levelNow = () => (typeof level === "function" ? level() : level);
 
 	function bubble(): Particle {
 		return {
@@ -60,14 +59,14 @@ export function fluid({
 	}
 
 	function shape(t: number, intensity: number, reduced: boolean) {
-		const depth = levelNow() * rows * intensity;
-		const phase = t * tempo * TAU;
-		const tilt = reduced ? 0 : Math.sin(phase) * slosh * rows;
+		const depth = o.level * rows * intensity;
+		const phase = t * o.tempo * TAU;
+		const tilt = reduced ? 0 : Math.sin(phase) * o.slosh * rows;
 		for (let x = 0; x < cols; x++) {
 			const u = (x + 0.5) / cols - 0.5;
 			const lag = reduced
 				? 0
-				: Math.sin(phase - u * 1.2) * slosh * rows * 0.25;
+				: Math.sin(phase - u * 1.2) * o.slosh * rows * 0.25;
 			const ripple = reduced
 				? 0
 				: Math.sin(x * 0.45 - t * 2.6) * 0.5 + Math.sin(x * 0.23 + t * 1.7) * 0.4;
@@ -130,13 +129,13 @@ export function fluid({
 			dark = false;
 			const depth = shape(t, intensity, reduced);
 			if (!reduced) {
-				if (bubs.length < bubbles * intensity && rand() < 0.08) bubs.push(bubble());
+				if (bubs.length < o.bubbles * intensity && rand() < 0.08) bubs.push(bubble());
 				for (const b of bubs) {
 					b.y += b.vy * dt;
 					b.x += Math.sin(t * 3 + b.phase) * rows * 0.02 * dt;
 				}
 				bubs = bubs.filter((b) => b.y > (surface[Math.round(b.x)] ?? 0) + 1);
-				const drift = Math.cos(t * tempo * TAU) * cols * 0.12;
+				const drift = Math.cos(t * o.tempo * TAU) * cols * 0.12;
 				for (const g of glints) {
 					g.x += drift * dt;
 					if (g.x < 0) g.x += cols;
@@ -147,5 +146,9 @@ export function fluid({
 			return true;
 		},
 		idle: () => true,
+		set(patch) {
+			o = assign(DEFAULTS, o, patch);
+			if ("color" in patch) color = toRgb(o.color);
+		},
 	};
 }
