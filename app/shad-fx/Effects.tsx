@@ -39,8 +39,9 @@ export function Effects() {
 			</P>
 			<CodeBlock code={SKILLS} />
 			<P>
-				Every effect is a factory returning an <Code>FxEffect</Code>, and
-				every option is optional. The same effect runs on any renderer. <Code>RgbInput</Code> is a hex string or an{" "}
+				Every effect is a factory returning an <Code>FxEffect</Code>, passed
+				to <Code>useFx</Code>, and every option is optional and can change at
+				any time. The same effect runs on any renderer. <Code>RgbInput</Code> is a hex string or an{" "}
 				<Code>[r, g, b]</Code> tuple. Where a count is given at full intensity,
 				it scales down as the effect eases out.
 			</P>
@@ -51,10 +52,10 @@ export function Effects() {
 			</div>
 			<P>
 				<Code>origin</Code> and <Code>target</Code> take an <Code>Anchor</Code>:
-				an <Code>[x, y]</Code> pair in 0–1 of the box, or a getter, which is
-				re-read every frame — so an effect can follow something that moves
-				without being rebuilt and losing what it has already simulated. Drag the
-				dot in the playground above to see it.
+				an <Code>[x, y]</Code> pair in 0–1 of the box. To follow something that
+				moves, call <Code>fx.set({"{ origin }"})</Code> as it moves: the effect
+				keeps what it has already simulated. Drag the dot in the playground
+				above to see it.
 			</P>
 		</Section>
 	);

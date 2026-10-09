@@ -8,17 +8,21 @@ export { rings, type RingsOptions } from "./effects/rings";
 export { snow, type SnowOptions } from "./effects/snow";
 export {
 	type Anchor,
+	assign,
 	clamp01,
+	createFx,
+	type Fx,
 	type FxEffect,
 	FxEngine,
+	type FxFactory,
 	type FxFrame,
 	hex,
 	mix,
 	type Renderer,
-	resolveAnchor,
 	type Rgb,
 	type RgbInput,
 	type Surface,
 	seededRandom,
 	toRgb,
 } from "./engine";
+export { useFx } from "./use-fx";

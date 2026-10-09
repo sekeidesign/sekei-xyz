@@ -7,8 +7,8 @@ export function Usage() {
 		<Section title="Usage" id="usage">
 			<P>
 				To have an agent set effects up for you, install the{" "}
-				<A href="#agent-skills">agent skills</A>. One covers placement,
-				the stable-reference rule, anchors and cost; the other writes new
+				<A href="#agent-skills">agent skills</A>. One covers placement,{" "}
+				<Code>useFx</Code>, anchors and cost; the other writes new
 				effects.
 			</P>
 			<CodeBlock code={SKILLS} />
@@ -18,10 +18,16 @@ export function Usage() {
 			</P>
 			<CodeBlock code={USAGE} lang="tsx" />
 			<P>
-				Build the effect once. A new <Code>effect</Code> reference restarts the
-				simulation — the canvas and its observer survive, but particles and heat
-				fields reset. Use <Code>useMemo</Code> with the options in the dependency
-				array, or module scope when the options are constant.
+				<Code>useFx</Code> builds the effect once and keeps it in step with its
+				options. Pass them like any props, inline arrays included: a change
+				applies in place, without restarting the simulation, and a removed
+				option goes back to its default. Passing a different effect, as in{" "}
+				<Code>useFx(on ? fire : rain)</Code>, starts that one fresh.
+			</P>
+			<P>
+				For a value that changes every frame, such as a pointer position, skip
+				the re-render and call <Code>fx.set</Code> from the handler. Outside
+				React, <Code>createFx(fire, options)</Code> returns the same handle.
 			</P>
 			<Table
 				head={["Prop", "Default", "Notes"]}

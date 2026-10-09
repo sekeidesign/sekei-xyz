@@ -1,8 +1,8 @@
 import {
 	type Anchor,
+	assign,
 	type FxEffect,
 	type FxFrame,
-	resolveAnchor,
 	type RgbInput,
 	toRgb,
 } from "../engine";
@@ -17,19 +17,22 @@ export interface BoltOptions {
 	rate?: number;
 }
 
+const DEFAULTS: Required<BoltOptions> = {
+	color: [252, 187, 0],
+	interval: [0.6, 1.4],
+	target: [0.5, 0.43],
+	rate: 30,
+};
+
 /**
  * Lightning from the top edge: a random walk down that steers toward a target
  * column, throwing short branches, lighting the sky and bursting sparks at the
  * tip. The strike lives in a flash field that decays quickly, which is what
  * gives it an afterimage instead of a hard cut.
  */
-export function bolt({
-	color: colorInput = [252, 187, 0],
-	interval = [0.6, 1.4],
-	target = [0.5, 0.43],
-	rate = 30,
-}: BoltOptions = {}): FxEffect {
-	const color = toRgb(colorInput);
+export function bolt(options: BoltOptions = {}): FxEffect<BoltOptions> {
+	let o = assign(DEFAULTS, DEFAULTS, options);
+	let color = toRgb(o.color);
 	let cols = 0;
 	let rows = 0;
 	let flash = new Float32Array(0);
@@ -44,6 +47,11 @@ export function bolt({
 	let crackle: Particle[] = [];
 	let lastReduced = false;
 	let staticBolt = false;
+
+	const aim = () => {
+		tx = cols * o.target[0];
+		ty = rows * o.target[1];
+	};
 
 	const mark = (x: number, y: number, v: number) => {
 		if (x < 0 || x >= cols || y < 0 || y >= rows) return;
@@ -99,11 +107,11 @@ export function bolt({
 			flash[i] = f < 0.01 ? 0 : f;
 		}
 		sky *= 0.78;
-		until -= 1 / rate;
+		until -= 1 / o.rate;
 		if (intensity > 0.4) {
 			if (until <= 0) {
 				strike(true);
-				until = interval[0] + rand() * (interval[1] - interval[0]);
+				until = o.interval[0] + rand() * (o.interval[1] - o.interval[0]);
 			}
 		} else if (until < 0.12) until = 0.12;
 		if (rand() < 0.5 * intensity) {
@@ -158,9 +166,7 @@ export function bolt({
 			cols = c;
 			rows = r;
 			rand = random;
-			const [fx, fy] = resolveAnchor(target);
-			tx = c * fx;
-			ty = r * fy;
+			aim();
 			flash = new Float32Array(c * r);
 			sparks = [];
 			crackle = [];
@@ -172,9 +178,6 @@ export function bolt({
 		step(frame) {
 			const { dt, intensity, reduced } = frame;
 			lastReduced = reduced;
-			const [fx, fy] = resolveAnchor(target);
-			tx = cols * fx;
-			ty = rows * fy;
 			if (reduced) {
 				if (!staticBolt) {
 					flash.fill(0);
@@ -193,8 +196,8 @@ export function bolt({
 			}
 			acc += dt;
 			let stepped = false;
-			while (acc >= 1 / rate) {
-				acc -= 1 / rate;
+			while (acc >= 1 / o.rate) {
+				acc -= 1 / o.rate;
 				simulate(intensity);
 				stepped = true;
 			}
@@ -212,5 +215,14 @@ export function bolt({
 			return true;
 		},
 		idle: () => lastReduced || !alive,
+		set(patch) {
+			o = assign(DEFAULTS, o, patch);
+			if ("color" in patch) color = toRgb(o.color);
+			if ("target" in patch) {
+				aim();
+				// The still strike was aimed at the old target.
+				staticBolt = false;
+			}
+		},
 	};
 }

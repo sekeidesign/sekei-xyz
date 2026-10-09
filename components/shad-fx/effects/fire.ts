@@ -1,4 +1,5 @@
 import {
+	assign,
 	type FxEffect,
 	type FxFrame,
 	mix,
@@ -11,16 +12,24 @@ import { arms, type Particle, twinkle } from "./particles";
 export interface FireOptions {
 	/** Cold → hot: the tips, the body, the base. */
 	colors?: readonly [RgbInput, RgbInput, RgbInput];
-	/**
-	 * Fraction of the height the flames reach at full intensity. A getter is
-	 * re-read every frame, so the height can be steered without rebuilding.
-	 */
-	height?: number | (() => number);
+	/** Fraction of the height the flames reach at full intensity. */
+	height?: number;
 	/** Simulation steps per second; lower reads chunkier. */
 	rate?: number;
 	/** Embers aloft at once, at full intensity. */
 	embers?: number;
 }
+
+const DEFAULTS: Required<FireOptions> = {
+	colors: [
+		[229, 52, 58],
+		[240, 81, 0],
+		[252, 187, 0],
+	],
+	height: 0.5,
+	rate: 36,
+	embers: 8,
+};
 
 /**
  * The Doom fire: a heat field seeded along the bottom row, each cell pulling
@@ -28,19 +37,11 @@ export interface FireOptions {
  * the source row, so easing it out lets the flames burn away upward instead of
  * fading as a sheet.
  */
-export function fire({
-	colors = [
-		[229, 52, 58],
-		[240, 81, 0],
-		[252, 187, 0],
-	],
-	height = 0.5,
-	rate = 36,
-	embers = 8,
-}: FireOptions = {}): FxEffect {
-	const cold = toRgb(colors[0]);
-	const warm = toRgb(colors[1]);
-	const hot = toRgb(colors[2]);
+export function fire(options: FireOptions = {}): FxEffect<FireOptions> {
+	let o = assign(DEFAULTS, DEFAULTS, options);
+	let cold = toRgb(o.colors[0]);
+	let warm = toRgb(o.colors[1]);
+	let hot = toRgb(o.colors[2]);
 	let cols = 0;
 	let rows = 0;
 	let heat = new Float32Array(0);
@@ -51,13 +52,11 @@ export function fire({
 	let sparks: Particle[] = [];
 	let lastReduced = false;
 
-	const heightNow = () => (typeof height === "function" ? height() : height);
-
 	const ramp = (h: number): Rgb =>
 		h < 0.45 ? mix(cold, warm, h / 0.45) : mix(warm, hot, (h - 0.45) / 0.55);
 
 	function simulate(intensity: number, t: number) {
-		const loss = 1 / (rows * heightNow());
+		const loss = 1 / (rows * o.height);
 		const base = (rows - 1) * cols;
 		for (let x = 0; x < cols; x++) {
 			const flicker =
@@ -79,7 +78,7 @@ export function fire({
 	}
 
 	function spawn(intensity: number) {
-		if (sparks.length >= embers * intensity || rand() > 0.3) return;
+		if (sparks.length >= o.embers * intensity || rand() > 0.3) return;
 		const x = Math.floor(rand() * cols);
 		for (let y = 0; y < rows - 2; y++) {
 			if (heat[y * cols + x] > 0.3) {
@@ -138,7 +137,7 @@ export function fire({
 			lastReduced = reduced;
 			if (reduced) {
 				if (!warmed) {
-					for (let i = 0; i < rows * 2; i++) simulate(1, i / rate);
+					for (let i = 0; i < rows * 2; i++) simulate(1, i / o.rate);
 					warmed = true;
 				}
 				sparks = [];
@@ -148,8 +147,8 @@ export function fire({
 			warmed = false;
 			acc += dt;
 			let stepped = false;
-			while (acc >= 1 / rate) {
-				acc -= 1 / rate;
+			while (acc >= 1 / o.rate) {
+				acc -= 1 / o.rate;
 				simulate(intensity, t);
 				spawn(intensity);
 				stepped = true;
@@ -165,5 +164,15 @@ export function fire({
 			return true;
 		},
 		idle: () => lastReduced || !alive,
+		set(patch) {
+			o = assign(DEFAULTS, o, patch);
+			if ("colors" in patch) {
+				cold = toRgb(o.colors[0]);
+				warm = toRgb(o.colors[1]);
+				hot = toRgb(o.colors[2]);
+			}
+			// The still frame is warmed to a height, so a new one re-warms it.
+			if ("height" in patch) warmed = false;
+		},
 	};
 }

@@ -1,7 +1,7 @@
 allowBuilds:
-  '@tailwindcss/oxide': set this to true or false
-  sharp: set this to true or false
-  unrs-resolver: set this to true or false
+  '@tailwindcss/oxide': false
+  sharp: false
+  unrs-resolver: false
 
 # Installs wait for a release to have been public this long (7 days), so a
 # compromised version that gets caught and unpublished within hours never
@@ -11,3 +11,10 @@ minimumReleaseAge: 10080
 # Refuse a package whose trust signals (provenance, signatures) are weaker than
 # the version it replaces.
 trustPolicy: no-downgrade
+
+# These versions were published without the provenance their packages already
+# had, which no-downgrade rejects. Each is replaced by a release that has it.
+overrides:
+  undici-types@6.21.0: 6.29.0
+  semver@6.3.1: 7.7.4
+  eslint-import-resolver-typescript@3.10.1: 4.4.4

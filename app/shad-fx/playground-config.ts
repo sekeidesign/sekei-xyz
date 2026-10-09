@@ -1,7 +1,7 @@
 import {
 	beam,
 	bolt,
-	type FxEffect,
+	type FxFactory,
 	fire,
 	fluid,
 	rain,
@@ -148,13 +148,17 @@ export const DEFAULTS: Record<Kind, Record<string, number>> = {
 	snow: { flakes: 40, speed: 0.12, sway: 0.6, settle: 0.12 },
 };
 
-export type Anchor = readonly [number, number];
-export type AnchorGetters = Partial<Record<AnchorKey, () => Anchor>>;
-
 export interface AnchorState {
 	on: boolean;
 	at: Partial<Record<AnchorKey, { x: number; y: number }>>;
 }
+
+export type Options = Record<string, unknown>;
+
+export const FACTORIES = { fire, bolt, rings, fluid, beam, rain, snow } as Record<
+	Kind,
+	FxFactory<Options>
+>;
 
 /** The stage handle's option and range for an effect, when it has one. */
 export function handleOf(kind: Kind): (HandleSpec & NumberSpec) | undefined {
@@ -165,77 +169,26 @@ export function handleOf(kind: Kind): (HandleSpec & NumberSpec) | undefined {
 }
 
 /**
- * Anchors and the live option are getters rather than values because the
- * effects re-read them every frame: dragging then steers the live effect
- * instead of rebuilding it and losing the rings already in flight.
+ * What the panel hands `useFx`. Anchors that are off are left out, which sends
+ * them back to the library's default.
  */
-export function build(
+export function optionsOf(
 	kind: Kind,
 	values: Record<string, number>,
 	colors: string[],
-	anchors: AnchorGetters,
-	live?: () => number,
-): FxEffect {
-	const [a, b, c] = colors;
-	switch (kind) {
-		case "fire":
-			return fire({
-				colors: [a, b, c],
-				height: live ?? values.height,
-				rate: values.rate,
-				embers: values.embers,
-			});
-		case "bolt":
-			return bolt({
-				color: a,
-				interval: [
-					Math.min(values.every, values.upTo),
-					Math.max(values.every, values.upTo),
-				],
-				rate: values.rate,
-				target: anchors.target,
-			});
-		case "rings":
-			return rings({
-				color: a,
-				interval: values.interval,
-				speed: values.speed,
-				width: values.width,
-				origin: anchors.origin,
-			});
-		case "fluid":
-			return fluid({
-				color: a,
-				level: live ?? values.level,
-				slosh: values.slosh,
-				tempo: values.tempo,
-				bubbles: values.bubbles,
-			});
-		case "beam":
-			return beam({
-				color: a,
-				spread: values.spread,
-				motes: values.motes,
-				origin: anchors.origin,
-				target: anchors.target,
-			});
-		case "rain":
-			return rain({
-				color: a,
-				drops: values.drops,
-				speed: values.speed,
-				slant: live ?? values.slant,
-				length: values.length,
-			});
-		case "snow":
-			return snow({
-				color: a,
-				flakes: values.flakes,
-				speed: values.speed,
-				sway: values.sway,
-				settle: values.settle,
-			});
+	anchors: AnchorState,
+): Options {
+	const { every, upTo, ...rest } = values;
+	const out: Options =
+		kind === "fire" ? { ...rest, colors } : { ...rest, color: colors[0] };
+	if (kind === "bolt") out.interval = [Math.min(every, upTo), Math.max(every, upTo)];
+	if (anchors.on) {
+		for (const { key } of SPECS[kind].anchors ?? []) {
+			const p = anchors.at[key];
+			if (p) out[key] = [p.x, p.y];
+		}
 	}
+	return out;
 }
 
 const round = (value: number) => Number(value.toFixed(2));
@@ -298,18 +251,18 @@ export function snippet(
 	}
 
 	const call = options.length
-		? `${kind}({\n${options.map((line) => `\t${line},`).join("\n")}\n})`
-		: `${kind}()`;
+		? `useFx(${kind}, {\n${options.map((line) => `\t${line},`).join("\n")}\n})`
+		: `useFx(${kind})`;
 
-	const props = ["effect={effect}"];
+	const props = ["effect={fx}"];
 	if (!canvas.active) props.push("active={false}");
 	if (canvas.cell !== 2) props.push(`cell={${canvas.cell}}`);
 	if (canvas.seed !== 1) props.push(`seed={${canvas.seed}}`);
 
 	return [
-		`import { DitherCanvas, ${kind} } from "@/components/shad-fx";`,
+		`import { DitherCanvas, ${kind}, useFx } from "@/components/shad-fx";`,
 		"",
-		`const effect = ${call};`,
+		`const fx = ${call};`,
 		"",
 		`<DitherCanvas ${props.join(" ")} />`,
 	].join("\n");

@@ -8,9 +8,8 @@ import {
 } from "@heroicons/react/24/solid";
 import { cn } from "@ui-kit/cn";
 import { AnimatePresence, m, type Transition } from "motion/react";
-import { Ticker } from "motion-plus/react";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { type CSSProperties, useEffect, useRef, useState } from "react";
 import useMeasure from "react-use-measure";
 
 const springConfig: Transition = {
@@ -94,6 +93,8 @@ interface MediaContentProps {
 	onTogglePlay: () => void;
 }
 
+const TICKER_VELOCITY = 20;
+
 function MediaContent({
 	title,
 	subtitle,
@@ -104,6 +105,8 @@ function MediaContent({
 	VIDEO_DURATION,
 	onTogglePlay,
 }: MediaContentProps) {
+	const [titleRef, titleBounds] = useMeasure();
+
 	return (
 		<div className="flex flex-col gap-2 pt-7 pb-4 px-4 w-full items-center justify-center">
 			<div className="flex gap-1 items-center justify-center relative w-full pointer-events-none">
@@ -118,26 +121,36 @@ function MediaContent({
 				</div>
 
 				<div className="flex flex-col gap-px grow overflow-hidden items-start px-3 min-w-0">
-					<div className="relative overflow-hidden w-full">
-						<Ticker
-							items={[
-								<span
-									key="title"
-									className="font-semibold text-sm text-white whitespace-nowrap overflow-hidden"
-								>
-									{title}
-								</span>,
-							]}
-							velocity={20}
-							gap={16}
-							align="start"
-							style={{
-								maskImage:
-									"linear-gradient(to right, transparent 0px, black 12px, black calc(100% - 12px), transparent 100%)",
-								WebkitMaskImage:
-									"linear-gradient(to right, transparent 0px, black 12px, black calc(100% - 12px), transparent 100%)",
-							}}
-						/>
+					<div
+						className="relative overflow-hidden w-full"
+						style={{
+							maskImage:
+								"linear-gradient(to right, transparent 0px, black 12px, black calc(100% - 12px), transparent 100%)",
+							WebkitMaskImage:
+								"linear-gradient(to right, transparent 0px, black 12px, black calc(100% - 12px), transparent 100%)",
+						}}
+					>
+						<div
+							className="ticker flex w-max"
+							style={
+								{
+									"--ticker-duration": `${titleBounds.width / TICKER_VELOCITY}s`,
+								} as CSSProperties
+							}
+						>
+							<span
+								ref={titleRef}
+								className="pr-4 font-semibold text-sm text-white whitespace-nowrap"
+							>
+								{title}
+							</span>
+							<span
+								aria-hidden
+								className="pr-4 font-semibold text-sm text-white whitespace-nowrap"
+							>
+								{title}
+							</span>
+						</div>
 					</div>
 					<p className="font-normal leading-4 opacity-50 text-xs text-white whitespace-nowrap">
 						{subtitle}

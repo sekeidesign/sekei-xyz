@@ -23,12 +23,12 @@ export const SKILL_LIST: Skill[] = [
 	{
 		name: "use-shad-fx",
 		use: "Put an effect on a card, hero, button or section, or fix one that restarts, flickers, hides the content or costs too much.",
-		covers: "Placement, keeping the `effect` reference stable, anchors, colours and cost.",
+		covers: "Placement, `useFx` and live options, anchors, colours and cost.",
 	},
 	{
 		name: "create-shad-fx",
 		use: "Write an effect the shipped set doesn't cover, like smoke, sparks or static, or change how one simulates.",
-		covers: "The `FxEffect` contract, the `Surface` it paints into, reduced motion and parking.",
+		covers: "The `FxEffect` contract, the `Surface` it paints into, live `set`, reduced motion and parking.",
 	},
 ];
 
@@ -38,15 +38,16 @@ export const REGISTRY_CONFIG = `{
   }
 }`;
 
-export const USAGE = `import { DitherCanvas, fire } from "@/components/shad-fx";
-import { useMemo } from "react";
+export const USAGE = `"use client";
 
-export function Card() {
-  const effect = useMemo(() => fire({ colors: ["#e5343a", "#f05100", "#fcbb00"] }), []);
+import { DitherCanvas, fire, useFx } from "@/components/shad-fx";
+
+export function Card({ height }: { height: number }) {
+  const fx = useFx(fire, { colors: ["#e5343a", "#f05100", "#fcbb00"], height });
 
   return (
     <div className="relative overflow-hidden rounded-lg">
-      <DitherCanvas effect={effect} />
+      <DitherCanvas effect={fx} />
       <p className="relative">Burning</p>
     </div>
   );
@@ -68,7 +69,7 @@ export const ITEMS: Item[] = [
 	),
 	{
 		name: "shad-fx-engine",
-		pullsIn: "Nothing — frame loop, the effect contract, seeded RNG, colour helpers",
+		pullsIn: "Nothing — frame loop, the effect contract, useFx, seeded RNG, colour helpers",
 	},
 	{ name: "use-prefers-reduced-motion", pullsIn: "Nothing" },
 ];
@@ -117,10 +118,10 @@ export const EFFECTS: Effect[] = [
 			},
 			{
 				name: "height",
-				type: "number | (() => number)",
+				type: "number",
 				fallback: "0.5",
 				description:
-					"Fraction of the height the flames reach at full intensity. A getter is re-read every frame.",
+					"Fraction of the height the flames reach at full intensity.",
 			},
 			{
 				name: "rate",
@@ -217,10 +218,10 @@ export const EFFECTS: Effect[] = [
 			},
 			{
 				name: "level",
-				type: "number | (() => number)",
+				type: "number",
 				fallback: "0.2",
 				description:
-					"Resting depth as a fraction of the height, at full intensity. A getter is re-read every frame.",
+					"Resting depth as a fraction of the height, at full intensity.",
 			},
 			{
 				name: "slosh",
@@ -307,10 +308,10 @@ export const EFFECTS: Effect[] = [
 			},
 			{
 				name: "slant",
-				type: "number | (() => number)",
+				type: "number",
 				fallback: "0.25",
 				description:
-					"Cells drifted sideways per cell fallen. Negative blows left. A getter is re-read every frame.",
+					"Cells drifted sideways per cell fallen. Negative blows left.",
 			},
 			{
 				name: "length",

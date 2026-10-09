@@ -1,4 +1,5 @@
 import {
+	assign,
 	type FxEffect,
 	type FxFrame,
 	type RgbInput,
@@ -11,11 +12,8 @@ export interface RainOptions {
 	drops?: number;
 	/** Fall speed of the nearest drops as a fraction of the height per second. */
 	speed?: number;
-	/**
-	 * Cells drifted sideways per cell fallen; negative blows left. A getter is
-	 * re-read every frame, so the slant can be steered without rebuilding.
-	 */
-	slant?: number | (() => number);
+	/** Cells drifted sideways per cell fallen; negative blows left. */
+	slant?: number;
 	/** Streak length of the nearest drops, in cells. */
 	length?: number;
 }
@@ -34,21 +32,23 @@ interface Splash {
 	bright: number;
 }
 
+const DEFAULTS: Required<RainOptions> = {
+	color: [190, 219, 255],
+	drops: 64,
+	speed: 1.4,
+	slant: 0.25,
+	length: 6,
+};
+
 /**
  * Rain: streaks on a shared slant that gusts a little, near drops faster and
  * brighter than far ones, each ending in a splash on the floor. Intensity
  * drives how many are aloft, so easing out lets the ones in flight land
  * instead of fading them as a sheet.
  */
-export function rain({
-	color: colorInput = [190, 219, 255],
-	drops = 64,
-	speed = 1.4,
-	slant = 0.25,
-	length = 6,
-}: RainOptions = {}): FxEffect {
-	const color = toRgb(colorInput);
-	const slantNow = () => (typeof slant === "function" ? slant() : slant);
+export function rain(options: RainOptions = {}): FxEffect<RainOptions> {
+	let o = assign(DEFAULTS, DEFAULTS, options);
+	let color = toRgb(o.color);
 	let cols = 0;
 	let rows = 0;
 	let rand: () => number = Math.random;
@@ -58,14 +58,14 @@ export function rain({
 	let lastReduced = false;
 	let still = false;
 
-	const wind = (t: number) => slantNow() * (0.85 + 0.15 * Math.sin(t * 0.7));
+	const wind = (t: number) => o.slant * (0.85 + 0.15 * Math.sin(t * 0.7));
 
-	const fallSpeed = (d: Drop) => speed * rows * (0.55 + 0.45 * d.depth);
+	const fallSpeed = (d: Drop) => o.speed * rows * (0.55 + 0.45 * d.depth);
 
 	function drop(y: number): Drop {
 		// Slanted rain enters from a side as well as the top, so the spawn span
 		// is widened upwind by how far a drop drifts on its way down.
-		const drift = slantNow() * rows;
+		const drift = o.slant * rows;
 		return {
 			x: Math.min(0, -drift) + rand() * (cols + Math.abs(drift)),
 			y,
@@ -74,7 +74,7 @@ export function rain({
 	}
 
 	function spawn(intensity: number, dt: number) {
-		const want = drops * intensity;
+		const want = o.drops * intensity;
 		// Spawned anywhere within half a crossing above the top, and capped per
 		// frame: a landed drop otherwise comes straight back at the top edge, and
 		// the rain arrives in curtains.
@@ -111,13 +111,13 @@ export function rain({
 		px.clear();
 		alive = false;
 		const gain = reduced ? intensity : 1;
-		const w = reduced ? slantNow() : wind(t);
+		const w = reduced ? o.slant : wind(t);
 		const norm = Math.hypot(w, 1);
 		const sx = -w / norm;
 		const sy = -1 / norm;
 		for (const d of live) {
 			alive = true;
-			const len = Math.max(1, Math.round(length * (0.6 + 0.4 * d.depth)));
+			const len = Math.max(1, Math.round(o.length * (0.6 + 0.4 * d.depth)));
 			const bright = 0.45 + 0.55 * d.depth;
 			px.blend(Math.round(d.x), Math.round(d.y), color, bright * gain);
 			// Solid for most of its length and dithered only at the tail: a streak
@@ -159,7 +159,7 @@ export function rain({
 			lastReduced = reduced;
 			if (reduced) {
 				if (!still) {
-					live = Array.from({ length: drops }, () => drop(rand() * rows));
+					live = Array.from({ length: o.drops }, () => drop(rand() * rows));
 					splashes = [];
 					still = true;
 				}
@@ -179,5 +179,11 @@ export function rain({
 			return true;
 		},
 		idle: () => lastReduced || !alive,
+		set(patch) {
+			o = assign(DEFAULTS, o, patch);
+			if ("color" in patch) color = toRgb(o.color);
+			// The still frame hangs a fixed number of drops.
+			if ("drops" in patch) still = false;
+		},
 	};
 }
