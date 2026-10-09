@@ -2,6 +2,7 @@
 
 import { m } from "motion/react";
 import { useId, useState } from "react";
+import { cn } from "../cn";
 import { Surface } from "../Surface";
 import { SliderTrack } from "../controls/Slider";
 import { ProgressDial } from "./StatusDial";
@@ -220,18 +221,35 @@ function LikelihoodBars({ level }: { level: number }) {
 	);
 }
 
+/** A slide reads from across a room: a larger label and more air between the parts. */
+type Scale = "post" | "slide";
+
 function Column({
 	label,
 	figure,
 	children,
+	scale,
 }: {
 	label: string;
 	figure: React.ReactNode;
 	children: React.ReactNode;
+	scale: Scale;
 }) {
 	return (
-		<div className="flex flex-1 flex-col items-center gap-8 px-6 py-8">
-			<span className="font-mono text-xs text-gray-400">{label}</span>
+		<div
+			className={cn(
+				"flex flex-1 flex-col items-center px-6",
+				scale === "slide" ? "gap-10 py-10" : "gap-8 py-8",
+			)}
+		>
+			<span
+				className={cn(
+					"font-mono text-gray-400",
+					scale === "slide" ? "text-sm" : "text-xs",
+				)}
+			>
+				{label}
+			</span>
 			<div
 				style={{ width: SIZE, height: SIZE }}
 				className="flex items-center justify-center"
@@ -246,12 +264,13 @@ function Column({
 const statusTone = (fraction: number) =>
 	fraction === 0 ? "#d1d5dc" : fraction === 1 ? "#2b7fff" : "#ffb900";
 
-function StatusColumn() {
+function StatusColumn({ scale }: { scale: Scale }) {
 	const [fraction, setFraction] = useState(0);
 
 	return (
 		<Column
 			label="Status"
+			scale={scale}
 			figure={
 				<m.div
 					animate={{ color: statusTone(fraction) }}
@@ -284,15 +303,17 @@ function LevelColumn({
 	label,
 	steps,
 	figure,
+	scale,
 }: {
 	label: string;
 	steps: readonly string[];
 	figure: (level: number) => React.ReactNode;
+	scale: Scale;
 }) {
 	const [level, setLevel] = useState(2);
 
 	return (
-		<Column label={label} figure={figure(level)}>
+		<Column label={label} figure={figure(level)} scale={scale}>
 			<SliderTrack
 				aria-label={label}
 				value={level}
@@ -310,7 +331,7 @@ function LevelColumn({
 const IMPACT_STEPS = ["None", "Low", "Medium", "High", "Critical"];
 const LIKELIHOOD_STEPS = ["None", "Low", "Medium", "High", "Certain"];
 
-export function IndicatorDemo() {
+export function IndicatorDemo({ scale = "post" }: { scale?: Scale }) {
 	return (
 		<Surface
 			className="my-6 w-full cursor-default"
@@ -319,14 +340,16 @@ export function IndicatorDemo() {
 					"flex flex-col divide-y divide-gray-500/10 sm:flex-row sm:divide-x sm:divide-y-0",
 			}}
 		>
-			<StatusColumn />
+			<StatusColumn scale={scale} />
 			<LevelColumn
 				label="Impact"
+				scale={scale}
 				steps={IMPACT_STEPS}
 				figure={(level) => <ImpactDial level={level} />}
 			/>
 			<LevelColumn
 				label="Likelihood"
+				scale={scale}
 				steps={LIKELIHOOD_STEPS}
 				figure={(level) => <LikelihoodBars level={level} />}
 			/>

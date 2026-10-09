@@ -75,7 +75,21 @@ const HOLD_MS = 2000;
  * it has faded out. The disc in front swaps in step: its wash crossfades as in
  * the RAID flow, and its icon dithers through.
  */
-export function ShadFxCover() {
+export function ShadFxCover({
+	cell,
+	hold = HOLD_MS,
+	fireRate,
+	icon = 24,
+}: {
+	/** Dither cell size in CSS px; the canvas's own default when left out. */
+	cell?: number;
+	/** How long each effect stays on before handing over, in ms. */
+	hold?: number;
+	/** Fire's simulation steps per second; higher flickers faster. */
+	fireRate?: number;
+	/** The icon's size in px; the disc around it keeps the same 8px margin. */
+	icon?: number;
+} = {}) {
 	const ref = useRef<HTMLDivElement>(null);
 	const inView = useInView(ref, { amount: 0.3 });
 	const [tick, setTick] = useState(0);
@@ -83,9 +97,9 @@ export function ShadFxCover() {
 
 	useEffect(() => {
 		if (!inView) return;
-		const id = setInterval(() => setTick((count) => count + 1), HOLD_MS);
+		const id = setInterval(() => setTick((count) => count + 1), hold);
 		return () => clearInterval(id);
-	}, [inView]);
+	}, [inView, hold]);
 
 	return (
 		<div ref={ref} className="absolute inset-0 overflow-hidden bg-white">
@@ -93,13 +107,14 @@ export function ShadFxCover() {
 				<Layer
 					key={name}
 					factory={factory}
-					options={options}
+					options={name === "fire" && fireRate !== undefined ? { rate: fireRate } : options}
+					cell={cell}
 					active={inView && index === current}
 				/>
 			))}
 			<div className="absolute inset-0 flex items-center justify-center">
 				<span className="flex rounded-full bg-white p-1 ring-1 ring-gray-500/10 shadow-sm">
-					<span className="relative size-10">
+					<span className="relative" style={{ width: icon + 16, height: icon + 16 }}>
 						{EFFECTS.map(({ name, wash }, index) => (
 							<span
 								key={name}
@@ -117,7 +132,7 @@ export function ShadFxCover() {
 								className="absolute inset-0 flex items-center justify-center"
 							>
 								<DitherReveal visible={index === current}>
-									<Icon size={24} className={tint} />
+									<Icon size={icon} className={tint} />
 								</DitherReveal>
 							</span>
 						))}
@@ -131,12 +146,14 @@ export function ShadFxCover() {
 function Layer({
 	factory,
 	options,
+	cell,
 	active,
 }: {
 	factory: FxFactory<unknown>;
 	options?: unknown;
+	cell?: number;
 	active: boolean;
 }) {
 	const fx = useFx(factory, options);
-	return <DitherCanvas effect={fx} active={active} />;
+	return <DitherCanvas effect={fx} cell={cell} active={active} />;
 }

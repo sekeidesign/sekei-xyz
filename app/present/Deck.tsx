@@ -8,11 +8,10 @@ import useMeasure from "react-use-measure";
 import { Button } from "@ui-kit/Button";
 import { BackIcon } from "@ui-kit/icons/BackIcon";
 import { cn } from "@ui-kit/cn";
-import { SECTIONS, SLIDES, type Slide, stagger } from "./slides";
+import { type Section, type Slide, stagger } from "./slides";
 
 const WIDTH = 1280;
 const HEIGHT = 720;
-const CHANNEL = "sekei-present";
 const FOOTER = 40;
 
 const Agentation =
@@ -24,13 +23,13 @@ const PAPER = "dot-matrix bg-gray-50 [--dot-color:var(--color-gray-200)] [--dot-
 
 type Message = { type: "goto"; index: number } | { type: "hello" };
 
-function clamp(index: number) {
-	return Math.max(0, Math.min(SLIDES.length - 1, index));
+function clamp(index: number, count: number) {
+	return Math.max(0, Math.min(count - 1, index));
 }
 
-function readHash() {
+function readHash(count: number) {
 	const n = Number.parseInt(window.location.hash.slice(1), 10);
-	return Number.isNaN(n) ? 0 : clamp(n - 1);
+	return Number.isNaN(n) ? 0 : clamp(n - 1, count);
 }
 
 /** Space and Enter belong to whatever control has focus; text fields keep every key. */
@@ -40,31 +39,32 @@ function ownsKey(target: EventTarget | null, key: string) {
 	return (key === " " || key === "Enter") && !!target.closest("button, a, [role=button]");
 }
 
-function useDeck() {
+function useDeck(count: number, path: string) {
 	const [index, setIndex] = useState(0);
 	const channel = useRef<BroadcastChannel | null>(null);
 
 	useEffect(() => {
-		setIndex(readHash());
-		const bc = new BroadcastChannel(CHANNEL);
+		setIndex(readHash(count));
+		// One channel per deck, so two decks open side by side don't steer each other.
+		const bc = new BroadcastChannel(`sekei${path.replaceAll("/", "-")}`);
 		channel.current = bc;
 		bc.onmessage = ({ data }: MessageEvent<Message>) => {
 			if (data.type === "goto") setIndex(data.index);
-			if (data.type === "hello") bc.postMessage({ type: "goto", index: readHash() } satisfies Message);
+			if (data.type === "hello") bc.postMessage({ type: "goto", index: readHash(count) } satisfies Message);
 		};
 		bc.postMessage({ type: "hello" } satisfies Message);
 		return () => bc.close();
-	}, []);
+	}, [count, path]);
 
 	useEffect(() => {
 		history.replaceState(null, "", `${window.location.search}#${index + 1}`);
 	}, [index]);
 
 	const go = useCallback((next: number) => {
-		const target = clamp(next);
+		const target = clamp(next, count);
 		setIndex(target);
 		channel.current?.postMessage({ type: "goto", index: target } satisfies Message);
-	}, []);
+	}, [count]);
 
 	useEffect(() => {
 		const onKey = (event: KeyboardEvent) => {
@@ -78,11 +78,11 @@ function useDeck() {
 			}
 			const forward = ["ArrowRight", "ArrowDown", "PageDown", " "];
 			const back = ["ArrowLeft", "ArrowUp", "PageUp"];
-			if (forward.includes(event.key)) go(readHash() + 1);
-			else if (back.includes(event.key)) go(readHash() - 1);
+			if (forward.includes(event.key)) go(readHash(count) + 1);
+			else if (back.includes(event.key)) go(readHash(count) - 1);
 			else if (event.key === "Home" || event.key === "r") go(0);
-			else if (event.key === "End") go(SLIDES.length - 1);
-			else if (event.key === "p") window.open(`/present?presenter#${readHash() + 1}`, "presenter");
+			else if (event.key === "End") go(count - 1);
+			else if (event.key === "p") window.open(`${path}?presenter#${readHash(count) + 1}`, `presenter${path}`);
 			else if (event.key === "f") {
 				if (document.fullscreenElement) document.exitFullscreen();
 				else document.documentElement.requestFullscreen();
@@ -91,7 +91,7 @@ function useDeck() {
 		};
 		window.addEventListener("keydown", onKey);
 		return () => window.removeEventListener("keydown", onKey);
-	}, [go]);
+	}, [go, count, path]);
 
 	return { index, go };
 }
@@ -106,7 +106,6 @@ function Scaled({
 	className?: string;
 	footer?: ReactNode;
 }) {
-	const id = SLIDES.indexOf(slide);
 	const [ref, bounds] = useMeasure();
 	const reserved = footer ? FOOTER : 0;
 	const zoom = bounds.width ? Math.min(bounds.width / WIDTH, (bounds.height - reserved) / HEIGHT) : 0;
@@ -116,7 +115,7 @@ function Scaled({
 			{zoom > 0 && (
 				<div className="flex flex-col" style={{ width: WIDTH * zoom }}>
 					<m.div
-						key={id}
+						key={slide.label}
 						initial="hidden"
 						animate="show"
 						variants={stagger(0.1, 0.05)}
@@ -136,18 +135,32 @@ function Scaled({
 	);
 }
 
-export function Deck() {
+interface DeckProps {
+	slides: Slide[];
+	sections: readonly Section[];
+	/** The route the deck lives at, for the presenter window and the sync channel. */
+	path: string;
+}
+
+export function Deck({ slides, sections, path }: DeckProps) {
 	const [presenter, setPresenter] = useState(false);
 
 	useEffect(() => {
 		setPresenter(new URLSearchParams(window.location.search).has("presenter"));
 	}, []);
 
-	const deck = useDeck();
+	const deck = { ...useDeck(slides.length, path), slides, sections };
 	return presenter ? <Presenter {...deck} /> : <Audience {...deck} />;
 }
 
-function Audience({ index, go }: { index: number; go: (index: number) => void }) {
+interface ViewProps {
+	index: number;
+	go: (index: number) => void;
+	slides: Slide[];
+	sections: readonly Section[];
+}
+
+function Audience({ index, go, slides: SLIDES }: ViewProps) {
 	return (
 		<main className={cn("flex h-dvh w-full px-10 pt-10", PAPER)}>
 			<Scaled
@@ -222,7 +235,7 @@ function useClock() {
 	};
 }
 
-function Presenter({ index, go }: { index: number; go: (index: number) => void }) {
+function Presenter({ index, go, slides: SLIDES, sections: SECTIONS }: ViewProps) {
 	const slide = SLIDES[index];
 	const next = SLIDES[index + 1];
 	const clock = useClock();

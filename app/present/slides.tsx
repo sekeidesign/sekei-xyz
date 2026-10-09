@@ -17,16 +17,19 @@ import { IndicatorDemo } from "@ui-kit/figures/IndicatorDemo";
 import { RiskLifecycle } from "@ui-kit/figures/RiskFlows";
 import { Asset } from "./Asset";
 
-export const SECTIONS = [
+export interface Section {
+	name: string;
+	minutes: number;
+}
+
+export const SECTIONS: Section[] = [
 	{ name: "RAID log", minutes: 21 },
 	{ name: "Meeting experience", minutes: 19 },
 	{ name: "Q&A", minutes: 15 },
-] as const;
-
-export type SectionName = (typeof SECTIONS)[number]["name"];
+];
 
 export interface Slide {
-	section: SectionName;
+	section: string;
 	label: string;
 	notes: string[];
 	body: ReactNode;
@@ -44,7 +47,7 @@ export const rise: Variants = {
 	show: { opacity: 1, y: 0, filter: "blur(0px)", transition: SPRING },
 };
 
-function Reveal({ children, className }: { children: ReactNode; className?: string }) {
+export function Reveal({ children, className }: { children: ReactNode; className?: string }) {
 	return (
 		<m.div variants={rise} className={className}>
 			{children}
@@ -70,7 +73,7 @@ function Words({ children }: { children: ReactNode }) {
 	));
 }
 
-function Heading({ children, wide }: { children: ReactNode; wide?: boolean }) {
+export function Heading({ children, wide }: { children: ReactNode; wide?: boolean }) {
 	return (
 		<m.h2
 			variants={stagger(0.035)}
@@ -81,7 +84,7 @@ function Heading({ children, wide }: { children: ReactNode; wide?: boolean }) {
 	);
 }
 
-function Display({ children, className }: { children: ReactNode; className?: string }) {
+export function Display({ children, className }: { children: ReactNode; className?: string }) {
 	return (
 		<m.h1
 			variants={stagger(0.045)}
@@ -92,7 +95,7 @@ function Display({ children, className }: { children: ReactNode; className?: str
 	);
 }
 
-function Lines({ items, wide }: { items: ReactNode[]; wide?: boolean }) {
+export function Lines({ items, wide }: { items: ReactNode[]; wide?: boolean }) {
 	return (
 		<m.ul
 			variants={stagger(0.09)}
@@ -108,7 +111,7 @@ function Lines({ items, wide }: { items: ReactNode[]; wide?: boolean }) {
 }
 
 
-function Title({
+export function Title({
 	title,
 	sub,
 	meta,
@@ -139,7 +142,7 @@ function Title({
 	);
 }
 
-function Statement({
+export function Statement({
 	heading,
 	lede,
 	children,
@@ -164,13 +167,13 @@ function Statement({
 }
 
 /** The UI kit's lists and stats carry their own weights and mono numerals; on a slide everything shares one face. */
-const ONE_FACE = "[&_*]:font-sans! [&_*]:font-normal!";
+export const ONE_FACE = "[&_*]:font-sans! [&_*]:font-normal!";
 
 /** Drops a UI-kit Surface's frame and card so the figure sits straight on the slide. */
 const BARE =
 	"[&>div]:bg-transparent! [&>div]:p-0! [&>div]:shadow-none! [&>div]:ring-0! [&>div>div]:bg-transparent! [&>div>div]:shadow-none! [&>div>div]:ring-0!";
 
-function List({
+export function List({
 	label,
 	items,
 	wide,
@@ -188,7 +191,7 @@ function List({
 	);
 }
 
-const DOTS =
+export const DOTS =
 	"dot-matrix bg-gray-50 [--dot-color:var(--color-gray-200)] [--dot-gap:14px] [--dot-size:0.75px]";
 
 function Step({ children, gap }: { children: ReactNode; gap?: boolean }) {
@@ -242,7 +245,7 @@ function MeetingFlow() {
 }
 
 /** The point on top, the recording underneath fading out where the live demo takes over. */
-function DemoSlide({
+export function DemoSlide({
 	heading,
 	lede,
 	items,
@@ -290,7 +293,7 @@ function DemoSlide({
 }
 
 /** Sam's layout: the argument on the left, the one number that proves it drawn on the right. */
-function Visual({
+export function Visual({
 	heading,
 	lede,
 	children,
@@ -495,7 +498,7 @@ function CommandMenu() {
 	);
 }
 
-function Outcome({ children }: { children: ReactNode }) {
+export function Outcome({ children }: { children: ReactNode }) {
 	return (
 		<m.div variants={stagger(0.15, 0.2)} className="flex w-max flex-col gap-10">
 			{children}
@@ -503,31 +506,33 @@ function Outcome({ children }: { children: ReactNode }) {
 	);
 }
 
-export const SLIDES: Slide[] = [
-	{
-		section: "RAID log",
-		label: "Title",
-		body: (
-			<Title
-				title="Closing the loop on an AI native RAID log"
-				sub="How I built an agentic RAID log to automate manual work, and increased coverage over customer data to help close the loop on complex projects."
-				meta={[
-					{
-						label: "Team",
-						value: "Me on design and front-end. Alex Hermann on backend. Benjamin Ryan, then Justin (CEO), for customer success.",
-					},
-					{ label: "Timeline", value: "July 2026 to now. RAID shipped in September, meetings are in early rollout." },
-					{ label: "Role", value: "No PM on either project, so I was acting PM and design engineer" },
-				]}
-			/>
-		),
-		notes: [
-			"We've covered my background, so straight into the work.",
-			"Two Tato projects, told as one story: the RAID log, the coverage gap it exposed, and the meeting experience we built to close it.",
-			"Small team. I owned design and front-end, 16 PRs on the RAID log alone. Alex Hermann on backend for both. Benjamin Ryan represented customer success on RAID, Justin, our CEO, on meetings.",
-			"No PM, so I was acting PM: scoping, research, and the contract with engineering.",
-		],
-	},
+export const TITLE: Slide = {
+	section: "RAID log",
+	label: "Title",
+	body: (
+		<Title
+			title="Closing the loop on an AI native RAID log"
+			sub="How I built an agentic RAID log to automate manual work, and increased coverage over customer data to help close the loop on complex projects."
+			meta={[
+				{
+					label: "Team",
+					value: "Me on design and front-end. Alex Hermann on backend. Benjamin Ryan, then Justin (CEO), for customer success.",
+				},
+				{ label: "Timeline", value: "July 2026 to now. RAID shipped in September, meetings are in early rollout." },
+				{ label: "Role", value: "No PM on either project, so I was acting PM and design engineer" },
+			]}
+		/>
+	),
+	notes: [
+		"We've covered my background, so straight into the work.",
+		"Two Tato projects, told as one story: the RAID log, the coverage gap it exposed, and the meeting experience we built to close it.",
+		"Small team. I owned design and front-end, 16 PRs on the RAID log alone. Alex Hermann on backend for both. Benjamin Ryan represented customer success on RAID, Justin, our CEO, on meetings.",
+		"No PM, so I was acting PM: scoping, research, and the contract with engineering.",
+	],
+};
+
+/** The RAID half, shared with decks that tell a different second story. */
+export const RAID_SLIDES: Slide[] = [
 	{
 		section: "RAID log",
 		label: "Why RAID matters",
@@ -618,13 +623,16 @@ export const SLIDES: Slide[] = [
 		section: "RAID log",
 		label: "Delight in the details",
 		body: (
-			<Statement heading="Delight in the details" lede="Impact, likelihood and status are each driven by a single value, so they spring smoothly between any two states.">
+			<Statement heading="Delight in the details" lede="Status is driven by a single continuous value, so it has every state in between. Impact and likelihood spring smoothly from one step to the next.">
 				<Reveal className={`max-w-3/4 [&>*]:my-0! ${ONE_FACE}`}>
-					<IndicatorDemo />
+					<IndicatorDemo scale="slide" />
 				</Reveal>
 			</Statement>
 		),
-		notes: ["Small details make the log feel alive. Impact, likelihood and status each animate from a single value, so they spring smoothly between any two states, including the intermediate ones. Drag the sliders to show it."],
+		notes: [
+			"Small details make the log feel alive. Status is a single continuous value from 0 to 1, so the dial has every intermediate state, not just empty, partial and done. Drag it slowly to show it.",
+			"Impact and likelihood are five steps each. They spring between steps: the impact ring fills along its curve, the likelihood bars rise one after another, and at Certain they swap for the warning triangle with a small shake.",
+		],
 	},
 	{
 		section: "RAID log",
@@ -687,7 +695,11 @@ export const SLIDES: Slide[] = [
 			"Our first real hint of product-market fit.",
 		],
 	},
+];
 
+export const SLIDES: Slide[] = [
+	TITLE,
+	...RAID_SLIDES,
 	{
 		section: "Meeting experience",
 		label: "The coverage gap",

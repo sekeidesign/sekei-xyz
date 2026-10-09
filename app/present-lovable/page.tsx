@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Deck } from "./Deck";
+import { Deck } from "../present/Deck";
 import { SECTIONS, SLIDES } from "./slides";
 
 export const metadata: Metadata = {
@@ -7,6 +7,6 @@ export const metadata: Metadata = {
 	robots: { index: false, follow: false },
 };
 
-export default function PresentPage() {
-	return <Deck slides={SLIDES} sections={SECTIONS} path="/present" />;
+export default function PresentLovablePage() {
+	return <Deck slides={SLIDES} sections={SECTIONS} path="/present-lovable" />;
 }
