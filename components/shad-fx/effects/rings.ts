@@ -1,8 +1,8 @@
 import {
 	type Anchor,
+	assign,
 	type FxEffect,
 	type FxFrame,
-	resolveAnchor,
 	type RgbInput,
 	toRgb,
 } from "../engine";
@@ -26,23 +26,24 @@ interface Ring {
 
 const TAU = Math.PI * 2;
 
+const DEFAULTS: Required<RingsOptions> = {
+	color: [172, 75, 255],
+	origin: [0.5, 0.42],
+	interval: 1.15,
+	speed: 0.45,
+	width: 2.6,
+};
+
 /**
  * Sonar rings pulsing out from a point, each a gaussian band that thins as it
  * grows, with four glints riding its wavefront. Rings only spawn while active,
  * so easing out lets the ones in flight finish.
  */
-export function rings({
-	color: colorInput = [172, 75, 255],
-	origin = [0.5, 0.42],
-	interval = 1.15,
-	speed = 0.45,
-	width = 2.6,
-}: RingsOptions = {}): FxEffect {
-	const color = toRgb(colorInput);
+export function rings(options: RingsOptions = {}): FxEffect<RingsOptions> {
+	let o = assign(DEFAULTS, DEFAULTS, options);
+	let color = toRgb(o.color);
 	let cols = 0;
 	let rows = 0;
-	let ax = Number.NaN;
-	let ay = Number.NaN;
 	let cx = 0;
 	let cy = 0;
 	let reach = 1;
@@ -55,14 +56,12 @@ export function rings({
 
 	/**
 	 * Caches every cell's distance from the origin, which is what lets a frame
-	 * be one subtraction per cell. Rebuilt when the box or the anchor changes,
+	 * be one subtraction per cell. Rebuilt when the box or the origin changes,
 	 * never per frame.
 	 */
-	function place(fx: number, fy: number) {
-		ax = fx;
-		ay = fy;
-		cx = cols * fx;
-		cy = rows * fy;
+	function place() {
+		cx = cols * o.origin[0];
+		cy = rows * o.origin[1];
 		if (dist.length !== cols * rows) dist = new Float32Array(cols * rows);
 		reach = 0;
 		for (let i = 0, y = 0; y < rows; y++) {
@@ -81,7 +80,7 @@ export function rings({
 			for (let x = 0; x < cols; x++, i++) {
 				let a = 0;
 				for (const ring of set) {
-					const e = (dist[i] - ring.r) / width;
+					const e = (dist[i] - ring.r) / o.width;
 					if (e > 2.5 || e < -2.5) continue;
 					const fade = (1 - ring.r / reach) ** 1.2;
 					const g = Math.exp(-e * e) * fade;
@@ -108,15 +107,13 @@ export function rings({
 			cols = c;
 			rows = r;
 			rand = random;
-			place(...resolveAnchor(origin));
+			place();
 			live = [];
 			until = 0.05;
 		},
 		step(frame) {
 			const { dt, intensity, reduced } = frame;
 			lastReduced = reduced;
-			const [fx, fy] = resolveAnchor(origin);
-			if (fx !== ax || fy !== ay) place(fx, fy);
 			if (reduced) {
 				paint(
 					frame,
@@ -128,10 +125,10 @@ export function rings({
 			if (intensity > 0.3) {
 				if (until <= 0) {
 					live.push({ r: 1.5, phase: rand() * TAU });
-					until = interval;
+					until = o.interval;
 				}
 			} else if (until > 0.05) until = 0.05;
-			for (const ring of live) ring.r += speed * rows * dt;
+			for (const ring of live) ring.r += o.speed * rows * dt;
 			live = live.filter((ring) => ring.r < reach);
 			if (live.length === 0 && !alive) return false;
 			alive = live.length > 0;
@@ -139,5 +136,12 @@ export function rings({
 			return true;
 		},
 		idle: () => lastReduced || !alive,
+		set(patch) {
+			o = assign(DEFAULTS, o, patch);
+			if ("color" in patch) color = toRgb(o.color);
+			// Rings in flight move with the origin rather than restarting, so it
+			// can follow a pointer.
+			if ("origin" in patch && cols > 0) place();
+		},
 	};
 }

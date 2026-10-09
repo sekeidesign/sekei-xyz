@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { ControlPanel, ControlSection } from "@ui-kit/controls/ControlPanel";
 import { Select } from "@ui-kit/controls/Select";
 import { Slider } from "@ui-kit/controls/Slider";
@@ -44,39 +44,16 @@ export function DitherStudio() {
 	const [spread, setSpread] = useState(0.5);
 	const [motes, setMotes] = useState(16);
 
-	// One object per distinct set of values: RaidTypes rebuilds its effects when
-	// the reference changes, so a slider tick restarts only what it touched.
-	const tweaks = useMemo<RaidTypesTweaks>(
-		() => ({
-			cell,
-			active,
-			decision,
-			fire: { height: fireHeight, rate: fireRate, embers },
-			bolt: { interval: [Math.min(boltMin, boltMax), Math.max(boltMin, boltMax)] },
-			rings: { interval: ringInterval, speed: ringSpeed, width: ringWidth },
-			fluid: { level, slosh, tempo, bubbles },
-			beam: { spread, motes },
-		}),
-		[
-			cell,
-			active,
-			decision,
-			fireHeight,
-			fireRate,
-			embers,
-			boltMin,
-			boltMax,
-			ringInterval,
-			ringSpeed,
-			ringWidth,
-			level,
-			slosh,
-			tempo,
-			bubbles,
-			spread,
-			motes,
-		],
-	);
+	const tweaks: RaidTypesTweaks = {
+		cell,
+		active,
+		decision,
+		fire: { height: fireHeight, rate: fireRate, embers },
+		bolt: { interval: [Math.min(boltMin, boltMax), Math.max(boltMin, boltMax)] },
+		rings: { interval: ringInterval, speed: ringSpeed, width: ringWidth },
+		fluid: { level, slosh, tempo, bubbles },
+		beam: { spread, motes },
+	};
 
 	return (
 		<div className="flex flex-col gap-6">

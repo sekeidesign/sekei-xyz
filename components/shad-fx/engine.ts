@@ -2,15 +2,8 @@ export type Rgb = readonly [number, number, number];
 
 export const clamp01 = (t: number) => Math.min(1, Math.max(0, t));
 
-/**
- * A point as fractions of the canvas box. A getter is re-read every frame, so
- * an effect can follow something that moves — a drag handle, a hovered element
- * — without being rebuilt and losing what it has already simulated.
- */
-export type Anchor = readonly [number, number] | (() => readonly [number, number]);
-
-export const resolveAnchor = (anchor: Anchor) =>
-	typeof anchor === "function" ? anchor() : anchor;
+/** A point as fractions of the canvas box: `[0.5, 0.5]` is the centre. */
+export type Anchor = readonly [number, number];
 
 export const mix = (a: Rgb, b: Rgb, t: number): Rgb => [
 	a[0] + (b[0] - a[0]) * t,
@@ -75,12 +68,64 @@ export interface FxFrame {
 	rand: () => number;
 }
 
-export interface FxEffect {
+export interface FxEffect<O = unknown> {
 	resize(cols: number, rows: number, rand: () => number): void;
 	/** Advance and paint. Return true when the surface holds a new frame. */
 	step(frame: FxFrame): boolean;
 	/** True once nothing is left to animate at the current intensity. */
 	idle(): boolean;
+	/**
+	 * Apply changed options without a restart. Only the keys present have
+	 * changed, and a key present but undefined goes back to its default. The
+	 * effect decides what each change costs: most apply on the next frame, and
+	 * one that sizes the simulation rebuilds just that part.
+	 */
+	set(options: O): void;
+}
+
+/** An effect's factory: `fire`, `rings`, and so on. */
+export type FxFactory<O> = (options?: O) => FxEffect<O>;
+
+/**
+ * Merges `patch` over `current` key by key, sending a key that is present but
+ * undefined back to its default. What an effect's `set` builds its options
+ * with, so removing a prop behaves like never having passed it.
+ */
+export function assign<T extends object>(defaults: T, current: T, patch: Partial<T>): T {
+	const next = { ...current };
+	for (const key of Object.keys(patch) as (keyof T)[]) {
+		next[key] = (patch[key] ?? defaults[key]) as T[keyof T];
+	}
+	return next;
+}
+
+/**
+ * A running effect and the way to change it. A renderer runs `effect` and
+ * subscribes, so `set` repaints even when the frame loop has parked: under
+ * reduced motion, or after an ease-out.
+ */
+export interface Fx<O = unknown> {
+	readonly effect: FxEffect<O>;
+	/** Change options in place, without a re-render or a restart. */
+	set(options: O): void;
+	subscribe(listener: () => void): () => void;
+}
+
+/** Builds an effect and wraps it in an `Fx`. In React, `useFx` does this for you. */
+export function createFx<O>(factory: FxFactory<O>, options?: O): Fx<O> {
+	const effect = factory(options);
+	const listeners = new Set<() => void>();
+	return {
+		effect,
+		set(next) {
+			effect.set(next);
+			for (const listener of listeners) listener();
+		},
+		subscribe(listener) {
+			listeners.add(listener);
+			return () => listeners.delete(listener);
+		},
+	};
 }
 
 /** What a renderer hands the engine: somewhere to paint, and a way to show it. */
@@ -97,10 +142,13 @@ export interface Renderer {
 /**
  * Runs one effect against one renderer: eases `intensity` toward its target
  * and steps the effect on requestAnimationFrame only while something is
- * changing. An idle effect costs nothing.
+ * changing and the canvas is on screen. An idle or off-screen effect costs
+ * nothing.
  */
 export class FxEngine {
 	private surface: Surface | null = null;
+	private effect: FxEffect;
+	private unsubscribe: () => void;
 	private readonly rand: () => number;
 	private raf = 0;
 	private last = 0;
@@ -108,13 +156,16 @@ export class FxEngine {
 	private intensity = 0;
 	private target = 0;
 	private reduced = false;
+	private hidden = false;
 
 	constructor(
 		private readonly renderer: Renderer,
-		private effect: FxEffect,
+		fx: Fx,
 		{ seed = 1 }: { seed?: number } = {},
 	) {
 		this.rand = seededRandom(seed);
+		this.effect = fx.effect;
+		this.unsubscribe = fx.subscribe(this.wake);
 	}
 
 	resize(width: number, height: number) {
@@ -135,22 +186,40 @@ export class FxEngine {
 		this.wake();
 	}
 
-	setEffect(effect: FxEffect) {
-		this.effect = effect;
-		if (this.surface) effect.resize(this.surface.cols, this.surface.rows, this.rand);
+	/**
+	 * Pauses the loop while the canvas is off screen, and picks up where it
+	 * left off when it comes back. Changes made meanwhile (`setActive`, `set`,
+	 * a resize) are kept and applied then.
+	 */
+	setVisible(visible: boolean) {
+		this.hidden = !visible;
+		if (visible) {
+			this.wake();
+		} else if (this.raf) {
+			cancelAnimationFrame(this.raf);
+			this.raf = 0;
+		}
+	}
+
+	setFx(fx: Fx) {
+		this.unsubscribe();
+		this.unsubscribe = fx.subscribe(this.wake);
+		this.effect = fx.effect;
+		if (this.surface) this.effect.resize(this.surface.cols, this.surface.rows, this.rand);
 		this.wake();
 	}
 
 	destroy() {
+		this.unsubscribe();
 		if (this.raf) cancelAnimationFrame(this.raf);
 		this.raf = 0;
 	}
 
-	private wake() {
-		if (this.raf) return;
+	private readonly wake = () => {
+		if (this.raf || this.hidden) return;
 		this.last = 0;
 		this.raf = requestAnimationFrame(this.tick);
-	}
+	};
 
 	private readonly tick = (now: number) => {
 		this.raf = 0;

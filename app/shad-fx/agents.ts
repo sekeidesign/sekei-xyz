@@ -104,10 +104,12 @@ Four rules, each the cause of a common bug:
    \`overflow-hidden\`.
 2. **Content sits above it.** Give text and controls \`relative\` (or a
    \`z-index\`), or a positioned canvas paints over them.
-3. **The effect is built once.** A new \`effect\` reference restarts the
-   simulation. Use \`useMemo\` with the reactive options as dependencies, or
-   module scope when they are constant. Never call \`fire()\` inline in JSX.
-4. **The component that builds the effect is a client component.** An effect
+3. **The effect comes from \`useFx\`.** Pass options to it as plain props,
+   state and inline arrays included: a change applies in place without
+   restarting the simulation, and a removed option goes back to its default.
+   Do not wrap anything in \`useMemo\`, and never pass \`fire()\` to the
+   canvas. A different factory (\`useFx(on ? fire : rain)\`) starts fresh.
+4. **The component that calls \`useFx\` is a client component.** An effect
    is an object of functions and cannot cross the server/client boundary.
 
 ### DitherCanvas props
@@ -126,16 +128,17 @@ the canvas, which throws the simulation away.
 
 ## Effects
 
-Every effect is a factory returning an \`FxEffect\`, and every option is
-optional. The same effect runs on any renderer. \`RgbInput\` is a hex string or
+Every effect is a factory returning an \`FxEffect\`, passed to \`useFx\`, and
+every option is optional and can change at any time. The same effect runs on any renderer. \`RgbInput\` is a hex string or
 an \`[r, g, b]\` tuple; CSS variables do not work, because the renderer writes
 raw bytes. Where a count is given at
 full intensity, it scales down as the effect eases out.
 
-\`origin\` and \`target\` take an \`Anchor\`: an \`[x, y]\` pair in 0–1 of the box,
-or a getter. \`height\`, \`level\` and \`slant\` take a number or a getter. A
-getter is re-read every frame, so an effect can follow a pointer without being
-rebuilt. Feed it a ref, not state, so pointer moves do not re-render.
+\`origin\` and \`target\` take an \`Anchor\`: an \`[x, y]\` pair in 0–1 of the box.
+For a value that changes every frame, such as a position following the
+pointer, call \`fx.set({ origin })\` from the handler instead of passing it
+through \`useFx\`, so pointer moves do not re-render. A value set this way holds
+until the same option passed to \`useFx\` changes, so do not pass it to both.
 
 ${effects.join("\n\n")}
 
@@ -147,7 +150,9 @@ frame and the frame loop parks. Do not gate the canvas on it yourself.
 ## Cost
 
 The engine runs \`requestAnimationFrame\` only while something is changing and
-parks once the effect settles, so an inactive effect costs nothing. Each frame
+parks once the effect settles, so an inactive effect costs nothing. A canvas
+scrolled off screen pauses too and resumes where it left off as it comes back,
+so do not unmount it or toggle \`active\` on scroll to save work. Each frame
 is one \`putImageData\` over a grid capped at 640×400 cells. Use \`cell={1}\` on
 small elements and \`3\` or \`4\` on a full-bleed hero.
 

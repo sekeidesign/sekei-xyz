@@ -1,31 +1,26 @@
 "use client";
 
-import { useMemo } from "react";
 import {
 	beam,
 	bolt,
 	DitherCanvas,
-	type FxEffect,
+	type FxFactory,
 	fire,
 	fluid,
 	rain,
 	rings,
 	snow,
+	useFx,
 } from "@/components/shad-fx";
 import { cn } from "@ui-kit/cn";
 import { SURFACE_INNER, SURFACE_OUTER } from "@ui-kit/post/surface";
 
-const FACTORIES = {
-	fire: () => fire(),
-	bolt: () => bolt(),
-	rings: () => rings(),
-	fluid: () => fluid(),
-	beam: () => beam(),
-	rain: () => rain(),
-	snow: () => snow(),
-} satisfies Record<string, () => FxEffect>;
+export type EffectName = "fire" | "bolt" | "rings" | "fluid" | "beam" | "rain" | "snow";
 
-export type EffectName = keyof typeof FACTORIES;
+const FACTORIES = { fire, bolt, rings, fluid, beam, rain, snow } as Record<
+	EffectName,
+	FxFactory<unknown>
+>;
 
 /** A banner of the effect at its defaults, named and summarised in the corner. */
 export function EffectCard({
@@ -35,12 +30,12 @@ export function EffectCard({
 	name: EffectName;
 	summary: string;
 }) {
-	const effect = useMemo(() => FACTORIES[name](), [name]);
+	const fx = useFx(FACTORIES[name]);
 
 	return (
 		<figure className={cn("relative rounded-xl", SURFACE_OUTER)}>
 			<div className={cn("relative h-64 rounded-lg", SURFACE_INNER)}>
-				<DitherCanvas effect={effect} />
+				<DitherCanvas effect={fx} />
 				<div
 					aria-hidden
 					className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-linear-to-b from-white/90 to-white/0"

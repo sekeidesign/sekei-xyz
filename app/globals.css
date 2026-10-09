@@ -913,3 +913,21 @@ html:not([data-keyboard]) select:focus-visible {
     display: none;
   }
 }
+
+/* Two copies side by side: shifting by half lands the second exactly where the
+   first began, so the loop has no seam. */
+.ticker {
+  animation: ticker var(--ticker-duration) linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker {
+    animation: none;
+  }
+}
+
+@keyframes ticker {
+  to {
+    transform: translateX(-50%);
+  }
+}

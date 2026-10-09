@@ -1,14 +1,15 @@
 "use client";
 
 import { useInView } from "motion/react";
-import { type ComponentType, useEffect, useMemo, useRef, useState } from "react";
+import { type ComponentType, useEffect, useRef, useState } from "react";
 import {
 	beam,
 	bolt,
 	DitherCanvas,
-	type FxEffect,
+	type FxFactory,
 	fire,
 	rain,
+	useFx,
 } from "@/components/shad-fx";
 import { cn } from "../cn";
 import { WASH } from "../figures/Disc";
@@ -27,35 +28,38 @@ const FilledFire: IconComponent = (props) => <FireIcon filled {...props} />;
 
 const EFFECTS: {
 	name: string;
-	make: () => FxEffect;
+	factory: FxFactory<unknown>;
+	options?: unknown;
 	Icon: IconComponent;
 	tint: string;
 	wash: string;
 }[] = [
 	{
 		name: "fire",
-		make: () => fire(),
+		factory: fire as FxFactory<unknown>,
 		Icon: FilledFire,
 		tint: "text-orange-600",
 		wash: "bg-red-100 shadow-orange-500/20",
 	},
 	{
 		name: "rain",
-		make: () => rain(),
+		factory: rain as FxFactory<unknown>,
 		Icon: RainIcon,
 		tint: "text-sky-500",
 		wash: "bg-sky-100 shadow-sky-500/20",
 	},
 	{
 		name: "bolt",
-		make: () => bolt({ target: CENTER }),
+		factory: bolt as FxFactory<unknown>,
+		options: { target: CENTER },
 		Icon: ActionIcon,
 		tint: "text-amber-400",
 		wash: "bg-amber-100 shadow-amber-500/20",
 	},
 	{
 		name: "beam",
-		make: () => beam({ origin: CENTER }),
+		factory: beam as FxFactory<unknown>,
+		options: { origin: CENTER },
 		Icon: LampIcon,
 		tint: "text-blue-500",
 		wash: "bg-blue-100 shadow-blue-500/20",
@@ -74,7 +78,6 @@ const HOLD_MS = 2000;
 export function ShadFxCover() {
 	const ref = useRef<HTMLDivElement>(null);
 	const inView = useInView(ref, { amount: 0.3 });
-	const effects = useMemo(() => EFFECTS.map(({ make }) => make()), []);
 	const [tick, setTick] = useState(0);
 	const current = tick % EFFECTS.length;
 
@@ -86,10 +89,11 @@ export function ShadFxCover() {
 
 	return (
 		<div ref={ref} className="absolute inset-0 overflow-hidden bg-white">
-			{effects.map((effect, index) => (
-				<DitherCanvas
-					key={EFFECTS[index].name}
-					effect={effect}
+			{EFFECTS.map(({ name, factory, options }, index) => (
+				<Layer
+					key={name}
+					factory={factory}
+					options={options}
 					active={inView && index === current}
 				/>
 			))}
@@ -122,4 +126,17 @@ export function ShadFxCover() {
 			</div>
 		</div>
 	);
+}
+
+function Layer({
+	factory,
+	options,
+	active,
+}: {
+	factory: FxFactory<unknown>;
+	options?: unknown;
+	active: boolean;
+}) {
+	const fx = useFx(factory, options);
+	return <DitherCanvas effect={fx} active={active} />;
 }
