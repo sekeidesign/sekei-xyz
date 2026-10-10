@@ -14,8 +14,9 @@ the docs.
 - [Library and source](https://github.com/sekeidesign/shad-fx)
 - [Docs and playground](https://www.sekei.design/shad-fx)
 
-`/registry/*` is a rewrite in `next.config.ts` onto that repo's `r/`, so the
-`@sekei` namespace keeps resolving through this domain.
+`/registry/*` proxies that repo's `r/` (`app/registry/[...path]/route.ts`), so
+the `@sekei` namespace keeps resolving through this domain, and counts one
+install per item, IP and day. `/api/installs` returns the totals.
 
 ## Where things are
 
