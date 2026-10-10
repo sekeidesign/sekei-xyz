@@ -36,8 +36,8 @@ identically to it — 600 is the first weight a browser will synthesise.
 `components/shad-fx/` is vendored from
 [sekeidesign/shad-fx](https://github.com/sekeidesign/shad-fx). Fix bugs
 upstream and re-add with `npx shadcn@latest add @sekei/shad-fx`; do not edit
-the copy in place. `/registry/*` is a rewrite onto that repo, not a real
-directory under `public/`.
+the copy in place. `/registry/*` is a route handler proxying that repo's `r/`, not a real
+directory under `public/`. It also counts installs (`lib/installs.ts`).
 
 ## Dev server
 
