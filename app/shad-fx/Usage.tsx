@@ -1,5 +1,33 @@
-import { PROPS, SKILLS, USAGE } from "./content";
-import { A, Code, P, Section, Table } from "./Prose";
+import {
+	ASCII_FONT,
+	ASCII_GLYPHS,
+	ASCII_PROPS,
+	DITHER_PROPS,
+	type Prop,
+	RENDERERS,
+	SKILLS,
+	USAGE,
+} from "./content";
+import { A, Code, Inline, P, Section, Table } from "./Prose";
+
+const WIDTHS = ["30%", "20%", "50%"];
+
+function PropTable({ props }: { props: Prop[] }) {
+	return (
+		<Table
+			head={["Prop", "Default", "Notes"]}
+			widths={WIDTHS}
+			rows={props.map((prop) => ({
+				key: prop.name,
+				cells: [
+					<Code key="n">{prop.name}</Code>,
+					prop.fallback === "—" ? "—" : <Code key="v">{prop.fallback}</Code>,
+					<Inline key="t" text={prop.notes} />,
+				],
+			}))}
+		/>
+	);
+}
 import { CodeBlock } from "@ui-kit/code/CodeBlock";
 
 export function Usage() {
@@ -29,17 +57,23 @@ export function Usage() {
 				the re-render and call <Code>fx.set</Code> from the handler. Outside
 				React, <Code>createFx(fire, options)</Code> returns the same handle.
 			</P>
-			<Table
-				head={["Prop", "Default", "Notes"]}
-				rows={PROPS.map((prop) => ({
-					key: prop.name,
-					cells: [
-						<Code key="n">{prop.name}</Code>,
-						prop.fallback === "—" ? "—" : <Code key="v">{prop.fallback}</Code>,
-						prop.notes,
-					],
-				}))}
-			/>
+			<P>
+				<Inline text={RENDERERS} />
+			</P>
+			<h3 className="pt-2 text-[15px] leading-[1.5] font-[550] text-gray-900">
+				<Code>DitherCanvas</Code>
+			</h3>
+			<PropTable props={DITHER_PROPS} />
+			<h3 className="pt-2 text-[15px] leading-[1.5] font-[550] text-gray-900">
+				<Code>AsciiCanvas</Code>
+			</h3>
+			<PropTable props={ASCII_PROPS} />
+			<P>
+				<Inline text={ASCII_FONT} />
+			</P>
+			<P>
+				<Inline text={ASCII_GLYPHS} />
+			</P>
 			<P>
 				The element is <Code>aria-hidden</Code> and{" "}
 				<Code>pointer-events-none</Code>: it is decoration, and never the only

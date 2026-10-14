@@ -13,7 +13,7 @@ export function GET() {
 
 ${SUMMARY}
 
-Use it when a React project wants a pixelated, dithered or retro animated background or accent. Install it with the shadcn CLI: \`npx shadcn@latest add @sekei/shad-fx\`.
+Use it when a React project wants a pixelated, dithered, ASCII or retro animated background or accent. Install it with the shadcn CLI: \`npx shadcn@latest add @sekei/shad-fx\`.
 
 - [Agent guide](${siteUrl}${AGENTS_PATH}): install, usage rules, every prop and effect option, in one Markdown file
 - [Docs and playground](${siteUrl}/shad-fx)

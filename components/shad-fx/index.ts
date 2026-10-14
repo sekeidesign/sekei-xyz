@@ -1,3 +1,4 @@
+export * from "./ascii";
 export * from "./dither";
 export { beam, type BeamOptions } from "./effects/beam";
 export { bolt, type BoltOptions } from "./effects/bolt";

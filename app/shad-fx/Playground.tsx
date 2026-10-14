@@ -2,7 +2,7 @@
 
 import { useSpring } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { DitherCanvas, useFx } from "@/components/shad-fx";
+import { AsciiCanvas, DitherCanvas, useFx } from "@/components/shad-fx";
 import { cn } from "@ui-kit/cn";
 import { ControlPanel, ControlSection } from "@ui-kit/controls/ControlPanel";
 import { Select } from "@ui-kit/controls/Select";
@@ -32,6 +32,17 @@ import { CodeBlock } from "@ui-kit/code/CodeBlock";
 const SURFACES = [
 	{ value: "light", label: "Light" },
 	{ value: "dark", label: "Dark" },
+];
+
+const RENDERERS = [
+	{ value: "dither", label: "Dither" },
+	{ value: "ascii", label: "ASCII" },
+];
+
+const FONTS = [
+	{ value: "", label: "System mono" },
+	{ value: "var(--font-geist-mono)", label: "Geist Mono" },
+	{ value: "'Courier New', Courier, monospace", label: "Courier New" },
 ];
 
 const COLOR_NAMES: Record<Kind, string[]> = {
@@ -83,7 +94,10 @@ const initialColors = () =>
 export function Playground() {
 	const [kind, setKind] = useState<Kind>("fire");
 	const [surface, setSurface] = useState("light");
+	const [renderer, setRenderer] = useState("dither");
 	const [cell, setCell] = useState(2);
+	const [fontSize, setFontSize] = useState(10);
+	const [font, setFont] = useState("");
 	const [seed, setSeed] = useState(1);
 	const [active, setActive] = useState(true);
 
@@ -158,7 +172,14 @@ export function Playground() {
 		};
 	}, [fx, sprungSpec, sprungAnchor, sprungX, sprungY]);
 
-	const code = snippet(kind, values[kind], colors[kind], anchor, { cell, seed, active });
+	const code = snippet(kind, values[kind], colors[kind], anchor, {
+		renderer,
+		cell,
+		fontSize,
+		font,
+		seed,
+		active,
+	});
 
 	const setValue = (key: string, value: number) =>
 		setValues((prev) => ({ ...prev, [kind]: { ...prev[kind], [key]: value } }));
@@ -223,12 +244,22 @@ export function Playground() {
 						surface === "dark" && "bg-gray-900",
 					)}
 				>
-					<DitherCanvas
-						effect={fx}
-						active={active}
-						cell={cell}
-						seed={seed}
-					/>
+					{renderer === "ascii" ? (
+						<AsciiCanvas
+							effect={fx}
+							active={active}
+							fontSize={fontSize}
+							fontFamily={font || undefined}
+							seed={seed}
+						/>
+					) : (
+						<DitherCanvas
+							effect={fx}
+							active={active}
+							cell={cell}
+							seed={seed}
+						/>
+					)}
 					{axis && anchor.on && (
 						<svg
 							aria-hidden="true"
@@ -308,16 +339,37 @@ export function Playground() {
 				>
 					<ControlSection label="canvas">
 						<Toggle label="active" checked={active} onChange={setActive} />
-						<Slider
-							label="cell"
-							value={cell}
-							min={1}
-							max={8}
-							step={1}
-							showSteps
-							unit="px"
-							onChange={setCell}
+						<Select
+							label="renderer"
+							value={renderer}
+							options={RENDERERS}
+							onChange={setRenderer}
 						/>
+						{renderer === "ascii" && (
+							<Select label="font" value={font} options={FONTS} onChange={setFont} />
+						)}
+						{renderer === "ascii" ? (
+							<Slider
+								label="font size"
+								value={fontSize}
+								min={8}
+								max={24}
+								step={1}
+								unit="px"
+								onChange={setFontSize}
+							/>
+						) : (
+							<Slider
+								label="cell"
+								value={cell}
+								min={1}
+								max={8}
+								step={1}
+								showSteps
+								unit="px"
+								onChange={setCell}
+							/>
+						)}
 						<Slider
 							label="seed"
 							value={seed}

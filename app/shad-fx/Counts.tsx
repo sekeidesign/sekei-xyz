@@ -4,7 +4,7 @@ import { EFFECTS, SKILL_LIST } from "./content";
 
 const COUNTS = [
 	{ count: EFFECTS.length, label: "effects", href: "#effects" },
-	{ count: 1, label: "renderer", href: "#usage" },
+	{ count: 2, label: "renderers", href: "#usage" },
 	{ count: SKILL_LIST.length, label: "skills", href: "#agent-skills" },
 ];
 
