@@ -22,6 +22,29 @@ export type RgbInput = Rgb | string;
 export const toRgb = (value: RgbInput): Rgb =>
 	typeof value === "string" ? hex(value) : value;
 
+/** Straight RGBA packed as an ImageData Uint32 view holds it. */
+export const rgba = (r: number, g: number, b: number, a: number) =>
+	((a << 24) | (b << 16) | (g << 8) | r) >>> 0;
+
+/** Source-over of `color` at `alpha` onto `px[i]`. Shared by every painter. */
+export function blendOver(px: Uint32Array, i: number, [r, g, b]: Rgb, alpha: number) {
+	const d = px[i];
+	const da = (d >>> 24) / 255;
+	const sa = clamp01(alpha);
+	if (da === 0) {
+		px[i] = rgba(r, g, b, Math.round(sa * 255));
+		return;
+	}
+	const oa = sa + da * (1 - sa);
+	const w = sa / oa;
+	px[i] = rgba(
+		r * w + (d & 255) * (1 - w),
+		g * w + ((d >>> 8) & 255) * (1 - w),
+		b * w + ((d >>> 16) & 255) * (1 - w),
+		Math.round(oa * 255),
+	);
+}
+
 /**
  * mulberry32 (Tommy Ettinger, public domain): a seeded stream, so an effect
  * replays identically for a given seed rather than drifting between reloads.
