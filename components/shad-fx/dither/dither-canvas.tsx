@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { cn } from "@/lib/utils";
-import { type Fx, FxEngine } from "../engine";
+import type { Fx } from "../engine";
+import { useFxEngine } from "../use-fx-engine";
 import { DitherRenderer } from "./painter";
 
 export interface DitherCanvasProps {
@@ -33,63 +33,12 @@ export function DitherCanvas({
 	maxRows,
 	className,
 }: DitherCanvasProps) {
-	const wrapRef = useRef<HTMLDivElement>(null);
-	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const engineRef = useRef<FxEngine | null>(null);
-	const runningRef = useRef(effect);
 	const reduced = usePrefersReducedMotion();
-
-	// Only the options baked into the constructor rebuild the engine. `effect`,
-	// `active` and `reduced` are seeded into a fresh one here and applied on
-	// their own below, so listing them would tear down the canvas and its
-	// observer on every change.
-	// biome-ignore lint/correctness/useExhaustiveDependencies: see above
-	useEffect(() => {
-		const wrap = wrapRef.current;
-		const canvas = canvasRef.current;
-		if (!wrap || !canvas) return;
-		const renderer = new DitherRenderer(canvas, { cell, maxCols, maxRows });
-		const engine = new FxEngine(renderer, effect, { seed });
-		engineRef.current = engine;
-		runningRef.current = effect;
-		engine.resize(wrap.clientWidth, wrap.clientHeight);
-		engine.setReduced(reduced);
-		engine.setActive(active);
-		const ro = new ResizeObserver(([entry]) => {
-			const { width, height } = entry.contentRect;
-			engine.resize(width, height);
-		});
-		ro.observe(wrap);
-		// Off screen, the loop pauses instead of painting what nobody sees, so a
-		// page of canvases only pays for the ones in view. The margin starts
-		// one a little before it scrolls in, so it is already moving.
-		const io = new IntersectionObserver(
-			([entry]) => engine.setVisible(entry.isIntersecting),
-			{ rootMargin: "100px" },
-		);
-		io.observe(wrap);
-		return () => {
-			ro.disconnect();
-			io.disconnect();
-			engine.destroy();
-			engineRef.current = null;
-		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [cell, seed, maxCols, maxRows]);
-
-	useEffect(() => {
-		if (runningRef.current === effect) return;
-		runningRef.current = effect;
-		engineRef.current?.setFx(effect);
-	}, [effect]);
-
-	useEffect(() => {
-		engineRef.current?.setReduced(reduced);
-	}, [reduced]);
-
-	useEffect(() => {
-		engineRef.current?.setActive(active);
-	}, [active]);
+	const { wrapRef, canvasRef } = useFxEngine(
+		(canvas) => new DitherRenderer(canvas, { cell, maxCols, maxRows }),
+		{ effect, active, reduced, seed },
+		[cell, maxCols, maxRows],
+	);
 
 	return (
 		<div

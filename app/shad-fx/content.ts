@@ -6,10 +6,11 @@ import type { EffectName } from "./EffectCard";
 export const REPO = "https://github.com/sekeidesign/shad-fx";
 
 export const SUMMARY =
-	"Canvas effects for React, installed with the shadcn CLI. Effects (fire, lightning, sonar rings, a light beam, a sloshing fluid, rain and snow) are separate from the renderer that draws them; the first renderer is ordered dither.";
+	"Canvas effects for React, installed with the shadcn CLI. Effects (fire, lightning, sonar rings, a light beam, a sloshing fluid, rain and snow) are separate from the renderer that draws them: ordered dither or ASCII glyphs, either one running every effect unchanged.";
 
 export const INSTALL = `npx shadcn@latest add @sekei/shad-fx
-npx shadcn@latest add @sekei/shad-fx-dither @sekei/shad-fx-fire`;
+npx shadcn@latest add @sekei/shad-fx-dither @sekei/shad-fx-fire
+npx shadcn@latest add @sekei/shad-fx-ascii @sekei/shad-fx-fire`;
 
 export const SKILLS = "npx skills add sekeidesign/shad-fx";
 
@@ -64,6 +65,10 @@ export const ITEMS: Item[] = [
 		name: "shad-fx-dither",
 		pullsIn: "The dither renderer, DitherCanvas. Engine, the reduced-motion hook, utils",
 	},
+	{
+		name: "shad-fx-ascii",
+		pullsIn: "The ASCII renderer, AsciiCanvas. Engine, the reduced-motion hook, utils",
+	},
 	...(["fire", "rings", "beam", "bolt", "fluid", "rain", "snow"] as const).map(
 		(effect) => ({ name: `shad-fx-${effect}`, pullsIn: "Engine" }),
 	),
@@ -80,7 +85,7 @@ export interface Prop {
 	notes: string;
 }
 
-export const PROPS: Prop[] = [
+export const DITHER_PROPS: Prop[] = [
 	{ name: "effect", fallback: "—", notes: "The effect to run. Keep the reference stable." },
 	{ name: "active", fallback: "true", notes: "Eases in and out. Drive it from hover for a reveal." },
 	{ name: "cell", fallback: "2", notes: "CSS px per dither cell. Lower is finer and costlier." },
@@ -88,6 +93,26 @@ export const PROPS: Prop[] = [
 	{ name: "maxCols / maxRows", fallback: "640 / 400", notes: "Ceiling on the backing grid." },
 	{ name: "className", fallback: "—", notes: "Merged onto the wrapper." },
 ];
+
+export const ASCII_PROPS: Prop[] = [
+	{ name: "effect", fallback: "—", notes: "The effect to run. Keep the reference stable." },
+	{ name: "active", fallback: "true", notes: "Eases in and out. Drive it from hover for a reveal." },
+	{ name: "fontFamily", fallback: "system mono", notes: "Any CSS `font-family`, by name. Load a web font with the page; the canvas redraws once it lands." },
+	{ name: "fontSize", fallback: "10", notes: "CSS px. A glyph is one advance wide and two tall. Larger is coarser and cheaper." },
+	{ name: "ramp", fallback: ".:-=+*#%@", notes: "Glyphs from lightest to densest. Changes in place." },
+	{ name: "seed", fallback: "1", notes: "Seeds the RNG, so a given seed replays identically." },
+	{ name: "maxCols / maxRows", fallback: "320 / 160", notes: "Ceiling on the glyph grid." },
+	{ name: "className", fallback: "—", notes: "Merged onto the wrapper." },
+];
+
+export const RENDERERS =
+	"Two renderers ship, and every effect runs on either: swap `DitherCanvas` for `AsciiCanvas` and nothing else changes. `DitherCanvas` draws each cell as a Bayer-thresholded pixel. `AsciiCanvas` draws coloured glyphs.";
+
+export const ASCII_GLYPHS =
+	"Each glyph covers two square cells of the effect's grid, one per half, so rings stay round and rain keeps its slant even though glyphs are tall. The halves pick the glyph: evenly lit cells take the ramp, a lit top half takes `'` or `\"`, a lit bottom half `.` or `_`, and a sparkle becomes `+` or `*`. Colours are the effect's own.";
+
+export const ASCII_FONT =
+	"The font defaults to the system monospace (`ui-monospace`, then SF Mono, Menlo, Consolas and so on, ending at `monospace`), so the component downloads nothing. To use your own, load it the way the page already loads fonts and pass its name, as in CSS: `fontFamily=\"'Geist Mono', monospace\"`. The canvas redraws once it lands. With `next/font`, pass `geistMono.style.fontFamily`; a CSS variable such as `var(--font-geist-mono)` works too. Any font works, monospaced or not, since each glyph is centred in its own cell.";
 
 export interface Option {
 	name: string;

@@ -3,7 +3,12 @@ import {
 	EFFECTS,
 	INSTALL,
 	ITEMS,
-	PROPS,
+	ASCII_FONT,
+	ASCII_GLYPHS,
+	ASCII_PROPS,
+	DITHER_PROPS,
+	type Prop,
+	RENDERERS,
 	REGISTRY_CONFIG,
 	REPO,
 	SKILL_LIST,
@@ -17,7 +22,7 @@ export const AGENTS_PATH = "/shad-fx/agents.md";
 export const agentsUrl = () => `${siteUrl}${AGENTS_PATH}`;
 
 export const agentPrompt = () =>
-	`Read ${agentsUrl()} and follow it to install shad-fx and add a dither effect to this project.`;
+	`Read ${agentsUrl()} and follow it to install shad-fx and add an effect to this project.`;
 
 // Pipes would end the cell early; defaults like `number | (() => number)` have them.
 const cell = (text: string) => text.replaceAll("|", "\\|");
@@ -28,6 +33,16 @@ const table = (head: string[], rows: string[][]) =>
 		`| ${head.map(() => "---").join(" | ")} |`,
 		...rows.map((row) => `| ${row.map(cell).join(" | ")} |`),
 	].join("\n");
+
+const propTable = (props: Prop[]) =>
+	table(
+		["Prop", "Default", "Notes"],
+		props.map((prop) => [
+			`\`${prop.name}\``,
+			prop.fallback === "—" ? "—" : `\`${prop.fallback}\``,
+			prop.notes,
+		]),
+	);
 
 const code = (lang: string, body: string) => `\`\`\`${lang}\n${body}\n\`\`\``;
 
@@ -60,8 +75,8 @@ same content, for people, is at ${siteUrl}/shad-fx.
 
 ## When to use it
 
-Reach for shad-fx when a React project wants a pixelated, dithered, retro or
-8-bit animated background or accent on a card, hero, button, avatar or section:
+Reach for shad-fx when a React project wants a pixelated, dithered, ASCII,
+text-mode, retro or 8-bit animated background or accent on a card, hero, button, avatar or section:
 flames, lightning, sonar or ripple rings, a spotlight beam, a liquid fill, rain
 or snow. It is decoration, not content: the canvas is \`aria-hidden\` and
 \`pointer-events-none\`.
@@ -74,7 +89,8 @@ shadcn CLI copies the source into the project.
 
 ${code("bash", INSTALL)}
 
-The first installs everything; the second, the dither renderer and one effect.
+The first installs everything; the second, the dither renderer and one effect;
+the third, the ASCII renderer and one effect.
 An effect alone has nothing to draw on, so always install a renderer with it.
 Nothing to configure: the CLI resolves \`@sekei\` and writes the
 \`registries\` entry into \`components.json\` itself. To pin it by hand:
@@ -85,7 +101,8 @@ If the namespace fails to resolve, prefix any item with \`sekeidesign/shad-fx/\`
 to read the GitHub repo directly. Files land under \`components/shad-fx/\` and
 \`hooks/\`, following the project's aliases. With the full library, import from
 \`@/components/shad-fx\`; otherwise import \`DitherCanvas\` from
-\`@/components/shad-fx/dither\` and each effect from
+\`@/components/shad-fx/dither\` or \`AsciiCanvas\` from
+\`@/components/shad-fx/ascii\`, and each effect from
 \`@/components/shad-fx/effects/<name>\`.
 
 ${table(
@@ -112,16 +129,19 @@ Four rules, each the cause of a common bug:
 4. **The component that calls \`useFx\` is a client component.** An effect
    is an object of functions and cannot cross the server/client boundary.
 
+${RENDERERS}
+
 ### DitherCanvas props
 
-${table(
-	["Prop", "Default", "Notes"],
-	PROPS.map((prop) => [
-		`\`${prop.name}\``,
-		prop.fallback === "—" ? "—" : `\`${prop.fallback}\``,
-		prop.notes,
-	]),
-)}
+${propTable(DITHER_PROPS)}
+
+### AsciiCanvas props
+
+${propTable(ASCII_PROPS)}
+
+${ASCII_FONT}
+
+${ASCII_GLYPHS}
 
 Drive \`active\` from hover or visibility for a reveal. Do not mount and unmount
 the canvas, which throws the simulation away.
@@ -152,9 +172,12 @@ frame and the frame loop parks. Do not gate the canvas on it yourself.
 The engine runs \`requestAnimationFrame\` only while something is changing and
 parks once the effect settles, so an inactive effect costs nothing. A canvas
 scrolled off screen pauses too and resumes where it left off as it comes back,
-so do not unmount it or toggle \`active\` on scroll to save work. Each frame
-is one \`putImageData\` over a grid capped at 640×400 cells. Use \`cell={1}\` on
-small elements and \`3\` or \`4\` on a full-bleed hero.
+so do not unmount it or toggle \`active\` on scroll to save work. A dither
+frame is one \`putImageData\` over a grid capped at 640×400 cells. Use
+\`cell={1}\` on small elements and \`3\` or \`4\` on a full-bleed hero. An
+ASCII frame is one atlas blit per lit glyph plus one colouring draw; blank
+glyphs are free, so sparse effects (snow, bolt) cost less than dense ones
+(fire, fluid). Raise \`fontSize\` to make it coarser and cheaper.
 
 ## Agent skills
 

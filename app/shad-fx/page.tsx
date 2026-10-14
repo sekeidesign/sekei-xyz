@@ -80,7 +80,7 @@ export default function ShadFxDocs() {
 								shad-fx
 							</h1>
 							<p className="max-w-xl text-base leading-[1.55] font-[420] text-gray-500">
-								Canvas effects for React, starting with Bayer dithered environmental effects. Rendered on a tiny canvas, using a single <Code>ImageData</Code> instance per frame, and upscaled with CSS <Code>image-rendering: pixelated</Code> to keep each frame fast and GPU accelerated.
+								Canvas effects for React: fire, lightning, rain and more, drawn as Bayer-dithered pixels or as ASCII glyphs. Every effect runs on either renderer unchanged, and each keeps a frame to a handful of draw calls.
 							</p>
 						</div>
 						<CodeBlock
@@ -100,7 +100,7 @@ export default function ShadFxDocs() {
 
 						<Section title="Reduced motion" id="reduced-motion">
 							<P>
-								The canvas reads <Code>prefers-reduced-motion</Code> through{" "}
+								Both canvases read <Code>prefers-reduced-motion</Code> through{" "}
 								<Code>useSyncExternalStore</Code>, so it is correct on the server
 								and updates when the setting changes. Under reduce, each effect
 								paints one settled frame and stops: fire is pre-warmed and still,
@@ -118,9 +118,17 @@ export default function ShadFxDocs() {
 								effect costs nothing. A canvas scrolled off screen pauses too,
 								through an <Code>IntersectionObserver</Code>, and resumes where it
 								left off as it comes back, so a page of them only pays for the
-								ones in view. Each frame is one <Code>putImageData</Code>{" "}
-								over a grid capped at 640×400 cells, not a <Code>fillRect</Code>{" "}
-								per cell.
+								ones in view.
+							</P>
+							<P>
+								A dither frame is one <Code>putImageData</Code> over a grid capped
+								at 640×400 cells, upscaled with{" "}
+								<Code>image-rendering: pixelated</Code>, not a{" "}
+								<Code>fillRect</Code> per cell. An ASCII frame never calls{" "}
+								<Code>fillText</Code>: glyphs are drawn once into an atlas, each
+								lit glyph is one blit from it, and a single scaled draw colours
+								them all. Blank glyphs cost nothing. A full-bleed hero with every
+								glyph lit takes about 2ms a frame on a GPU-backed canvas.
 							</P>
 						</Section>
 

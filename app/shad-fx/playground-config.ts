@@ -220,7 +220,11 @@ function changed(kind: Kind, values: Record<string, number>, colors: string[]) {
 }
 
 export interface CanvasProps {
+	renderer: string;
 	cell: number;
+	fontSize: number;
+	/** Empty for the default, the system monospace. */
+	font: string;
 	seed: number;
 	active: boolean;
 }
@@ -256,14 +260,18 @@ export function snippet(
 
 	const props = ["effect={fx}"];
 	if (!canvas.active) props.push("active={false}");
-	if (canvas.cell !== 2) props.push(`cell={${canvas.cell}}`);
+	const ascii = canvas.renderer === "ascii";
+	if (!ascii && canvas.cell !== 2) props.push(`cell={${canvas.cell}}`);
+	if (ascii && canvas.font) props.push(`fontFamily="${canvas.font}"`);
+	if (ascii && canvas.fontSize !== 10) props.push(`fontSize={${canvas.fontSize}}`);
+	const Canvas = ascii ? "AsciiCanvas" : "DitherCanvas";
 	if (canvas.seed !== 1) props.push(`seed={${canvas.seed}}`);
 
 	return [
-		`import { DitherCanvas, ${kind}, useFx } from "@/components/shad-fx";`,
+		`import { ${Canvas}, ${kind}, useFx } from "@/components/shad-fx";`,
 		"",
 		`const fx = ${call};`,
 		"",
-		`<DitherCanvas ${props.join(" ")} />`,
+		`<${Canvas} ${props.join(" ")} />`,
 	].join("\n");
 }

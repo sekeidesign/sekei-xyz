@@ -1,4 +1,4 @@
-import { clamp01, type Renderer, type Rgb, type Surface } from "../engine";
+import { blendOver, clamp01, type Renderer, type Rgb, rgba, type Surface } from "../engine";
 
 /**
  * 4×4 Bayer thresholds in 0–1, indexed by `((y & 3) << 2) | (x & 3)`.
@@ -44,28 +44,13 @@ export class Painter implements Surface {
 
 	set(x: number, y: number, [r, g, b]: Rgb, alpha: number) {
 		if (!this.inside(x, y) || alpha <= 0) return;
-		const a = Math.round(clamp01(alpha) * 255);
-		this.px[y * this.cols + x] = ((a << 24) | (b << 16) | (g << 8) | r) >>> 0;
+		this.px[y * this.cols + x] = rgba(r, g, b, Math.round(clamp01(alpha) * 255));
 	}
 
 	/** Source-over onto whatever is already in the cell. */
-	blend(x: number, y: number, [r, g, b]: Rgb, alpha: number) {
+	blend(x: number, y: number, color: Rgb, alpha: number) {
 		if (!this.inside(x, y) || alpha <= 0) return;
-		const i = y * this.cols + x;
-		const d = this.px[i];
-		const da = (d >>> 24) / 255;
-		const sa = clamp01(alpha);
-		if (da === 0) {
-			this.set(x, y, [r, g, b], sa);
-			return;
-		}
-		const oa = sa + da * (1 - sa);
-		const w = sa / oa;
-		const nr = r * w + (d & 255) * (1 - w);
-		const ng = g * w + ((d >>> 8) & 255) * (1 - w);
-		const nb = b * w + ((d >>> 16) & 255) * (1 - w);
-		const a = Math.round(oa * 255);
-		this.px[i] = ((a << 24) | (nb << 16) | (ng << 8) | nr) >>> 0;
+		blendOver(this.px, y * this.cols + x, color, alpha);
 	}
 
 	/**

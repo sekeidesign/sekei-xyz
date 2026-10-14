@@ -21,10 +21,12 @@ export function Install() {
 			<P>
 				Files land under <Code>components/shad-fx/</Code> and{" "}
 				<Code>hooks/</Code>, following your components.json aliases: renderers
-				in <Code>dither/</Code>, effects in <Code>effects/</Code>. With the full
+				in <Code>dither/</Code> and <Code>ascii/</Code>, effects in{" "}
+				<Code>effects/</Code>. With the full
 				library, import everything from <Code>@/components/shad-fx</Code>. With
 				a renderer and a few effects, import from{" "}
-				<Code>@/components/shad-fx/dither</Code> and{" "}
+				<Code>@/components/shad-fx/dither</Code> or{" "}
+				<Code>@/components/shad-fx/ascii</Code>, and{" "}
 				<Code>@/components/shad-fx/effects/&lt;name&gt;</Code>.
 			</P>
 			<Table
