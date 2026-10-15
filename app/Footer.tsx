@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { ContributionGraph } from "./ui-kit/ContributionGraph";
 import { LastUpdated } from "./ui-kit/LastUpdated";
 import { cn } from "./ui-kit/cn";
 
 export function Footer({className}: {className?: string}) {
   return (
     <footer className={cn("grid grid-cols-4 gap-px w-full text-sm", className)}>
+      <ContributionGraph className="col-span-4" />
       <div className="flex gap-px col-span-2">
         <Link
           href="https://github.com/sekeidesign/"

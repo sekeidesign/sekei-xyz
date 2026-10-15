@@ -9,11 +9,11 @@ export const TooltipProvider = Tooltip.Provider;
  * popup and mounts another, so there is nothing to animate between; a handle
  * lets detached triggers drive a single Root.
  */
-const handle = Tooltip.createHandle<string>();
+const handle = Tooltip.createHandle<string | React.ReactElement>();
 
 /** `payload` is the label this control should show. */
 export function TooltipTrigger(
-	props: React.ComponentProps<typeof Tooltip.Trigger> & { payload: string },
+	props: React.ComponentProps<typeof Tooltip.Trigger> & { payload: string | React.ReactElement },
 ) {
 	return <Tooltip.Trigger handle={handle} {...props} />;
 }
@@ -35,7 +35,7 @@ const DURATION = "duration-[0.35s]";
 export function TooltipSurface() {
 	return (
 		<Tooltip.Root handle={handle}>
-			{({ payload }: { payload: string | undefined }) => (
+			{({ payload }: { payload: string | React.ReactElement | undefined }) => (
 				<Tooltip.Portal>
 					<Tooltip.Positioner
 						side="top"
