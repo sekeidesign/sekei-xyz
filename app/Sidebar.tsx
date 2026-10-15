@@ -1,4 +1,5 @@
 import { Footer } from "./Footer";
+import { ContributionGraph } from "./ui-kit/ContributionGraph";
 import { ProfileCard } from "./ui-kit/ProfileCard";
 import {
 	ClaudeMark,
@@ -43,6 +44,8 @@ export const Sidebar = () => {
 			</div>
 
 			<ProfileCard />
+
+			<ContributionGraph />
 
 			<TimelineTabs available={available} counts={counts} />
 
