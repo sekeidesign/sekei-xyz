@@ -79,6 +79,8 @@ export interface TimelineEntry {
 	 */
 	inline: boolean;
 	draft?: boolean;
+	/** Whether a book sits on /library. Off for test posts that aren't real reads. */
+	library: boolean;
 }
 
 const KINDS: EntryKind[] = [
@@ -228,13 +230,13 @@ function parseEntry(slug: string): TimelineEntry {
 		inline,
 		sourceUrl: data.sourceUrl,
 		draft: data.draft ?? false,
+		library: data.library ?? data.kind === "book",
 	};
 }
 
-function readTimeline(): TimelineEntry[] {
+function readEntries(): TimelineEntry[] {
 	if (!fs.existsSync(CONTENT_ROOT)) return [];
 
-	const isDev = process.env.NODE_ENV === "development";
 	const entries: TimelineEntry[] = [];
 
 	for (const dirent of fs.readdirSync(CONTENT_ROOT, { withFileTypes: true })) {
@@ -242,9 +244,7 @@ function readTimeline(): TimelineEntry[] {
 		if (!fs.existsSync(path.join(CONTENT_ROOT, dirent.name, "index.mdx"))) {
 			continue;
 		}
-		const entry = parseEntry(dirent.name);
-		if (entry.draft && !isDev) continue;
-		entries.push(entry);
+		entries.push(parseEntry(dirent.name));
 	}
 
 	// Slug breaks ties so posts sharing a date keep a stable order across
@@ -252,6 +252,11 @@ function readTimeline(): TimelineEntry[] {
 	return entries.sort(
 		(a, b) => b.date.localeCompare(a.date) || a.slug.localeCompare(b.slug),
 	);
+}
+
+function readTimeline(): TimelineEntry[] {
+	const isDev = process.env.NODE_ENV === "development";
+	return readEntries().filter((entry) => isDev || !entry.draft);
 }
 
 let cached: TimelineEntry[] | null = null;
@@ -267,3 +272,11 @@ export function getTimeline(): TimelineEntry[] {
 	return cached;
 }
 
+
+/**
+ * Every book read, newest first. Drafts included: a book without a write-up is
+ * held back from the feed, but it was still read.
+ */
+export function getLibrary(): TimelineEntry[] {
+	return readEntries().filter((entry) => entry.kind === "book" && entry.library);
+}
