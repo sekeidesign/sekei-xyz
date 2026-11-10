@@ -3,15 +3,6 @@ import type { Book } from "./types";
 // Spine colors are picked per book, not taken from real covers. Ratings are placeholders.
 export const BOOKS: Book[] = [
 	{
-		id: "competing-against-luck",
-		title: "Competing Against Luck",
-		author: "Christensen et al.",
-		cover: "https://covers.openlibrary.org/b/id/8138391-L.jpg",
-		spineColor: "#4a5568",
-		depth: 20,
-		rating: 0,
-	},
-	{
 		id: "apple-in-china",
 		title: "Apple in China",
 		author: "Patrick McGee",

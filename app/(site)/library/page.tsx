@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { BackLink } from "@ui-kit/BackLink";
 import type { Book } from "@ui-kit/book-shelf/types";
 import { PanelRow } from "@ui-kit/PanelRow";
-import { getLibrary } from "@/lib/timeline";
+import { getLibrary, type TimelineEntry } from "@/lib/timeline";
 import { LibraryPanel } from "../../LibraryPanel";
 
 export const metadata: Metadata = {
@@ -16,24 +16,27 @@ export const metadata: Metadata = {
 	},
 };
 
+function toBook(entry: TimelineEntry): Book {
+	return {
+		id: entry.slug,
+		title: entry.title,
+		author: entry.author ?? "",
+		cover: entry.cover ?? "",
+		spineColor: entry.spineColor ?? "#3a3f47",
+		rating: entry.rating ?? 0,
+		href: entry.hasPage && !entry.draft ? `/p/${entry.slug}` : undefined,
+	};
+}
+
 export default function LibraryPage() {
-	const entries = getLibrary();
+	const library = getLibrary();
+	const reading = library.filter((entry) => entry.reading).map(toBook);
+	const entries = library.filter((entry) => !entry.reading);
 
 	const years = new Map<string, Book[]>();
 	for (const entry of entries) {
 		const year = entry.date.slice(0, 4);
-		const shelf = years.get(year) ?? [];
-		shelf.push({
-			id: entry.slug,
-			title: entry.title,
-			author: entry.author ?? "",
-			cover: entry.cover ?? "",
-			spineColor: entry.spineColor ?? "#3a3f47",
-			rating: entry.rating ?? 0,
-			href:
-				entry.hasPage && !entry.draft ? `/p/${entry.slug}` : undefined,
-		});
-		years.set(year, shelf);
+		years.set(year, [...(years.get(year) ?? []), toBook(entry)]);
 	}
 
 	return (
@@ -49,6 +52,11 @@ export default function LibraryPage() {
 					{entries.length} books read
 				</p>
 			</PanelRow>
+			{reading.length > 0 && (
+				<PanelRow className="md:px-8 px-4 pt-6 pb-4">
+					<LibraryPanel title="Currently reading" books={reading} />
+				</PanelRow>
+			)}
 			{[...years].map(([year, books]) => (
 				<PanelRow key={year} className="md:px-8 px-4 pt-6 pb-4">
 					<LibraryPanel

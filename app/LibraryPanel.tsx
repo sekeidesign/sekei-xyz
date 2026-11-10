@@ -57,7 +57,7 @@ export function LibraryPanel({
 						}}
 						className="text-xs tracking-tight text-gray-500"
 					/>
-					<StarRating rating={active.rating} />
+					{active.rating > 0 && <StarRating rating={active.rating} />}
 					{active.href && (
 						<Button render={<Link href={active.href} />} className="mt-2">
 							Read review

@@ -81,6 +81,8 @@ export interface TimelineEntry {
 	draft?: boolean;
 	/** Whether a book sits on /library. Off for test posts that aren't real reads. */
 	library: boolean;
+	/** A book still in progress: on /library, but not counted as read. */
+	reading: boolean;
 }
 
 const KINDS: EntryKind[] = [
@@ -231,6 +233,7 @@ function parseEntry(slug: string): TimelineEntry {
 		sourceUrl: data.sourceUrl,
 		draft: data.draft ?? false,
 		library: data.library ?? data.kind === "book",
+		reading: data.reading ?? false,
 	};
 }
 
