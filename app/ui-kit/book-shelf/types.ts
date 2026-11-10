@@ -10,4 +10,6 @@ export interface Book {
 	depth?: number;
 	/** Out of 5. */
 	rating: number;
+	/** The book's review, when it has one. */
+	href?: string;
 }
